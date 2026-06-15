@@ -1,0 +1,23 @@
+# 依赖
+node_modules/
+
+# 构建产出
+dist/
+
+# 备份文件 — 编辑前自动生成
+*.bak
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# 环境变量
+.env
+.env.local
+.env.*.local
