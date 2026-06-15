@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 依赖
 node_modules/
 
@@ -21,3 +22,15 @@ Thumbs.db
 .env
 .env.local
 .env.*.local
+=======
+# 备份文件 — 编辑前自动生成，不纳入版本管理
+*.bak
+
+# 构建产出物（index.html 由 gen.py 生成）
+# 如果需要跟踪 index.html，注释掉下一行
+# index.html
+
+# 系统文件
+.DS_Store
+Thumbs.db
+>>>>>>> 7d7f0e54e0e7c6561e2fe0ca3b9003907c823889
