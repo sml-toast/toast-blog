@@ -751,3 +751,66 @@ footer {
   line-height: 1.8;
   color: var(--text-secondary);
 }
+
+/* ── Encrypted Info Fields ── */
+.resume-encrypted {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 32px;
+  padding: 16px 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow);
+}
+
+.encrypted-field {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+}
+
+.enc-label {
+  font-weight: 500;
+  color: var(--text-secondary);
+  min-width: 56px;
+}
+
+.enc-value {
+  font-weight: 600;
+  color: var(--text);
+  transition: all 0.3s;
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  letter-spacing: 2px;
+}
+
+.enc-value.enc-hidden {
+  color: var(--text-secondary);
+  filter: blur(5px);
+  cursor: pointer;
+  user-select: none;
+}
+
+.enc-value.enc-visible {
+  color: var(--text);
+  filter: none;
+  letter-spacing: normal;
+}
+
+.enc-toggle {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 2px 6px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s;
+  line-height: 1;
+}
+
+.enc-toggle:hover {
+  border-color: var(--accent);
+  background: var(--accent-light);
+}
