@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.toastblog.autocommit</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/simpleli/workspace/blog-design/scripts/auto-commit.sh</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/simpleli/workspace/blog-design</string>
+
+    <!-- 每 10 分钟运行一次 -->
+    <key>StartInterval</key>
+    <integer>600</integer>
+
+    <key>RunAtLoad</key>
+    <true/>
+
+    <key>StandardOutPath</key>
+    <string>/Users/simpleli/workspace/blog-design/scripts/auto-commit.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>/Users/simpleli/workspace/blog-design/scripts/auto-commit.err</string>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/opt/homebrew/bin</string>
+    </dict>
+</dict>
+</plist>
