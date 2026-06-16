@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Toast Blog · 简单的李 | 简单的李 · 技术博客</title>
+<meta name="description" content="简单的李的简单的李 · 技术博客 — 10+ 年 Java 后端开发，架构设计、AI Agent、RAG 知识库" />
+<meta property="og:title" content="Toast Blog · 简单的李 · 技术博客" />
+<meta property="og:description" content="10+ 年 Java 后端开发经验，分享架构设计、AI Agent、RAG 知识库等实战经验。" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://toastblog.dev" />
+<meta name="twitter:card" content="summary_large_image" />
+<link rel="canonical" href="https://toastblog.dev" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+<noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" /></noscript>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "简单的李",
+  "alternateName": "Toast",
+  "url": "https://toastblog.dev",
+  "jobTitle": "全栈开发者",
+  "knowsAbout": ["Java","Spring","JVM","Redis","Kafka","AI Agent","RAG","LLM"],
+  "sameAs": [
+    "https://github.com/tjlzw",
+    "https://juejin.cn/user/xxx"
+  ]
+}
+</script>
+<link rel="alternate" type="application/rss+xml" title="简单的李 · 技术博客" href="/feed.xml" />
+<link rel="manifest" href="/manifest.json" />
+<meta name="theme-color" content="#0a0a0f" />
+  <script type="module" src="/main.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-WXM6Qtax.css">
+</head>
+<body>
+
+<nav role="navigation" aria-label="主导航">
+  <div class="logo">Toast<span>Blog</span></div>
+  <ul>
+    <li><a href="#home" class="active">首页</a></li>
+    <li><a href="#resume">简历</a></li>
+    <li><a href="#workspace">作品</a></li>
+    <li><a href="#tutorials">教程</a></li>
+    <li><a href="#wiki">Wiki</a></li>
+    <li><a href="#learning-path">学习路线</a></li>
+  </ul>
+</nav>
+
+<main id="main-content" role="main">
+
+<section class="hero" id="home" aria-label="首页">
+  <div class="container">
+    <div class="hero-avatar">
+      <span class="hero-avatar__initials">LW</span>
+      <span class="status-dot"></span>
+    </div>
+    <div class="hero-content">
+      <h1>Hi, 我是 <span>Toast</span></h1>
+      <p class="tagline">全栈开发者 · AI 技术布道者 · 开源贡献者</p>
+      <div class="hero-tags">
+        <span>React / Vue</span>
+        <span>Python / Go</span>
+        <span>LLM / RAG</span>
+        <span>DevOps</span>
+        <span>系统设计</span>
+      </div>
+      <div class="hero-actions">
+        <a href="#workspace" class="btn btn-primary">查看作品 →</a>
+        <a href="#resume" class="btn btn-outline">关于我</a>
+      </div>
+      <div class="hero-social">
+        <a href="https://github.com/tjlzw" target="_blank" class="social-link" title="GitHub">
+          <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        </a>
+        <a href="https://juejin.cn/user/xxx" target="_blank" class="social-link" title="掘金">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l9.5 9.5L12 21l-9.5-9.5L12 2zm0 3.5L7.5 10 12 14.5 16.5 10 12 5.5z"/></svg>
+        </a>
+        <a href="mailto:dev@toastblog.dev" class="social-link" title="邮箱">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 4L12 13 2 4"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="resume" aria-label="个人简历">
+  <div class="container">
+    <div class="section-label">Resume</div>
+    <h2 class="section-title">个人简历</h2>
+    <p class="section-desc">10+ 年 Java 后端开发经验，架构设计、性能调优、团队管理。</p>
+
+    <!-- 加密信息栏 -->
+    <div class="resume-encrypted">
+      <div class="encrypted-field" data-field="name">
+        <span class="enc-label">姓名</span>
+        <span class="enc-value enc-hidden">简单的李</span>
+        <button class="enc-toggle" onclick="toggleEncrypt(this)">🔒</button>
+      </div>
+      <div class="encrypted-field" data-field="phone">
+        <span class="enc-label">电话</span>
+        <span class="enc-value enc-hidden">138****0000</span>
+        <button class="enc-toggle" onclick="toggleEncrypt(this)">🔒</button>
+      </div>
+      <div class="encrypted-field" data-field="email">
+        <span class="enc-label">邮箱</span>
+        <span class="enc-value enc-hidden">dev@toastblog.dev</span>
+        <button class="enc-toggle" onclick="toggleEncrypt(this)">🔒</button>
+      </div>
+      <div class="encrypted-field" data-field="school">
+        <span class="enc-label">毕业院校</span>
+        <span class="enc-value enc-hidden">***</span>
+        <button class="enc-toggle" onclick="toggleEncrypt(this)">🔒</button>
+      </div>
+      <div class="encrypted-field" data-field="company">
+        <span class="enc-label">当前单位</span>
+        <span class="enc-value enc-hidden">某 AI 科技公司</span>
+        <button class="enc-toggle" onclick="toggleEncrypt(this)">🔒</button>
+      </div>
+    </div>
+
+    <div class="resume-grid">
+      <div class="resume-card">
+        <h3><span class="icon">💼</span> 工作经历</h3>
+        <ul>
+          <li><span class="date">2025.03 - 至今</span><div class="title">AI Agent 平台 · 高级开发</div><div class="org">基于 LlamaIndex RAG 的 AI Agent 平台，Java+Python 混合架构</div></li>
+          <li><span class="date">2024.04 - 2025.03</span><div class="title">一体化信息云平台 · 技术负责人</div><div class="org">高并发优化，布隆过滤器+Redis，数据库压力&darr;80%</div></li>
+          <li><span class="date">2023.12 - 2024.04</span><div class="title">eTMF 文档管理系统 · 全栈开发</div><div class="org">RediSearch 全文检索 RT 1.5s→45ms，5000万向量检索5000万向量检索&lt;100mslt;100ms</div></li>
+          <li><span class="date">2022.01 - 2023.11</span><div class="title">CTMS 项目管理系统 · 开发</div><div class="org">甘特图、工时管理、Workflow、数据同步</div></li>
+          <li><span class="date">2021.04 - 2022.01</span><div class="title">PV 药物安全管理系统 · 开发</div><div class="org">RediSearch 药品索引、方言解析</div></li>
+          <li><span class="date">2017.09 - 2021.03</span><div class="title">某系统集成公司 · Java 开发工程师</div><div class="org">电子卷宗、出入境大数据、智能库房、多云监控</div></li>
+          <li><span class="date">2015.04 - 2017.03</span><div class="title">某自动化设备公司 · 自动化软件工程师</div><div class="org">STM32/PLC 控制、工业机器人调试</div></li>
+          <li><span class="date">2009.06 - 2015.03</span><div class="title">某智能装备公司 / 某科技发展公司 · 项目经理</div><div class="org">自动化产线管理，10+ 产线交付</div></li>
+        </ul>
+      </div>
+      <div class="resume-card">
+        <h3><span class="icon">🎓</span> 教育 &amp; 技能</h3>
+        <ul>
+          <li><div class="title">材料成型及控制工程 本科</div><div class="org">*** · 2005 - 2009</div></li>
+          <li><div class="title" style="margin-bottom:8px">技术栈</div><div class="skills-pills">
+            <span>Java</span><span>Spring Boot/Cloud</span><span>JVM 调优</span>
+            <span>Python</span><span>Redis</span><span>Kafka</span><span>Flink</span>
+            <span>Elasticsearch</span><span>MySQL</span><span>Oracle</span>
+            <span>Docker</span><span>Vue 3</span><span>LlamaIndex</span>
+            <span>RAG</span><span>LLM Agent</span>
+          </div></li>
+        </ul>
+      </div>
+    </div>
+    <div class="resume-preview-bar">
+      <button class="btn btn-primary" onclick="openResumePreview()">📋 预览完整简历</button>
+      <button class="btn btn-outline" onclick="exportResumePDF()">📄 导出 PDF</button>
+    </div>
+  </div>
+</section>
+
+<section id="workspace" aria-label="作品展示">
+  <div class="container">
+    <div class="section-label">Portfolio</div>
+    <h2 class="section-title">工作台 · 作品展示</h2>
+    <p class="section-desc">点击任一卡片查看详细的项目文档、演示链接与技术栈信息。</p>
+    <div class="workspace-header">
+      <div class="workspace-filters" role="tablist" aria-label="作品分类">
+        <button class="active" data-filter="all" role="tab">全部</button>
+        <button data-filter="ai" role="tab">AI / LLM</button>
+        <button data-filter="web" role="tab">Web 应用</button>
+        <button data-filter="tool" role="tab">开发工具</button>
+      </div>
+    </div>
+    <div class="project-grid" id="projectGrid"></div>
+  </div>
+</section>
+
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="projectModal">
+    <button class="modal-close" id="modalClose">✕</button>
+    <div class="modal-thumb" id="modalThumb">🚀</div>
+    <h2 id="modalTitle">项目名称</h2>
+    <div class="modal-meta" id="modalMeta"></div>
+    <p class="modal-desc" id="modalDesc"></p>
+    <div class="modal-tech-stack" id="modalTech"></div>
+    <div class="modal-links" id="modalLinks"></div>
+  </div>
+</div>
+
+<section id="tutorials" aria-label="技术教程" style="background:#fff;">
+  <div class="container">
+    <div class="section-label">Tutorials</div>
+    <h2 class="section-title">AI 技术教程</h2>
+    <p class="section-desc">从入门到进阶，涵盖 LLM 应用开发、RAG 实战、Agent 构建等热门方向。</p>
+    <div class="tutorials-grid" id="tutorialGrid"></div>
+  </div>
+</section>
+
+<section id="wiki" aria-label="知识笔记" style="background:#fff;">
+  <div class="container">
+    <div class="section-label">Wiki</div>
+    <h2 class="section-title">知识笔记</h2>
+    <p class="section-desc">日常积累的技术笔记、踩坑记录与实用速查。</p>
+    <div class="wiki-header">
+      <div class="wiki-categories" role="tablist" aria-label="笔记分类" id="wikiCategories">
+        <button class="active" data-cat="all">全部</button>
+        <button data-cat="dev">开发</button>
+        <button data-cat="ai">AI</button>
+        <button data-cat="ops">运维</button>
+        <button data-cat="tool">工具</button>
+      </div>
+    </div>
+    <div class="wiki-grid" id="wikiGrid"></div>
+  </div>
+</section>
+
+<section id="learning-path" aria-label="学习路线">
+  <div class="container">
+    <div class="section-label">Roadmap</div>
+    <h2 class="section-title">学习路线</h2>
+    <p class="section-desc" style="margin-bottom:48px;">一条从零基础到 AI 全栈工程师的系统学习路径。</p>
+    <div class="learning-path" id="learningPath"></div>
+  </div>
+</section>
+
+
+<!-- ── Giscus 评论 ── -->
+<section id="comments" aria-label="评论区">
+  <div class="container">
+    <div class="section-label">Comments</div>
+    <h2 class="section-title">💬 评论</h2>
+    <div class="giscus" id="giscus-widget"></div>
+  </div>
+</section>
+
+</main>
+
+<footer role="contentinfo" aria-label="页脚">
+  <div class="container">&copy; 2026 Toast Blog. Built with ❤️</div>
+</footer>
+
+<!-- 简历预览模态框 -->
+<div class="resume-preview-overlay" id="resumePreviewOverlay">
+  <div class="resume-preview-modal" id="resumePreviewModal">
+    <div class="resume-preview-header">
+      <div class="preview-title">📋 个人简历 · 简单的李</div>
+      <div>
+        <button class="btn btn-outline" onclick="exportResumePDF()" style="margin-right:8px">📄 导出 PDF</button>
+        <button class="resume-preview-close" onclick="closeResumePreview()">✕</button>
+      </div>
+    </div>
+    <div class="resume-preview-body" id="resumePreviewBody">
+
+      <!-- 个人信息 -->
+      <div class="preview-section">
+        <div class="preview-section-title">个人信息</div>
+        <div class="preview-info-grid">
+          <div class="preview-info-item"><span class="pi-label">姓名</span><span class="pi-value enc-hidden">简单的李</span><button class="enc-toggle" onclick="toggleEncrypt(this)">🔒</button></div>
+          <div class="preview-info-item"><span class="pi-label">性别</span><span class="pi-value">男</span></div>
+          <div class="preview-info-item"><span class="pi-label">学历</span><span class="pi-value">本科</span></div>
+          <div class="preview-info-item"><span class="pi-label">电话</span><span class="pi-value enc-hidden">138****0000</span><button class="enc-toggle" onclick="toggleEncrypt(this)">🔒</button></div>
+          <div class="preview-info-item"><span class="pi-label">邮箱</span><span class="pi-value enc-hidden">dev@toastblog.dev</span><button class="enc-toggle" onclick="toggleEncrypt(this)">🔒</button></div>
+          <div class="preview-info-item"><span class="pi-label">工作经验</span><span class="pi-value">10+ 年</span></div>
+          <div class="preview-info-item"><span class="pi-label">求职方向</span><span class="pi-value">Java 后端 / 架构师</span></div>
+          <div class="preview-info-item"><span class="pi-label">当前状态</span><span class="pi-value">在职</span></div>
+        </div>
+      </div>
+
+      <!-- 自我介绍 -->
+      <div class="preview-section">
+        <div class="preview-section-title">自我介绍</div>
+        <p class="preview-text">10+ 年 Java 后端开发经验，具备架构设计、性能调优、生产故障排查的完整能力闭环。担任过技术负责人，负责技术选型、架构评审与团队赋能，擅长从 0 到 1 搭建高可用系统。主导过政务、医疗 SaaS、物联网领域的系统架构演进，涵盖微服务拆分、多租户、信创适配。精通 JVM 调优、高并发缓存治理（布隆过滤器+Redis，数据库压力↓80%）、实时数仓（Canal+Flink）、ES 全文检索（千万级&lt;100ms）、RediSearch 向量检索。近年基于 LlamaIndex 构建 RAG 知识库，参与研发可视化 Workflow 设计器，实现 AI 辅助生成流程与页面，配置时间降低 93%。</p>
+      </div>
+
+      <!-- 技术技能 -->
+      <div class="preview-section">
+        <div class="preview-section-title">技术技能</div>
+        <div class="preview-skills">
+          <div class="preview-skill-group"><span class="sg-label">Java 生态</span><span>多线程、JVM 调优（OOM/CPU飙升/内存泄漏）、集合框架、类加载机制</span></div>
+          <div class="preview-skill-group"><span class="sg-label">后端框架</span><span>Spring Boot/Cloud/Data/Security、Netty、MyBatis、JPA</span></div>
+          <div class="preview-skill-group"><span class="sg-label">微服务</span><span>Spring Cloud（Gateway/Nacos/Sentinel/OpenFeign）、服务治理、熔断降级、链路追踪</span></div>
+          <div class="preview-skill-group"><span class="sg-label">数据库</span><span>MySQL、PostgreSQL、Oracle；分库分表、读写分离、慢 SQL 优化、索引调优</span></div>
+          <div class="preview-skill-group"><span class="sg-label">数据工程</span><span>Canal+Kafka+Flink 实时数仓、StreamSets、RediSearch（全文+向量检索）</span></div>
+          <div class="preview-skill-group"><span class="sg-label">中间件</span><span>Redis（缓存/布隆过滤器/分布式锁）、Kafka/RabbitMQ、Elasticsearch、ZooKeeper</span></div>
+          <div class="preview-skill-group"><span class="sg-label">运维工具</span><span>Docker、Jenkins、GitLab CI、Prometheus+Grafana、Arthas、JProfiler</span></div>
+          <div class="preview-skill-group"><span class="sg-label">前端</span><span>Vue 3、Element Plus、JavaScript/jQuery/Ajax/CSS</span></div>
+          <div class="preview-skill-group"><span class="sg-label">AI 增强</span><span>GitHub Copilot/Cursor + SonarQube、LlamaIndex RAG、AI Agent 工作流</span></div>
+        </div>
+      </div>
+
+      <!-- 工作经历 -->
+      <div class="preview-section">
+        <div class="preview-section-title">工作经历</div>
+        <div class="preview-job">
+          <div class="pj-header"><span class="pj-date">2021.04 - 至今</span><span class="pj-company">某 AI 科技公司</span></div>
+          <div class="pj-title">Java 高级开发工程师</div>
+          <ul class="pj-duties">
+            <li>PV 药物安全管理系统：RediSearch 药品索引，内外字典与方言解析</li>
+            <li>CTMS 项目管理系统：甘特图、工时管理、Workflow 开发、eTMF 数据同步</li>
+            <li>eTMF 文档管理系统：图文混排、OSS 云存储、OnlyOffice 在线编辑、RediSearch 全文检索（RT 1.5s→45ms）</li>
+            <li>一体化信息云平台：布隆过滤器+Redis 缓存，数据库压力↓80%，接口 RT 200ms→15ms</li>
+            <li>分层数仓 Canal+Kafka+Flink 支撑 BI 报表；RediSearch 5000 万向量检索&lt;100ms</li>
+            <li>百奥知 Agent 平台：LlamaIndex RAG 医疗知识库，可视化 Workflow 设计器，配置时间↓93%</li>
+          </ul>
+        </div>
+        <div class="preview-job">
+          <div class="pj-header"><span class="pj-date">2017.09 - 2021.03</span><span class="pj-company">某系统集成公司</span></div>
+          <div class="pj-title">Java 开发工程师</div>
+          <ul class="pj-duties">
+            <li>电子卷宗管理系统：全栈开发，OCR 识别、电子印章、条码二维码</li>
+            <li>涉案财物信息管理系统：架构设计，TCP 上下位机通讯协议，智能柜控制</li>
+            <li>出入境风险评估系统：10 亿级数据清洗，Elasticsearch 风险模型计算</li>
+            <li>智能库房系统：架构设计，A*/Dijkstra 路径规划算法，机器人任务调度</li>
+            <li>多云监控平台与出入境大数据平台：容器化部署、数据大屏</li>
+          </ul>
+        </div>
+        <div class="preview-job">
+          <div class="pj-header"><span class="pj-date">2015.04 - 2017.03</span><span class="pj-company">某自动化设备公司</span></div>
+          <div class="pj-title">自动化软件工程师</div>
+          <ul class="pj-duties">
+            <li>STM32/51 单片机工业控制程序开发</li>
+            <li>西门子/三菱 PLC 梯形图/结构化文本编程</li>
+            <li>Modbus/Profibus 通信协议对接</li>
+            <li>ABB/KUKA/发那科工业机器人调试与示教编程</li>
+          </ul>
+        </div>
+        <div class="preview-job">
+          <div class="pj-header"><span class="pj-date">2009.06 - 2015.03</span><span class="pj-company">某智能装备公司 / 某科技发展公司</span></div>
+          <div class="pj-title">项目经理，自动化软件工程师</div>
+          <ul class="pj-duties">
+            <li>主导食品行业自动化产线项目，全流程管理</li>
+            <li>协调机械、电气、软件、采购、施工多团队</li>
+            <li>MES 系统对接，生产节拍监控与 OEE 分析</li>
+            <li>交付 10+ 条自动化产线，平均周期缩短 20%</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 教育背景 -->
+      <div class="preview-section">
+        <div class="preview-section-title">教育背景</div>
+        <div class="preview-edu">
+          <div class="pj-header">
+            <span class="pj-date">2005.09 - 2009.06</span>
+            <span class="pj-company enc-hidden">***</span>
+            <button class="enc-toggle" onclick="toggleEncrypt(this)">🔒</button>
+          </div>
+          <div class="pj-title">材料成型及控制工程 · 本科</div>
+        </div>
+        <div class="preview-edu" style="margin-top:12px">
+          <div class="pj-header">
+            <span class="pj-date">2017.03 - 2017.07</span>
+            <span class="pj-company">达内教育</span>
+          </div>
+          <div class="pj-title">Java 初级开发培训</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "PLACEHOLDER_TOKEN"}'></script>
+<script src="https://giscus.app/client.js"
+        data-repo="tjlzw/toast-blog"
+        data-repo-id=""
+        data-category="Announcements"
+        data-category-id=""
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="light"
+        data-lang="zh-CN"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  <div class="feedback-rail">
+    <a href="https://github.com/tjlzw/toast-blog/issues/new" target="_blank" class="feedback-btn" title="反馈建议">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      <span>反馈</span>
+    </a>
+  </div>
+
+</body>
+</html>
