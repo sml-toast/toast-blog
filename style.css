@@ -1121,3 +1121,46 @@ footer {
     margin: 15mm;
   }
 }
+
+/* ── Hero Social Links ── */
+.hero-social {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.social-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  transition: all 0.25s;
+  text-decoration: none;
+}
+
+.social-link:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-light);
+  transform: translateY(-2px);
+}
+
+[data-theme="dark"] .social-link {
+  border-color: #38383a;
+}
+
+[data-theme="dark"] .social-link:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: #1c3a5e;
+}
+
+@media (max-width: 768px) {
+  .hero-social {
+    justify-content: center;
+  }
+}
