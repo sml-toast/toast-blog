@@ -109,7 +109,7 @@ section { padding: 100px 0 80px; }
 .hero-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px; }
 .hero-tags span {
   padding: 6px 14px; border-radius: 20px;
-  background: var(--accent-light); color: var(--accent);
+  background: #1e4a7a; color: #fff;
   font-size: 13px; font-weight: 500;
 }
 .hero-actions { display: flex; gap: 12px; }
