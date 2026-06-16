@@ -165,6 +165,7 @@ pathEl.innerHTML = pathSteps.map((s, i) => `
 
 // ── Initial Render ──
 renderProjects();
+renderWiki();
 
 // ── Theme Toggle ──
 const themeBtn = document.createElement('button');
@@ -203,7 +204,7 @@ const backToTop = document.createElement('button');
 backToTop.className = 'back-to-top';
 backToTop.setAttribute('aria-label', '回到顶部');
 backToTop.textContent = '↑';
-backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+backToTop.addEventListener('click', () => { window.scrollTo(0, 0); backToTop.classList.remove('visible'); });
 document.body.appendChild(backToTop);
 window.addEventListener('scroll', () => backToTop.classList.toggle('visible', window.scrollY > 300));
 
