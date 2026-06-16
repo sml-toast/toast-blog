@@ -1131,9 +1131,19 @@ footer {
     color: #000 !important;
   }
 
-  body > *:not(.resume-preview-overlay) {
+
+
+  /* 强制隐藏非预览元素 */
+  nav, footer, .feedback-rail, .back-to-top, .theme-toggle-btn,
+  .hero, #workspace, #tutorials, #wiki, #learning-path, #comments,
+  section:not(.resume-preview-overlay) {
     display: none !important;
   }
+
+  /* 预览内元素排版优化 */
+  .preview-section { page-break-inside: avoid; }
+  .preview-job { page-break-inside: avoid; margin-bottom: 12px; }
+
 
   @page {
     margin: 15mm;
