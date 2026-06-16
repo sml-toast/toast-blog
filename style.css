@@ -207,6 +207,26 @@ section { padding: 100px 0 80px; }
   display: flex; align-items: center; justify-content: center;
   font-size: 48px;
 }
+
+.pt-overlay {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 50%;
+  background: linear-gradient(transparent, rgba(0,0,0,0.12));
+  pointer-events: none;
+}
+
+.pt-pattern {
+  position: absolute;
+  inset: 0;
+  opacity: 0.08;
+  background-image:
+    radial-gradient(circle at 20% 30%, currentColor 1px, transparent 1px),
+    radial-gradient(circle at 80% 70%, currentColor 1px, transparent 1px);
+  background-size: 32px 32px;
+  pointer-events: none;
+}
+
 .project-body { padding: 20px; }
 .project-body .tag {
   display: inline-block;
