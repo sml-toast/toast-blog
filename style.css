@@ -1164,3 +1164,11 @@ footer {
     justify-content: center;
   }
 }
+
+/* ── Avatar Initials ── */
+.hero-avatar__initials {
+  font-size: 32px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 2px;
+}
