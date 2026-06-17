@@ -73,7 +73,8 @@ window.openModal = function(id) {
   document.body.style.overflow = 'hidden';
 };
 
-window.closeModal = function() {
+window.closeModal = function(e) {
+  if (e && e.target && e.target.id !== 'modalOverlay') return;
   document.getElementById('modalOverlay').classList.remove('open');
   document.body.style.overflow = '';
 };
@@ -211,9 +212,14 @@ window.addEventListener('scroll', () => backToTop.classList.toggle('visible', wi
 // ── Modal ESC ──
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
-    const overlay = document.getElementById('modalOverlay');
-    if (overlay?.classList.contains('open')) {
-      overlay.classList.remove('open');
+    const modal = document.getElementById('modalOverlay');
+    if (modal?.classList.contains('open')) {
+      modal.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    const resume = document.getElementById('resumePreviewOverlay');
+    if (resume?.classList.contains('open')) {
+      resume.classList.remove('open');
       document.body.style.overflow = '';
     }
   }
@@ -247,7 +253,45 @@ if ('serviceWorker' in navigator) {
 }
 
 // ── Expose Globals ──
-window.openResumePreview = window.openResumePreview || function(){};
-window.closeResumePreview = window.closeResumePreview || function(){};
-window.exportResumePDF = window.exportResumePDF || function(){};
-window.toggleEncrypt = window.toggleEncrypt || function(){};
+// ── Resume: Encrypt Toggle ──
+window.toggleEncrypt = function(btn) {
+  var field = btn.closest('.encrypted-field, .preview-info-item, .preview-edu, .encrypted');
+  if (!field) return;
+  var val = field.querySelector('.enc-value, .enc-hidden, .pi-value.enc-hidden');
+  if (!val) return;
+  val.classList.toggle('enc-hidden');
+  btn.textContent = val.classList.contains('enc-hidden') ? '🔒' : '🔓';
+};
+
+// ── Resume: Preview ──
+window.openResumePreview = function() {
+  var overlay = document.getElementById('resumePreviewOverlay');
+  if (overlay) {
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+};
+
+window.closeResumePreview = function() {
+  var overlay = document.getElementById('resumePreviewOverlay');
+  if (overlay) {
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+};
+
+// ── Resume: Export PDF ──
+window.exportResumePDF = function() {
+  var overlay = document.getElementById('resumePreviewOverlay');
+  if (overlay) overlay.classList.remove('open');
+  
+  var body = document.getElementById('resumePreviewBody');
+  if (!body) return;
+  
+  // Simple print-based PDF export
+  window.print();
+  
+  setTimeout(function() {
+    if (overlay) overlay.classList.add('open');
+  }, 500);
+};
