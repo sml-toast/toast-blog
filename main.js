@@ -1,7 +1,22 @@
-import { projects } from "./data/projects.js";
-import { tutorials } from "./data/tutorials.js";
-import { wikiEntries } from "./data/wiki.js";
-import { pathSteps } from "./data/path.js";
+import { initData, getData } from "./data/loader.js";
+
+let projects = [], tutorials = [], wikiEntries = [], pathSteps = [];
+
+// ── Initialize Data ──
+(async () => {
+  const data = await initData();
+  projects = data.projects;
+  tutorials = data.tutorials;
+  wikiEntries = data.wiki;
+  pathSteps = data.pathSteps;
+  
+  // Render after data is ready
+  renderProjects();
+  renderWiki();
+  renderTutorials();
+  renderPath();
+  observeContainers();
+})();
 
 // ── Skeleton Loading ──
 function showSkeleton(gridId, count) {
@@ -80,10 +95,12 @@ window.closeModal = function(e) {
 };
 
 // ── Render Tutorials ──
-showSkeleton("tutorialGrid", 6);
-const tutGrid = document.getElementById("tutorialGrid");
-hideSkeleton("tutorialGrid");
-tutGrid.innerHTML = tutorials.map(t => `
+function renderTutorials() {
+  showSkeleton("tutorialGrid", 6);
+  const tutGrid = document.getElementById("tutorialGrid");
+  hideSkeleton("tutorialGrid");
+  if (!tutGrid) return;
+  tutGrid.innerHTML = tutorials.map(t => `
   <div class="tutorial-card">
     <div class="icon" style="background:${t.iconBg}">${t.icon}</div>
     <span class="level level-${t.level}">${t.levelText}</span>
@@ -91,6 +108,7 @@ tutGrid.innerHTML = tutorials.map(t => `
     <p>${t.desc}</p>
   </div>
 `).join('');
+}
 
 // ── Render Wiki ──
 showSkeleton("wikiGrid", 10);
@@ -149,10 +167,12 @@ function renderMarkdown(text) {
 }
 
 // ── Render Learning Path ──
-showSkeleton("learningPath", 6);
-const pathEl = document.getElementById("learningPath");
-hideSkeleton("learningPath");
-pathEl.innerHTML = pathSteps.map((s, i) => `
+function renderPath() {
+  showSkeleton("learningPath", 6);
+  const pathEl = document.getElementById("learningPath");
+  hideSkeleton("learningPath");
+  if (!pathEl) return;
+  pathEl.innerHTML = pathSteps.map((s, i) => `
   <div class="path-step ${s.completed ? 'completed' : ''}">
     <div class="path-marker">${s.completed ? '✓' : (i + 1)}</div>
     <div class="path-content">
@@ -164,9 +184,20 @@ pathEl.innerHTML = pathSteps.map((s, i) => `
   </div>
 `).join('');
 
-// ── Initial Render ──
-renderProjects();
-renderWiki();
+
+// ── Listen for data changes ──
+window.addEventListener('toast:data-changed', async (e) => {
+  if (e.detail) {
+    projects = e.detail.projects || [];
+    tutorials = e.detail.tutorials || [];
+    wikiEntries = e.detail.wiki || [];
+    pathSteps = e.detail.pathSteps || [];
+    renderProjects();
+    renderWiki();
+    renderTutorials();
+    renderPath();
+  }
+});
 
 // ── Theme Toggle ──
 const themeBtn = document.createElement('button');

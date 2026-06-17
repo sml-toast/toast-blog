@@ -37,6 +37,7 @@
 <meta name="theme-color" content="#0a0a0f" />
   <script type="module" src="/main.js"></script>
   <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/admin.css">
   <link rel="icon" type="image/svg+xml" href="/logo/toast-favicon.svg">
   <link rel="icon" type="image/png" sizes="32x32" href="/logo/icon-32.png">
   <link rel="icon" type="image/png" sizes="192x192" href="/logo/icon-192.png">
@@ -54,6 +55,7 @@
     <li><a href="#tutorials">教程</a></li>
     <li><a href="#wiki">Wiki</a></li>
     <li><a href="#learning-path">学习路线</a></li>
+    <li><a href="#admin">管理</a></li>
   </ul>
 </nav>
 
@@ -390,6 +392,151 @@
 
 
 
+
+<!-- ── Admin Section ── -->
+<section id="admin" aria-label="后台管理">
+  <div class="container">
+
+    <!-- Login -->
+    <div id="adminLogin" class="admin-login">
+      <h2>🔐 管理后台</h2>
+      <p style="color:var(--text-secondary);font-size:13px">请输入管理密码</p>
+      <input type="password" id="adminPwd" placeholder="密码" autocomplete="off">
+      <button class="btn btn-primary" onclick="adminLogin()">登录</button>
+      <div id="adminLoginErr" class="error"></div>
+    </div>
+
+    <!-- Panel -->
+    <div id="adminPanel" class="hidden admin-panel">
+      <div class="admin-header">
+        <h2>⚙️ 管理后台</h2>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="admin-btn" onclick="exportData()">📥 导出 JSON</button>
+          <label class="admin-btn" style="cursor:pointer">📤 导入 JSON
+            <input type="file" id="importFile" accept=".json" onchange="importData()" style="display:none">
+          </label>
+          <button class="admin-btn admin-btn-danger" onclick="resetData()">🔄 重置默认</button>
+          <button class="admin-btn" onclick="adminLogout()">🚪 退出</button>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="admin-tabs">
+        <button data-tab="dashboard" class="active" onclick="switchAdminTab('dashboard')">📊 概览</button>
+        <button data-tab="projects" onclick="switchAdminTab('projects')">📦 作品</button>
+        <button data-tab="tutorials" onclick="switchAdminTab('tutorials')">📖 教程</button>
+        <button data-tab="wiki" onclick="switchAdminTab('wiki')">📝 Wiki</button>
+        <button data-tab="path" onclick="switchAdminTab('path')">🧭 学习路线</button>
+      </div>
+
+      <!-- Dashboard -->
+      <div id="tab-dashboard" class="admin-tab-content active">
+        <div class="admin-stats">
+          <div class="stat-card"><div class="num" id="statProjects">0</div><div class="label">📦 作品</div></div>
+          <div class="stat-card"><div class="num" id="statTutorials">0</div><div class="label">📖 教程</div></div>
+          <div class="stat-card"><div class="num" id="statWiki">0</div><div class="label">📝 Wiki</div></div>
+          <div class="stat-card"><div class="num" id="statPath">0</div><div class="label">🧭 学习路线</div></div>
+        </div>
+        <p style="color:var(--text-secondary);font-size:13px">💡 数据存储在浏览器本地（localStorage），导出 JSON 备份以防丢失。</p>
+      </div>
+
+      <!-- Projects Table -->
+      <div id="tab-projects" class="admin-tab-content">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <span style="font-size:14px;color:var(--text-secondary)">共 <span class="item-count">0</span> 个作品</span>
+          <button class="admin-btn admin-btn-primary" onclick="addNew('projects')">＋ 新增</button>
+        </div>
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead><tr><th>标题</th><th>分类</th><th>描述</th><th>标签</th><th>操作</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Tutorials Table -->
+      <div id="tab-tutorials" class="admin-tab-content">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <span style="font-size:14px;color:var(--text-secondary)">共 <span class="item-count">0</span> 篇教程</span>
+          <button class="admin-btn admin-btn-primary" onclick="addNew('tutorials')">＋ 新增</button>
+        </div>
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead><tr><th>标题</th><th>难度</th><th>描述</th><th>操作</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Wiki Table -->
+      <div id="tab-wiki" class="admin-tab-content">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <span style="font-size:14px;color:var(--text-secondary)">共 <span class="item-count">0</span> 条笔记</span>
+          <button class="admin-btn admin-btn-primary" onclick="addNew('wiki')">＋ 新增</button>
+        </div>
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead><tr><th>标题</th><th>分类</th><th>日期</th><th>描述</th><th>操作</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Learning Path -->
+      <div id="tab-path" class="admin-tab-content">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <span style="font-size:14px;color:var(--text-secondary)">共 <span class="item-count">0</span> 步</span>
+          <button class="admin-btn admin-btn-primary" onclick="addPath()">＋ 新增</button>
+        </div>
+        <div id="pathList"></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Admin Form Modal -->
+<div class="admin-form-overlay" id="adminFormOverlay">
+  <div class="admin-form" id="adminForm">
+    <button class="close-btn" onclick="closeAdminForm()">✕</button>
+    <h3>编辑</h3>
+    <div id="adminFormFields"></div>
+  </div>
+</div>
+
+<!-- Path Form Modal -->
+<div class="admin-form-overlay" id="pathFormOverlay">
+  <div class="admin-form">
+    <button class="close-btn" onclick="closePathForm()">✕</button>
+    <h3>编辑学习路线</h3>
+    <div class="form-group">
+      <label>阶段标签</label>
+      <input type="text" id="pathLabel" data-field="label" placeholder="如：Phase 1">
+    </div>
+    <div class="form-group">
+      <label>标题</label>
+      <input type="text" id="pathTitle" data-field="title" placeholder="如：前端基础">
+    </div>
+    <div class="form-group">
+      <label>描述</label>
+      <textarea id="pathDesc" data-field="desc" rows="3"></textarea>
+    </div>
+    <div class="form-group">
+      <label>技术标签</label>
+      <div class="tag-input-wrap" data-field="techs">
+        <input type="text" placeholder="输入后按回车添加" onkeydown="adminTagInput(this,event)">
+      </div>
+    </div>
+    <div class="form-group">
+      <label><input type="checkbox" id="pathCompleted"> 已完成</label>
+    </div>
+    <div class="form-actions">
+      <button class="admin-btn" onclick="closePathForm()">取消</button>
+      <button class="admin-btn admin-btn-primary" onclick="savePath()">保存</button>
+    </div>
+  </div>
+</div>
+
 <!-- Cloudflare Web Analytics -->
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "PLACEHOLDER_TOKEN"}'></script>
 <script src="https://giscus.app/client.js"
@@ -415,5 +562,6 @@
     </a>
   </div>
 
+  <script type="module" src="/admin.js"></script>
 </body>
 </html>
