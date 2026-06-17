@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="crust" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#C67B3A"/>
+      <stop offset="100%" style="stop-color:#A05A2C"/>
+    </linearGradient>
+    <linearGradient id="bread" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#F5D98C"/>
+      <stop offset="100%" style="stop-color:#E8C56E"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0A84FF"/>
+      <stop offset="100%" style="stop-color:#5E5CE6"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Shadow -->
+  <ellipse cx="256" cy="420" rx="140" ry="20" fill="rgba(0,0,0,0.08)"/>
+
+  <!-- Toast crust outline -->
+  <path d="M130 180 Q130 100 180 80 L332 80 Q382 100 382 180 L382 340 Q382 380 340 390 L172 390 Q130 380 130 340 Z"
+        fill="url(#crust)" stroke="#8B4513" stroke-width="4"/>
+
+  <!-- Inner bread area -->
+  <path d="M150 180 Q150 118 192 100 L320 100 Q362 118 362 180 L362 335 Q362 365 330 372 L182 372 Q150 365 150 335 Z"
+        fill="url(#bread)"/>
+
+  <!-- Toast surface texture dots -->
+  <circle cx="200" cy="150" r="6" fill="#D4A84B" opacity="0.4"/>
+  <circle cx="280" cy="140" r="5" fill="#D4A84B" opacity="0.3"/>
+  <circle cx="330" cy="200" r="4" fill="#D4A84B" opacity="0.35"/>
+  <circle cx="180" cy="250" r="5" fill="#D4A84B" opacity="0.3"/>
+  <circle cx="310" cy="300" r="6" fill="#D4A84B" opacity="0.4"/>
+  <circle cx="220" cy="320" r="4" fill="#D4A84B" opacity="0.3"/>
+
+  <!-- Code bracket &gt; -->
+  <text x="256" y="260" font-family="'Courier New', monospace" font-size="100"
+        font-weight="bold" fill="url(#accent)" text-anchor="middle" dominant-baseline="middle">&lt;/&gt;</text>
+
+  <!-- Steam lines -->
+  <path d="M220 60 Q215 40 220 20" fill="none" stroke="#C0C0C0" stroke-width="3" stroke-linecap="round" opacity="0.5"/>
+  <path d="M256 55 Q253 30 256 10" fill="none" stroke="#C0C0C0" stroke-width="3" stroke-linecap="round" opacity="0.6"/>
+  <path d="M290 60 Q287 35 290 18" fill="none" stroke="#C0C0C0" stroke-width="3" stroke-linecap="round" opacity="0.5"/>
+</svg>
