@@ -3,7 +3,28 @@
  * 前台通过此模块读取数据，后台通过此模块读写数据
  */
 
-const STORAGE_KEY = 'toast_blog_data';
+// ── Environment ──
+const ENV_KEY = 'toast_blog_env';
+const STORAGE_PREFIX = 'toast_blog_data_';
+
+function getEnv() {
+  return localStorage.getItem(ENV_KEY) || 'prod';
+}
+
+export function setEnv(env) {
+  localStorage.setItem(ENV_KEY, env);
+  // Reload data for new environment
+  _data = null;
+  return initData();
+}
+
+export function getCurrentEnv() {
+  return getEnv();
+}
+
+function getStorageKey() {
+  return STORAGE_PREFIX + getEnv();
+}
 
 // 默认数据结构（与静态文件一致）
 let _defaultData = null;
@@ -23,7 +44,7 @@ export async function initData() {
   _defaultData = { projects, tutorials, wiki, pathSteps };
 
   // 尝试从 localStorage 读取
-  const saved = localStorage.getItem(STORAGE_KEY);
+  const saved = localStorage.getItem(getStorageKey());
   if (saved) {
     try {
       _data = JSON.parse(saved);
@@ -45,7 +66,7 @@ export function getData() {
 export function saveData(data) {
   _data = data;
   if (_data) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(_data));
+    localStorage.setItem(getStorageKey(), JSON.stringify(_data));
   }
   // 触发自定义事件通知前台更新
   window.dispatchEvent(new CustomEvent('toast:data-changed', { detail: _data }));
@@ -53,7 +74,7 @@ export function saveData(data) {
 }
 
 export function resetToDefaults() {
-  localStorage.removeItem(STORAGE_KEY);
+  localStorage.removeItem(getStorageKey());
   _data = _defaultData ? JSON.parse(JSON.stringify(_defaultData)) : null;
   window.dispatchEvent(new CustomEvent('toast:data-changed', { detail: _data }));
   return _data;

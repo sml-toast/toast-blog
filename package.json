@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "bash scripts/dev.sh",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "postbuild": "bash scripts/postbuild.sh"
   },
   "devDependencies": {
     "vite": "^6.3.0"

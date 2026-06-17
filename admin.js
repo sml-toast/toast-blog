@@ -1,4 +1,4 @@
-import { getData, saveData, resetToDefaults, exportJSON, importJSON, generateId } from './data/loader.js';
+import { getData, saveData, resetToDefaults, exportJSON, importJSON, generateId, setEnv, getCurrentEnv } from './data/loader.js';
 
 const ADMIN_PASSWORD_HASH = '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918'; // SHA-256 of 'admin'
 let currentTab = 'dashboard';
@@ -469,5 +469,27 @@ if (document.getElementById('admin')) {
   if (checkAdminAuth()) {
     requireAdmin();
     renderDashboard();
+    initEnvSwitcher();
   }
 }
+
+
+// ── Environment Switcher ──
+
+export function initEnvSwitcher() {
+  const current = getCurrentEnv();
+  document.querySelectorAll('.env-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.env === current);
+  });
+}
+
+window.switchEnv = async function(env) {
+  await setEnv(env);
+  initEnvSwitcher();
+  // Refresh admin panel
+  renderDashboard();
+  if (typeof renderTable === 'function') {
+    ['projects', 'tutorials', 'wiki'].forEach(t => renderTable(t));
+  }
+  if (typeof renderPathAdmin === 'function') renderPathAdmin();
+};

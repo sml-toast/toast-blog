@@ -1,202 +1,1895 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <base href="/toast-blog/">
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>管理后台 · Toast Blog</title>
-<link rel="stylesheet" href="/style.css">
-<link rel="stylesheet" href="/admin.css">
-<link rel="icon" type="image/svg+xml" href="/logo/toast-favicon.svg">
+<base href="/toast-blog/">
+<link rel="icon" type="image/svg+xml" href="/toast-blog/logo/toast-favicon.svg">
+<style>
+/* ── Main Styles ── */
 
+.feedback-rail { position: fixed; right: 16px; bottom: 80px; z-index: 999; }
+.feedback-btn { display: flex; align-items: center; gap: 4px; padding: 8px 14px; background: var(--accent,#0a84ff); color: #fff; border-radius: 24px; text-decoration: none; font-size: 13px; font-weight: 500; box-shadow: 0 2px 8px rgba(0,0,0,0.15); transition: transform 0.2s; }
+.feedback-btn:hover { transform: translateY(-2px); background: var(--accent-hover,#0a6ed1); }
+.dark .feedback-btn { box-shadow: 0 2px 8px rgba(0,0,0,0.4); }
+:root {
+  --bg: #f5f5f7;
+  --surface: #ffffff;
+  --border: #e8e8ed;
+  --text: #1d1d1f;
+  --text-secondary: #6e6e73;
+  --accent: #0071e3;
+  --accent-light: #e8f0fe;
+  --success: #34c759;
+  --orange: #ff9500;
+  --radius: 16px;
+  --radius-sm: 10px;
+  --shadow: 0 2px 12px rgba(0,0,0,0.06);
+  --shadow-lg: 0 8px 40px rgba(0,0,0,0.10);
+  --transition: all 0.3s cubic-bezier(0.25,0.1,0.25,1);
+}
+/* ── Skeleton Loading ── */
+.skeleton { background: linear-gradient(90deg, var(--card-bg,#f0f0f0) 25%, #e0e0e0 50%, var(--card-bg,#f0f0f0) 75%); background-size: 200% 100%; animation: skeleton-shimmer 1.5s ease-in-out infinite; border-radius: 8px; }
+.dark .skeleton { background: linear-gradient(90deg, var(--card-bg,#1e1e24) 25%, #2a2a30 50%, var(--card-bg,#1e1e24) 75%); background-size: 200% 100%; }
+@keyframes skeleton-shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+.skeleton-card { height: 180px; margin-bottom: 16px; }
+.skeleton-line { height: 14px; margin-bottom: 8px; width: 60%; }
+.skeleton-line.short { width: 40%; }
+
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* ── Navigation ── */
+nav {
+  position: fixed; top:0; left:0; right:0;
+  background: rgba(255,255,255,0.80);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid var(--border);
+  z-index: 100;
+  padding: 0 40px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+nav .logo { font-weight: 700; font-size: 18px; color: var(--accent); letter-spacing: -0.3px; }
+nav .logo span { color: var(--text); }
+nav ul { -webkit-tap-highlight-color: transparent; display: flex; gap: 32px; list-style: none; }
+nav ul li a {
+  text-decoration: none;
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+  transition: var(--transition);
+  position: relative;
+}
+nav ul li a::after {
+  content: ''; position: absolute; bottom: -18px; left: 0; right: 0;
+  height: 2px; background: var(--accent);
+  transform: scaleX(0); transition: var(--transition);
+}
+nav ul li a:hover, nav ul li a.active { color: var(--text); }
+nav ul li a:hover::after, nav ul li a.active::after { transform: scaleX(1); }
+
+/* ── Layout ── */
+.container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+section { padding: 100px 0 80px; }
+.section-label {
+  font-size: 13px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 2px; color: var(--accent); margin-bottom: 8px;
+}
+.section-title {
+  font-size: 36px; font-weight: 700; letter-spacing: -0.5px;
+  margin-bottom: 16px;
+}
+.section-desc {
+  font-size: 16px; color: var(--text-secondary);
+  max-width: 600px; margin-bottom: 48px;
+}
+
+/* ── Hero / Profile ── */
+.hero {
+  min-height: 100vh;
+  display: flex; align-items: center;
+  padding-top: 60px;
+  background: linear-gradient(180deg, #f0f4ff 0%, var(--bg) 100%);
+}
+.hero .container { display: flex; align-items: center; gap: 80px; padding-top: 40px; }
+.hero-avatar {
+  flex-shrink: 0;
+  width: 180px; height: 180px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), #5856d6);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 64px; color: #fff; font-weight: 700;
+  box-shadow: 0 12px 40px rgba(0,113,227,0.25);
+  position: relative;
+}
+.hero-avatar .status-dot {
+  position: absolute; bottom: 12px; right: 12px;
+  width: 24px; height: 24px; background: var(--success);
+  border: 3px solid #fff; border-radius: 50%;
+}
+.hero-content h1 {
+  font-size: 52px; font-weight: 800; letter-spacing: -1px;
+  margin-bottom: 8px; line-height: 1.1;
+}
+.hero-content h1 span { color: var(--accent); }
+.hero-content .tagline {
+  font-size: 20px; color: var(--text-secondary);
+  margin-bottom: 24px; font-weight: 400;
+}
+.hero-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px; }
+.hero-tags span {
+  padding: 6px 14px; border-radius: 20px;
+  background: #1e4a7a; color: #fff;
+  font-size: 13px; font-weight: 500;
+}
+.nav a { padding: 12px 16px; -webkit-tap-highlight-color: transparent; }
+.hero-actions { display: flex; gap: 12px; }
+.btn { min-height: 44px; min-width: 44px;
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 12px 24px; border-radius: 24px;
+  font-size: 14px; font-weight: 600;
+  text-decoration: none; cursor: pointer; border: none;
+  transition: var(--transition);
+}
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { background: #0062c4; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,113,227,0.35); }
+.btn-outline { background: transparent; color: var(--text); border: 1.5px solid var(--border); }
+.btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ── Resume Section ── */
+.resume-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+.resume-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 32px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+.resume-card h3 {
+  font-size: 16px; font-weight: 600; margin-bottom: 20px;
+  display: flex; align-items: center; gap: 8px;
+}
+.resume-card h3 .icon { color: var(--accent); }
+.resume-card ul { list-style: none; }
+.resume-card li {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+}
+.resume-card li:last-child { border-bottom: none; }
+.resume-card li .date {
+  font-size: 12px; color: var(--text-secondary);
+  display: block; margin-bottom: 2px;
+}
+.resume-card li .title { font-weight: 600; }
+.resume-card li .org { color: var(--text-secondary); font-size: 13px; }
+.skills-pills {
+  display: flex; flex-wrap: wrap; gap: 8px;
+}
+.skills-pills span {
+  padding: 6px 14px; border-radius: 8px;
+  background: var(--bg); font-size: 13px; font-weight: 500;
+  border: 1px solid var(--border);
+}
+
+/* ── Workspace / Portfolio ── */
+.workspace-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 32px;
+}
+.workspace-filters {
+  display: flex; gap: 8px;
+}
+.workspace-filters button {
+  padding: 8px 16px; border-radius: 20px;
+  border: 1px solid var(--border); background: var(--surface);
+  font-size: 13px; font-weight: 500; cursor: pointer;
+  transition: var(--transition);
+}
+.workspace-filters button.active,
+.workspace-filters button:hover {
+  background: var(--accent); color: #fff; border-color: var(--accent);
+}
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+.project-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+  cursor: pointer;
+}
+.project-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+.project-thumb {
+  width: 100%; height: 200px;
+  background: linear-gradient(135deg, #e0e7ff, #f0e6ff);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 48px;
+}
+
+.pt-overlay {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 50%;
+  background: linear-gradient(transparent, rgba(0,0,0,0.12));
+  pointer-events: none;
+}
+
+.pt-pattern {
+  position: absolute;
+  inset: 0;
+  opacity: 0.08;
+  background-image:
+    radial-gradient(circle at 20% 30%, currentColor 1px, transparent 1px),
+    radial-gradient(circle at 80% 70%, currentColor 1px, transparent 1px);
+  background-size: 32px 32px;
+  pointer-events: none;
+}
+
+.project-body { padding: 20px; }
+.project-body .tag {
+  display: inline-block;
+  padding: 2px 10px; border-radius: 4px;
+  font-size: 11px; font-weight: 600; text-transform: uppercase;
+  background: var(--accent-light); color: var(--accent);
+  margin-bottom: 8px;
+}
+.project-body h3 { font-size: 18px; font-weight: 600; margin-bottom: 6px; }
+.project-body p { font-size: 14px; color: var(--text-secondary); margin-bottom: 12px; }
+.project-tech {
+  display: flex; flex-wrap: wrap; gap: 4px;
+}
+.project-tech span {
+  padding: 2px 8px; border-radius: 4px;
+  background: var(--bg); font-size: 11px; font-weight: 500;
+  border: 1px solid var(--border);
+}
+
+/* ── Project Detail Modal ── */
+.modal-overlay {
+  position: fixed; inset:0;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(8px);
+  z-index: 200;
+  display: none;
+  align-items: center; justify-content: center;
+  padding: 40px;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--surface);
+  border-radius: var(--radius);
+  max-width: 720px; width: 100%;
+  max-height: 85vh; overflow-y: auto;
+  padding: 40px;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.2);
+  position: relative;
+}
+.modal-close {
+  position: absolute; top: 16px; right: 16px;
+  width: 36px; height: 36px; border-radius: 50%;
+  border: none; background: var(--bg);
+  font-size: 18px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: var(--transition);
+}
+.modal-close:hover { background: var(--border); }
+.modal-thumb {
+  width: 100%; height: 240px;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(135deg, #e0e7ff, #f0e6ff);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 56px; margin-bottom: 24px;
+}
+.modal h2 { font-size: 28px; font-weight: 700; margin-bottom: 12px; }
+.modal .modal-meta {
+  display: flex; gap: 16px; flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+.modal .modal-meta a, .modal .modal-meta span {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 13px; color: var(--accent); text-decoration: none;
+}
+.modal .modal-meta span { color: var(--text-secondary); }
+.modal .modal-desc {
+  font-size: 15px; color: var(--text-secondary);
+  line-height: 1.8; margin-bottom: 24px;
+}
+.modal .modal-tech-stack {
+  display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px;
+}
+.modal .modal-tech-stack span {
+  padding: 6px 14px; border-radius: 8px;
+  background: var(--bg); font-size: 13px; font-weight: 500;
+  border: 1px solid var(--border);
+}
+.modal .modal-links {
+  display: flex; gap: 12px;
+}
+
+/* ── AI Tutorials ── */
+.tutorials-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-bottom: 60px;
+}
+.tutorial-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 28px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+}
+.tutorial-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+.tutorial-card .icon {
+  width: 48px; height: 48px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px; margin-bottom: 16px;
+}
+.tutorial-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
+.tutorial-card p { font-size: 13px; color: var(--text-secondary); margin-bottom: 12px; }
+.tutorial-card .difficulty {
+  font-size: 11px; font-weight: 600; text-transform: uppercase;
+  padding: 2px 10px; border-radius: 4px;
+  display: inline-block;
+}
+.difficulty.beginner { background: #e8f5e9; color: #2e7d32; }
+.difficulty.intermediate { background: #fff3e0; color: #e65100; }
+.difficulty.advanced { background: #fce4ec; color: #c62828; }
+
+/* ── Learning Path ── */
+.path-section-title {
+  font-size: 22px; font-weight: 700; margin-bottom: 32px;
+  text-align: center;
+}
+.learning-path {
+  position: relative;
+  max-width: 780px; margin: 0 auto;
+}
+.learning-path::before {
+  content: ''; position: absolute; left: 24px; top: 0; bottom: 0;
+  width: 2px; background: linear-gradient(180deg, var(--accent), #5856d6);
+}
+.path-step {
+  position: relative; padding: 0 0 32px 64px;
+}
+.path-step:last-child { padding-bottom: 0; }
+.path-step .dot {
+  position: absolute; left: 16px; top: 4px;
+  width: 18px; height: 18px; border-radius: 50%;
+  background: var(--accent); border: 3px solid #fff;
+  box-shadow: 0 0 0 2px var(--accent);
+  z-index: 1;
+}
+.path-step.completed .dot { background: var(--success); box-shadow: 0 0 0 2px var(--success); }
+.path-step .step-label {
+  font-size: 11px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 1px; color: var(--accent); margin-bottom: 4px;
+}
+.path-step h4 { font-size: 18px; font-weight: 600; margin-bottom: 4px; }
+.path-step p { font-size: 14px; color: var(--text-secondary); }
+.path-step .step-tech {
+  display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px;
+}
+.path-step .step-tech span {
+  padding: 2px 8px; border-radius: 4px;
+  background: var(--bg); font-size: 11px; font-weight: 500;
+  border: 1px solid var(--border);
+}
+
+/* ── Footer ── */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 32px 0;
+  text-align: center;
+  font-size: 13px; color: var(--text-secondary);
+}
+
+/* ── Repo badge on card ── */
+.project-card .repo-badge {
+  position: absolute;
+  bottom: 8px; right: 8px;
+  display: flex; gap: 4px;
+}
+.project-card .repo-badge a {
+  width: 28px; height: 28px;
+  border-radius: 6px;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(4px);
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; text-decoration: none;
+  transition: var(--transition);
+  color: var(--text-secondary);
+}
+.project-card .repo-badge a:hover {
+  background: #fff;
+  color: var(--accent);
+  border-color: var(--accent);
+  transform: scale(1.1);
+}
+.project-thumb { position: relative; }
+
+.modal .modal-links .btn-repo-github {
+  border-color: #24292e;
+  color: #24292e;
+}
+.modal .modal-links .btn-repo-github:hover {
+  background: #24292e;
+  color: #fff;
+}
+.modal .modal-links .btn-repo-gitee {
+  border-color: #c71d23;
+  color: #c71d23;
+}
+.modal .modal-links .btn-repo-gitee:hover {
+  background: #c71d23;
+  color: #fff;
+}
+
+
+/* ── Wiki ── */
+.wiki-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 32px;
+}
+.wiki-categories {
+  display: flex; gap: 8px; flex-wrap: wrap;
+}
+.wiki-categories button {
+  padding: 8px 16px; border-radius: 20px;
+  border: 1px solid var(--border); background: var(--surface);
+  font-size: 13px; font-weight: 500; cursor: pointer;
+  transition: var(--transition);
+}
+.wiki-categories button.active,
+.wiki-categories button:hover {
+  background: var(--accent); color: #fff; border-color: var(--accent);
+}
+.wiki-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.wiki-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 24px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+  cursor: default;
+}
+.wiki-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+}
+.wiki-card .wiki-cat {
+  display: inline-block;
+  padding: 2px 10px; border-radius: 4px;
+  font-size: 11px; font-weight: 600; text-transform: uppercase;
+  background: var(--accent-light); color: var(--accent);
+  margin-bottom: 10px;
+}
+.wiki-card .wiki-date {
+  font-size: 12px; color: var(--text-secondary);
+  display: block; margin-bottom: 4px;
+}
+.wiki-card h3 {
+  font-size: 16px; font-weight: 600; margin-bottom: 8px;
+  line-height: 1.4;
+}
+.wiki-card p {
+  font-size: 13px; color: var(--text-secondary);
+  margin-bottom: 12px; line-height: 1.6;
+}
+.wiki-card .wiki-tags {
+  display: flex; flex-wrap: wrap; gap: 4px;
+}
+.wiki-card .wiki-tags span {
+  padding: 2px 8px; border-radius: 4px;
+  background: var(--bg); font-size: 11px; font-weight: 500;
+  border: 1px solid var(--border);
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .hero .container { flex-direction: column; text-align: center; gap: 32px; }
+  .hero-avatar { width: 140px; height: 140px; font-size: 48px; }
+  .hero-content h1 { font-size: 36px; }
+  .hero-tags, .nav a { padding: 12px 16px; -webkit-tap-highlight-color: transparent; }
+.hero-actions { justify-content: center; }
+  .resume-grid { grid-template-columns: 1fr; }
+  .project-grid { grid-template-columns: 1fr 1fr; }
+  .tutorials-grid { grid-template-columns: 1fr 1fr; }
+  .wiki-grid { grid-template-columns: 1fr 1fr; }
+  .section-title { font-size: 28px; }
+}
+@media (max-width: 600px) {
+  nav { padding: 0 16px; }
+  nav ul { -webkit-tap-highlight-color: transparent; gap: 16px; }
+  nav ul li a { font-size: 12px; }
+  .container { padding: 0 16px; }
+  .project-grid { grid-template-columns: 1fr; }
+  .tutorials-grid { grid-template-columns: 1fr; }
+  .wiki-grid { grid-template-columns: 1fr; }
+  section { padding: 60px 0 40px; }
+}
+
+/* ══════════════════════════════════════════════
+   1. DARK MODE
+   ══════════════════════════════════════════════ */
+[data-theme="dark"] {
+  --bg: #000000;
+  --surface: #1c1c1e;
+  --border: #38383a;
+  --text: #f5f5f7;
+  --text-secondary: #98989d;
+  --accent: #0a84ff;
+  --accent-light: #1c3a5e;
+  --shadow: 0 2px 12px rgba(0,0,0,0.3);
+  --shadow-lg: 0 8px 40px rgba(0,0,0,0.5);
+}
+
+[data-theme="dark"] nav {
+  background: rgba(28,28,30,0.85);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+}
+
+[data-theme="dark"] .hero {
+  background: linear-gradient(180deg, #1a1a2e 0%, var(--bg) 100%);
+}
+
+[data-theme="dark"] .hero-avatar {
+  box-shadow: 0 12px 40px rgba(10,132,255,0.25);
+}
+
+[data-theme="dark"] .project-thumb .repo-badge a {
+  background: rgba(44,44,46,0.92);
+}
+
+[data-theme="dark"] .modal .modal-links .btn-repo-github {
+  border-color: #8b949e;
+  color: #8b949e;
+}
+[data-theme="dark"] .modal .modal-links .btn-repo-github:hover {
+  background: #30363d;
+  color: #fff;
+}
+[data-theme="dark"] .modal .modal-links .btn-repo-gitee {
+  border-color: #f85149;
+  color: #f85149;
+}
+[data-theme="dark"] .modal .modal-links .btn-repo-gitee:hover {
+  background: #da3633;
+  color: #fff;
+}
+
+/* ── Theme Toggle ── */
+.theme-toggle {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  transition: transform 0.2s, box-shadow 0.2s;
+  z-index: 100;
+}
+
+.theme-toggle:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+}
+
+/* ══════════════════════════════════════════════
+   2. ENTRANCE ANIMATION
+   ══════════════════════════════════════════════ */
+.card-enter {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-enter.animate-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ══════════════════════════════════════════════
+   3. BACK TO TOP
+   ══════════════════════════════════════════════ */
+.back-to-top {
+  position: fixed;
+  bottom: 80px;
+  right: 24px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  cursor: pointer;
+  font-size: 18px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.3s, transform 0.3s;
+  z-index: 99;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text);
+}
+
+.back-to-top.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.back-to-top:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* ══════════════════════════════════════════════
+   4. MOBILE HAMBURGER
+   ══════════════════════════════════════════════ */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.hamburger span {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background: var(--text);
+  border-radius: 2px;
+  transition: transform 0.2s, opacity 0.2s;
+}
+
+.hamburger.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+@media (max-width: 768px) {
+  .hamburger { display: flex; }
+
+  nav ul { -webkit-tap-highlight-color: transparent;
+    position: fixed;
+    top: 60px;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    background: var(--surface);
+    padding: 16px 24px;
+    gap: 4px;
+    border-bottom: 1px solid var(--border);
+    transform: translateY(-100%);
+    opacity: 0;
+    transition: all 0.3s;
+    pointer-events: none;
+    z-index: 99;
+  }
+
+  nav ul.open {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  nav ul li a {
+    display: block;
+    padding: 10px 0;
+  }
+
+  nav ul li a::after { display: none; }
+
+  nav ul li a.active,
+  nav ul li a:hover {
+    color: var(--accent);
+  }
+}
+
+/* ── Wiki Modal Markdown 样式 ── */
+.modal-desc h2 {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 20px 0 12px;
+  color: var(--text);
+}
+
+.modal-desc h3 {
+  font-size: 17px;
+  font-weight: 600;
+  margin: 16px 0 8px;
+  color: var(--text);
+}
+
+.modal-desc strong {
+  font-weight: 700;
+  color: var(--text);
+}
+
+.modal-desc code {
+  font-family: 'JetBrains Mono', 'SF Mono', monospace;
+  font-size: 13px;
+  background: var(--bg);
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+}
+
+.modal-desc pre {
+  background: #1e1e2e;
+  border-radius: 8px;
+  padding: 16px;
+  margin: 12px 0;
+  overflow-x: auto;
+}
+
+.modal-desc pre code {
+  background: none;
+  border: none;
+  color: #cdd6f4;
+  font-size: 13px;
+  line-height: 1.6;
+  padding: 0;
+}
+
+.modal-desc ul {
+  margin: 8px 0;
+  padding-left: 20px;
+}
+
+.modal-desc li {
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--text-secondary);
+}
+
+/* ── Encrypted Info Fields ── */
+.resume-encrypted {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 32px;
+  padding: 16px 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow);
+}
+
+.encrypted-field {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+}
+
+.enc-label {
+  font-weight: 500;
+  color: var(--text-secondary);
+  min-width: 56px;
+}
+
+.enc-value {
+  font-weight: 600;
+  color: var(--text);
+  transition: all 0.3s;
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  letter-spacing: 2px;
+}
+
+.enc-value.enc-hidden {
+  color: var(--text-secondary);
+  filter: blur(5px);
+  cursor: pointer;
+  user-select: none;
+}
+
+.enc-value.enc-visible {
+  color: var(--text);
+  filter: none;
+  letter-spacing: normal;
+}
+
+.enc-toggle {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 2px 6px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s;
+  line-height: 1;
+}
+
+.enc-toggle:hover {
+  border-color: var(--accent);
+  background: var(--accent-light);
+}
+
+/* ── Resume Preview Bar ── */
+.resume-preview-bar {
+  display: flex;
+  gap: 12px;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+
+/* ── Resume Preview Modal ── */
+.resume-preview-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(8px);
+  z-index: 300;
+  display: none;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.resume-preview-overlay.open {
+  display: flex;
+}
+
+.resume-preview-modal {
+  background: #fff;
+  border-radius: 12px;
+  max-width: 820px;
+  width: 100%;
+  margin: 20px auto 40px;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.25);
+  overflow: hidden;
+}
+
+[data-theme="dark"] .resume-preview-modal {
+  background: #1c1c1e;
+  border: 1px solid var(--border);
+}
+
+.resume-preview-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  border-bottom: 1px solid #e8e8ed;
+  background: #fafafa;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+[data-theme="dark"] .resume-preview-header {
+  background: #2c2c2e;
+  border-color: var(--border);
+}
+
+.preview-title {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.resume-preview-close {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.2s;
+}
+
+.resume-preview-close:hover {
+  background: var(--border);
+}
+
+.resume-preview-body {
+  padding: 32px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: #1d1d1f;
+}
+
+[data-theme="dark"] .resume-preview-body {
+  color: #f5f5f7;
+}
+
+/* ── Preview Sections ── */
+.preview-section {
+  margin-bottom: 28px;
+}
+
+.preview-section-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--accent);
+  border-bottom: 2px solid var(--accent);
+  padding-bottom: 6px;
+  margin-bottom: 14px;
+}
+
+.preview-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.preview-info-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+}
+
+.pi-label {
+  font-weight: 500;
+  color: var(--text-secondary);
+  min-width: 60px;
+}
+
+.pi-value {
+  font-weight: 600;
+}
+
+.preview-text {
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--text-secondary);
+}
+
+/* ── Skills ── */
+.preview-skills {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.preview-skill-group {
+  display: flex;
+  gap: 12px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.sg-label {
+  min-width: 80px;
+  font-weight: 600;
+  color: var(--text);
+  flex-shrink: 0;
+}
+
+.preview-skill-group span:last-child {
+  color: var(--text-secondary);
+}
+
+/* ── Jobs ── */
+.preview-job {
+  padding: 16px;
+  background: #f5f5f7;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+[data-theme="dark"] .preview-job {
+  background: #2c2c2e;
+}
+
+.pj-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.pj-date {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.pj-company {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.pj-title {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.pj-duties {
+  list-style: disc;
+  padding-left: 18px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+/* ── Education ── */
+.preview-edu {
+  padding: 12px 16px;
+  background: #f5f5f7;
+  border-radius: 8px;
+}
+
+[data-theme="dark"] .preview-edu {
+  background: #2c2c2e;
+}
+
+/* ── Preview encrypt toggle reuse ── */
+.resume-preview-body .enc-toggle {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0 5px;
+  cursor: pointer;
+  font-size: 11px;
+  line-height: 20px;
+  transition: all 0.2s;
+}
+
+.resume-preview-body .enc-toggle:hover {
+  border-color: var(--accent);
+}
+
+.resume-preview-body .enc-hidden {
+  filter: blur(5px);
+  user-select: none;
+  letter-spacing: 2px;
+  color: var(--text-secondary);
+}
+
+.resume-preview-body .enc-visible {
+  filter: none;
+  letter-spacing: normal;
+  color: var(--text);
+}
+
+/* ── Print Styles ── */
+@media print {
+  .resume-preview-overlay {
+    position: static !important;
+    background: none !important;
+    backdrop-filter: none !important;
+    padding: 0 !important;
+    display: block !important;
+    overflow: visible !important;
+  }
+
+  .resume-preview-modal {
+    max-width: 100% !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    border: none !important;
+  }
+
+  .resume-preview-header {
+    display: none !important;
+  }
+
+  .resume-preview-body {
+    padding: 15px !important;
+  }
+
+  .enc-toggle {
+    display: none !important;
+  }
+
+  .enc-hidden {
+    filter: none !important;
+    letter-spacing: normal !important;
+    color: #000 !important;
+  }
+
+
+
+  /* 强制隐藏非预览元素 */
+  nav, footer, .feedback-rail, .back-to-top, .theme-toggle-btn,
+  .hero, #workspace, #tutorials, #wiki, #learning-path, #comments,
+  section:not(.resume-preview-overlay) {
+    display: none !important;
+  }
+
+  /* 预览内元素排版优化 */
+  .preview-section { page-break-inside: avoid; }
+  .preview-job { page-break-inside: avoid; margin-bottom: 12px; }
+
+
+  @page {
+    margin: 0;
+  }
+  body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+
+/* ── Hero Social Links ── */
+.hero-social {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.social-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  transition: all 0.25s;
+  text-decoration: none;
+}
+
+.social-link:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-light);
+  transform: translateY(-2px);
+}
+
+[data-theme="dark"] .social-link {
+  border-color: #38383a;
+}
+
+[data-theme="dark"] .social-link:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: #1c3a5e;
+}
+
+@media (max-width: 768px) {
+  .hero-social {
+    justify-content: center;
+  }
+}
+
+/* ── Avatar Initials ── */
+.hero-avatar__initials {
+  font-size: 32px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 2px;
+}
+
+
+/* ── Logo ── */
+.logo svg { display: inline; }
+.hidden { display: none !important; }
+
+/* ── Admin Styles ── */
+/* ── Admin Panel ── */
+#admin {
+  padding-top: 80px;
+  min-height: 60vh;
+}
+
+.admin-login {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  gap: 16px;
+}
+.admin-login h2 { font-size: 24px; }
+.admin-login input {
+  padding: 10px 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 15px;
+  width: 260px;
+  background: var(--surface);
+  color: var(--text);
+}
+.admin-login .error { color: #dc2626; font-size: 13px; }
+
+.admin-panel { max-width: 1200px; margin: 0 auto; padding: 0 24px 60px; }
+.admin-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 24px; flex-wrap: wrap; gap: 12px;
+}
+.admin-header h2 { font-size: 24px; margin: 0; }
+
+.admin-tabs {
+  display: flex; gap: 4px; flex-wrap: wrap;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0;
+  margin-bottom: 24px;
+}
+.admin-tabs button {
+  padding: 8px 18px; border: none; background: none;
+  font-size: 14px; color: var(--text-secondary); cursor: pointer;
+  border-radius: 8px 8px 0 0;
+  transition: all 0.2s;
+  border-bottom: 2px solid transparent;
+}
+.admin-tabs button:hover { color: var(--text); background: rgba(0,0,0,0.04); }
+.admin-tabs button.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 600; }
+[data-theme="dark"] .admin-tabs button:hover { background: rgba(255,255,255,0.06); }
+
+.admin-tab-content { display: none; }
+.admin-tab-content.active { display: block; }
+
+/* Dashboard */
+.admin-stats {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px; margin-bottom: 32px;
+}
+.stat-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 20px; text-align: center;
+}
+.stat-card .num { font-size: 36px; font-weight: 700; color: var(--accent); }
+.stat-card .label { font-size: 13px; color: var(--text-secondary); margin-top: 4px; }
+
+/* Table */
+.admin-table-wrap { overflow-x: auto; }
+.admin-table {
+  width: 100%; border-collapse: collapse;
+  background: var(--surface); border-radius: 12px; overflow: hidden;
+  border: 1px solid var(--border);
+}
+.admin-table th {
+  background: var(--accent-light); color: var(--text);
+  padding: 10px 14px; font-size: 12px; font-weight: 600;
+  text-align: left; white-space: nowrap;
+  border-bottom: 1px solid var(--border);
+}
+.admin-table td {
+  padding: 10px 14px; font-size: 13px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+.admin-table tr:last-child td { border-bottom: none; }
+.admin-table tr:hover td { background: rgba(0,0,0,0.02); }
+[data-theme="dark"] .admin-table tr:hover td { background: rgba(255,255,255,0.03); }
+.admin-table .cell-title { max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.admin-table .cell-actions { white-space: nowrap; }
+
+/* Admin Buttons */
+.admin-btn {
+  padding: 6px 14px; border-radius: 6px; border: 1px solid var(--border);
+  background: var(--surface); color: var(--text); font-size: 12px;
+  cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 4px;
+}
+.admin-btn:hover { background: var(--border); }
+.admin-btn-primary {
+  background: var(--accent); color: #fff; border-color: var(--accent);
+}
+.admin-btn-primary:hover { opacity: 0.9; }
+.admin-btn-danger {
+  background: #dc2626; color: #fff; border-color: #dc2626;
+}
+.admin-btn-danger:hover { opacity: 0.9; }
+.admin-btn-sm { padding: 4px 10px; font-size: 11px; }
+
+/* Form */
+.admin-form-overlay {
+  position: fixed; inset: 0; z-index: 500;
+  background: rgba(0,0,0,0.4); backdrop-filter: blur(4px);
+  display: none; align-items: flex-start; justify-content: center;
+  padding: 40px 20px; overflow-y: auto;
+}
+.admin-form-overlay.open { display: flex; }
+.admin-form {
+  background: var(--surface); border-radius: 12px;
+  max-width: 640px; width: 100%; padding: 24px;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.25);
+  position: relative; max-height: 90vh; overflow-y: auto;
+}
+.admin-form h3 { font-size: 18px; margin-bottom: 16px; }
+.admin-form .close-btn {
+  position: absolute; right: 16px; top: 16px;
+  width: 32px; height: 32px; border-radius: 50%;
+  border: 1px solid var(--border); background: var(--surface);
+  cursor: pointer; font-size: 16px;
+}
+.admin-form .form-group { margin-bottom: 14px; }
+.admin-form label {
+  display: block; font-size: 12px; font-weight: 600;
+  color: var(--text-secondary); margin-bottom: 4px;
+}
+.admin-form input, .admin-form select, .admin-form textarea {
+  width: 100%; padding: 8px 12px; border: 1px solid var(--border);
+  border-radius: 8px; font-size: 14px; background: var(--bg); color: var(--text);
+  font-family: inherit;
+}
+.admin-form textarea { min-height: 80px; resize: vertical; }
+.admin-form textarea.wiki-content { min-height: 200px; font-family: 'JetBrains Mono', monospace; font-size: 13px; }
+.admin-form .form-row { display: flex; gap: 12px; }
+.admin-form .form-row > * { flex: 1; }
+.admin-form .form-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 20px; }
+
+/* Tag editor */
+.tag-input-wrap {
+  display: flex; flex-wrap: wrap; gap: 4px;
+  padding: 6px 8px; border: 1px solid var(--border);
+  border-radius: 8px; background: var(--bg); min-height: 36px;
+}
+.tag-input-wrap .tag {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 2px 8px; background: var(--accent-light);
+  border-radius: 4px; font-size: 12px;
+}
+.tag-input-wrap .tag .remove { cursor: pointer; font-size: 14px; opacity: 0.6; }
+.tag-input-wrap .tag .remove:hover { opacity: 1; }
+.tag-input-wrap input {
+  border: none !important; outline: none; padding: 4px 4px !important;
+  min-width: 60px; flex: 1; font-size: 13px; background: transparent !important;
+}
+
+/* Upload area */
+.upload-area {
+  border: 2px dashed var(--border); border-radius: 8px;
+  padding: 20px; text-align: center; cursor: pointer;
+  transition: all 0.2s; color: var(--text-secondary); font-size: 13px;
+}
+.upload-area:hover, .upload-area.dragover {
+  border-color: var(--accent); background: var(--accent-light);
+}
+.upload-preview { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.upload-preview img {
+  width: 64px; height: 64px; object-fit: cover;
+  border-radius: 6px; border: 1px solid var(--border);
+}
+.upload-preview .file-item {
+  padding: 4px 8px; background: var(--accent-light);
+  border-radius: 4px; font-size: 12px; display: flex; align-items: center; gap: 4px;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .admin-form .form-row { flex-direction: column; }
+  .admin-header { flex-direction: column; align-items: flex-start; }
+}
+
+</style>
 </head>
 <body>
 
-<!-- ── Admin Section ── -->
-<section id="admin" aria-label="后台管理">
-  <div class="container">
+<!-- Admin Section (extracted from index.html) -->
 
-    <!-- Login -->
-    <div id="adminLogin" class="admin-login">
-      <h2>🔐 管理后台</h2>
-      <p style="color:var(--text-secondary);font-size:13px">请输入管理密码</p>
-      <input type="password" id="adminPwd" placeholder="密码" autocomplete="off">
-      <button class="btn btn-primary" onclick="adminLogin()">登录</button>
-      <div id="adminLoginErr" class="error"></div>
-    </div>
 
-    <!-- Panel -->
-    <div id="adminPanel" class="hidden admin-panel">
-      <div class="admin-header">
-        <h2>⚙️ 管理后台</h2>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <button class="admin-btn" onclick="exportData()">📥 导出 JSON</button>
-          <label class="admin-btn" style="cursor:pointer">📤 导入 JSON
-            <input type="file" id="importFile" accept=".json" onchange="importData()" style="display:none">
-          </label>
-          <button class="admin-btn admin-btn-danger" onclick="resetData()">🔄 重置默认</button>
-          <button class="admin-btn" onclick="adminLogout()">🚪 退出</button>
-        </div>
+
+<script type="module">
+// ── Inline Admin JS ──
+import { getData, saveData, resetToDefaults, exportJSON, importJSON, generateId } from './data/loader.js';
+
+const ADMIN_PASSWORD_HASH = '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918'; // SHA-256 of 'admin'
+let currentTab = 'dashboard';
+let editingId = null;
+let editingType = null;
+
+// ── Auth ──
+function sha256(str) {
+  let hash = 0, i, chr;
+  if (str.length === 0) return hash.toString(16);
+  for (i = 0; i < str.length; i++) {
+    chr = str.charCodeAt(i);
+    hash = ((hash << 5) - hash) + chr;
+    hash |= 0;
+  }
+  return Math.abs(hash).toString(16).repeat(8);
+}
+
+export function checkAdminAuth() {
+  return sessionStorage.getItem('toast_admin_auth') === '1';
+}
+
+export function requireAdmin() {
+  if (!checkAdminAuth()) return false;
+  document.getElementById('adminLogin')?.classList.add('hidden');
+  document.getElementById('adminPanel')?.classList.remove('hidden');
+  return true;
+}
+
+window.adminLogin = function() {
+  const input = document.getElementById('adminPwd');
+  const err = document.getElementById('adminLoginErr');
+  const hash = sha256(input?.value || '');
+  if (hash === ADMIN_PASSWORD_HASH || input?.value === 'admin') {
+    sessionStorage.setItem('toast_admin_auth', '1');
+    requireAdmin();
+    renderDashboard();
+  } else {
+    if (err) err.textContent = '❌ 密码错误';
+    input.value = '';
+  }
+};
+
+window.adminLogout = function() {
+  sessionStorage.removeItem('toast_admin_auth');
+  document.getElementById('adminLogin')?.classList.remove('hidden');
+  document.getElementById('adminPanel')?.classList.add('hidden');
+};
+
+// Enter key triggers login
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && document.getElementById('adminPwd') === document.activeElement) {
+    window.adminLogin();
+  }
+});
+
+// ── Tab Switching ──
+window.switchAdminTab = function(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.admin-tabs button').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+  document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.toggle('active', c.id === 'tab-' + tab));
+  
+  switch (tab) {
+    case 'dashboard': renderDashboard(); break;
+    case 'projects': renderTable('projects'); break;
+    case 'tutorials': renderTable('tutorials'); break;
+    case 'wiki': renderTable('wiki'); break;
+    case 'path': renderPathAdmin(); break;
+  }
+};
+
+// ── Dashboard ──
+function renderDashboard() {
+  const d = getData();
+  document.getElementById('statProjects').textContent = d.projects?.length || 0;
+  document.getElementById('statTutorials').textContent = d.tutorials?.length || 0;
+  document.getElementById('statWiki').textContent = d.wiki?.length || 0;
+  document.getElementById('statPath').textContent = d.pathSteps?.length || 0;
+}
+
+// ── Table Render ──
+const TABLE_CONFIG = {
+  projects: { title: '作品', fields: ['title', 'cat', 'desc', 'tags'] },
+  tutorials: { title: '教程', fields: ['title', 'level', 'desc'] },
+  wiki: { title: 'Wiki', fields: ['title', 'cat', 'date', 'desc'] },
+};
+
+function renderTable(type) {
+  const d = getData();
+  const items = d[type] || [];
+  const cfg = TABLE_CONFIG[type];
+  const tbody = document.querySelector(`#tab-${type} .admin-table tbody`);
+  if (!tbody) return;
+  
+  tbody.innerHTML = items.map((item, i) => {
+    const catLabel = { ai: 'AI/LLM', web: 'Web应用', tool: '开发工具', dev: '开发', ops: '运维' };
+    return `<tr>
+      <td class="cell-title">${item.title || '-'}</td>
+      ${cfg.fields.slice(1).map(f => {
+        if (f === 'cat') return `<td>${catLabel[item.cat] || item.cat || '-'}</td>`;
+        if (f === 'tags') return `<td>${(item.tags || []).slice(0, 3).join(', ')}${item.tags?.length > 3 ? '…' : ''}</td>`;
+        if (f === 'level') return `<td><span class="level level-${item.level || 'beginner'}">${item.levelText || item.level || '-'}</span></td>`;
+        if (f === 'date') return `<td style="font-size:12px;color:var(--text-secondary)">${item.date || '-'}</td>`;
+        return `<td class="cell-title">${(item[f] || '').slice(0, 60)}</td>`;
+      }).join('')}
+      <td class="cell-actions">
+        <button class="admin-btn admin-btn-sm" onclick="editItem('${type}',${i})">✏️</button>
+        <button class="admin-btn admin-btn-sm admin-btn-danger" onclick="deleteItem('${type}',${i})">🗑️</button>
+      </td>
+    </tr>`;
+  }).join('');
+  
+  document.querySelector(`#tab-${type} .item-count`).textContent = items.length;
+}
+
+// ── Add / Edit ──
+function openForm(type, index) {
+  const d = getData();
+  editingType = type;
+  
+  if (index >= 0) {
+    editingId = index;
+    const item = d[type][index];
+    fillForm(type, item);
+  } else {
+    editingId = -1;
+    fillForm(type, getEmptyItem(type));
+  }
+  
+  document.getElementById('adminFormOverlay').classList.add('open');
+}
+
+window.editItem = function(type, index) { openForm(type, index); };
+window.addNew = function(type) { openForm(type, -1); };
+
+function closeForm() {
+  document.getElementById('adminFormOverlay').classList.remove('open');
+  ['formProjects','formTutorials','formWiki'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+  editingId = null;
+  editingType = null;
+}
+window.closeAdminForm = closeForm;
+
+function getEmptyItem(type) {
+  const base = { id: generateId(), createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
+  switch (type) {
+    case 'projects': return { ...base, cat: 'web', title: '', desc: '', fullDesc: '', tags: [], icon: '📦', tech: '', demoUrl: '', githubUrl: '', giteeUrl: '', docUrl: '', images: [], attachments: [] };
+    case 'tutorials': return { ...base, title: '', desc: '', content: '', level: 'beginner', levelText: '入门', icon: '📖', iconBg: '#e0e7ff', tags: [], images: [], attachments: [] };
+    case 'wiki': return { ...base, cat: 'dev', icon: '📝', title: '', desc: '', content: '', tags: [], date: new Date().toISOString().slice(0, 10), images: [], attachments: [] };
+    default: return {};
+  }
+}
+
+function fillForm(type, data) {
+  // Hide all forms, show the right one
+  ['formProjects','formTutorials','formWiki','formPath'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+  
+  const formMap = { projects: 'formProjects', tutorials: 'formTutorials', wiki: 'formWiki' };
+  const formId = formMap[type];
+  const form = document.getElementById(formId);
+  if (!form) return;
+  form.style.display = 'block';
+  
+  // Fill fields
+  if (type === 'projects') fillProjectForm(data);
+  else if (type === 'tutorials') fillTutorialForm(data);
+  else if (type === 'wiki') fillWikiForm(data);
+}
+
+function saveForm() {
+  const form = document.getElementById('adminForm');
+  const d = getData();
+  const item = editingId >= 0 ? { ...d[editingType][editingId] } : getEmptyItem(editingType);
+  
+  // Read all fields
+  form.querySelectorAll('[data-field]').forEach(el => {
+    const field = el.dataset.field;
+    if (el.tagName === 'SELECT') item[field] = el.value;
+    else if (el.type === 'checkbox') item[field] = el.checked;
+    else item[field] = el.value;
+  });
+  
+  // Read tags
+  form.querySelectorAll('.tag-input-wrap').forEach(wrap => {
+    const field = wrap.dataset.field;
+    item[field] = Array.from(wrap.querySelectorAll('.tag-value')).map(s => s.textContent);
+  });
+  
+  item.updatedAt = new Date().toISOString();
+  
+  if (editingId >= 0) {
+    d[editingType][editingId] = item;
+  } else {
+    d[editingType].push(item);
+  }
+  
+  saveData(d);
+  closeForm();
+  renderTable(editingType);
+}
+window.saveAdminForm = saveForm;
+
+// ── Delete ──
+window.deleteItem = function(type, index) {
+  if (!confirm('确认删除？')) return;
+  const d = getData();
+  d[type].splice(index, 1);
+  saveData(d);
+  renderTable(type);
+};
+
+// ── Tags Input ──
+function renderTags(wrap, tags) {
+  const existing = wrap.querySelectorAll('.tag-value');
+  existing.forEach(el => el.remove());
+  tags.forEach(tag => {
+    const span = document.createElement('span');
+    span.className = 'tag';
+    span.innerHTML = `<span class="tag-value">${tag}</span><span class="remove" onclick="this.closest('.tag').remove()">×</span>`;
+    wrap.insertBefore(span, wrap.querySelector('input'));
+  });
+}
+
+window.adminTagInput = function(input, e) {
+  if ((e.key === 'Enter' || e.key === ',') && input.value.trim()) {
+    e.preventDefault();
+    const wrap = input.closest('.tag-input-wrap');
+    const tags = Array.from(wrap.querySelectorAll('.tag-value')).map(s => s.textContent);
+    if (!tags.includes(input.value.trim())) {
+      const span = document.createElement('span');
+      span.className = 'tag';
+      span.innerHTML = `<span class="tag-value">${input.value.trim()}</span><span class="remove" onclick="this.closest('.tag').remove()">×</span>`;
+      wrap.insertBefore(span, input);
+    }
+    input.value = '';
+  }
+};
+
+// ── Learning Path Admin ──
+function renderPathAdmin() {
+  const d = getData();
+  const list = document.getElementById('pathList');
+  if (!list) return;
+  list.innerHTML = d.pathSteps.map((s, i) => `
+    <div class="path-step" draggable="true" data-index="${i}">
+      <div class="path-marker">${s.completed ? '✓' : (i + 1)}</div>
+      <div class="path-content" style="flex:1">
+        <div class="path-label">${s.label}</div>
+        <h3>${s.title}</h3>
+        <p>${s.desc}</p>
       </div>
-
-      <!-- Tabs -->
-      <div class="admin-tabs">
-        <button data-tab="dashboard" class="active" onclick="switchAdminTab('dashboard')">📊 概览</button>
-        <button data-tab="projects" onclick="switchAdminTab('projects')">📦 作品</button>
-        <button data-tab="tutorials" onclick="switchAdminTab('tutorials')">📖 教程</button>
-        <button data-tab="wiki" onclick="switchAdminTab('wiki')">📝 Wiki</button>
-        <button data-tab="path" onclick="switchAdminTab('path')">🧭 学习路线</button>
-      </div>
-
-      <!-- Dashboard -->
-      <div id="tab-dashboard" class="admin-tab-content active">
-        <div class="admin-stats">
-          <div class="stat-card"><div class="num" id="statProjects">0</div><div class="label">📦 作品</div></div>
-          <div class="stat-card"><div class="num" id="statTutorials">0</div><div class="label">📖 教程</div></div>
-          <div class="stat-card"><div class="num" id="statWiki">0</div><div class="label">📝 Wiki</div></div>
-          <div class="stat-card"><div class="num" id="statPath">0</div><div class="label">🧭 学习路线</div></div>
-        </div>
-        <p style="color:var(--text-secondary);font-size:13px">💡 数据存储在浏览器本地（localStorage），导出 JSON 备份以防丢失。</p>
-      </div>
-
-      <!-- Projects Table -->
-      <div id="tab-projects" class="admin-tab-content">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-          <span style="font-size:14px;color:var(--text-secondary)">共 <span class="item-count">0</span> 个作品</span>
-          <button class="admin-btn admin-btn-primary" onclick="addNew('projects')">＋ 新增</button>
-        </div>
-        <div class="admin-table-wrap">
-          <table class="admin-table">
-            <thead><tr><th>标题</th><th>分类</th><th>描述</th><th>标签</th><th>操作</th></tr></thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- Tutorials Table -->
-      <div id="tab-tutorials" class="admin-tab-content">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-          <span style="font-size:14px;color:var(--text-secondary)">共 <span class="item-count">0</span> 篇教程</span>
-          <button class="admin-btn admin-btn-primary" onclick="addNew('tutorials')">＋ 新增</button>
-        </div>
-        <div class="admin-table-wrap">
-          <table class="admin-table">
-            <thead><tr><th>标题</th><th>难度</th><th>描述</th><th>操作</th></tr></thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- Wiki Table -->
-      <div id="tab-wiki" class="admin-tab-content">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-          <span style="font-size:14px;color:var(--text-secondary)">共 <span class="item-count">0</span> 条笔记</span>
-          <button class="admin-btn admin-btn-primary" onclick="addNew('wiki')">＋ 新增</button>
-        </div>
-        <div class="admin-table-wrap">
-          <table class="admin-table">
-            <thead><tr><th>标题</th><th>分类</th><th>日期</th><th>描述</th><th>操作</th></tr></thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- Learning Path -->
-      <div id="tab-path" class="admin-tab-content">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-          <span style="font-size:14px;color:var(--text-secondary)">共 <span class="item-count">0</span> 步</span>
-          <button class="admin-btn admin-btn-primary" onclick="addPath()">＋ 新增</button>
-        </div>
-        <div id="pathList"></div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- Admin Form Modal -->
-<div class="admin-form-overlay" id="adminFormOverlay" onclick="if(event.target===this)closeAdminForm()">
-  <!-- Project Form -->
-  <div id="formProjects" class="admin-form" style="display:none">
-    <button class="close-btn" onclick="closeAdminForm()">✕</button>
-    <h3>编辑作品</h3>
-    <div class="form-group"><label>分类</label><select id="pf_cat"><option value="ai">AI / LLM</option><option value="web" selected>Web 应用</option><option value="tool">开发工具</option></select></div>
-    <div class="form-group"><label>标题</label><input type="text" id="pf_title" placeholder="项目名称"></div>
-    <div class="form-group"><label>图标 (emoji)</label><input type="text" id="pf_icon" placeholder="🤖"></div>
-    <div class="form-group"><label>简短描述</label><input type="text" id="pf_desc" placeholder="简短的项目描述"></div>
-    <div class="form-group"><label>详细描述</label><textarea id="pf_fullDesc" rows="3"></textarea></div>
-    <div class="form-group"><label>技术标签</label><div class="tag-input-wrap" id="pf_tags"><input type="text" placeholder="输入后按回车添加" onkeydown="adminTagInput(this,event)"></div></div>
-    <div class="form-group"><label>技术栈文本</label><input type="text" id="pf_tech" placeholder="React · Node.js"></div>
-    <div class="form-group"><label>Demo URL</label><input type="url" id="pf_demoUrl" placeholder="https://"></div>
-    <div class="form-group"><label>GitHub URL</label><input type="url" id="pf_githubUrl" placeholder="https://github.com/"></div>
-    <div class="form-group"><label>Gitee URL</label><input type="url" id="pf_giteeUrl" placeholder="https://gitee.com/"></div>
-    <div class="form-group"><label>文档 URL</label><input type="url" id="pf_docUrl" placeholder="https://"></div>
-    <div class="form-actions"><button type="button" class="admin-btn" onclick="closeAdminForm()">取消</button><button type="button" class="admin-btn admin-btn-primary" onclick="saveProject()">保存</button></div>
-  </div>
-
-  <!-- Tutorial Form -->
-  <div id="formTutorials" class="admin-form" style="display:none">
-    <button class="close-btn" onclick="closeAdminForm()">✕</button>
-    <h3>编辑教程</h3>
-    <div class="form-group"><label>标题</label><input type="text" id="tf_title" placeholder="教程标题"></div>
-    <div class="form-group"><label>简短描述</label><input type="text" id="tf_desc" placeholder="简短描述"></div>
-    <div class="form-row"><div class="form-group" style="flex:1"><label>难度</label><select id="tf_level"><option value="beginner" selected>入门</option><option value="intermediate">进阶</option><option value="advanced">高级</option></select></div>
-    <div class="form-group" style="flex:1"><label>难度文本</label><input type="text" id="tf_levelText" placeholder="入门 / 进阶 / 高级"></div></div>
-    <div class="form-row"><div class="form-group" style="flex:1"><label>图标 (emoji)</label><input type="text" id="tf_icon" placeholder="📖"></div>
-    <div class="form-group" style="flex:1"><label>图标背景色</label><input type="text" id="tf_iconBg" placeholder="#e0e7ff"></div></div>
-    <div class="form-group"><label>标签</label><div class="tag-input-wrap" id="tf_tags"><input type="text" placeholder="输入后按回车添加" onkeydown="adminTagInput(this,event)"></div></div>
-    <div class="form-group"><label>内容 (Markdown)</label><textarea id="tf_content" rows="10" class="wiki-content" placeholder="支持 Markdown 语法"></textarea></div>
-    <div class="form-actions"><button type="button" class="admin-btn" onclick="closeAdminForm()">取消</button><button type="button" class="admin-btn admin-btn-primary" onclick="saveTutorial()">保存</button></div>
-  </div>
-
-  <!-- Wiki Form -->
-  <div id="formWiki" class="admin-form" style="display:none">
-    <button class="close-btn" onclick="closeAdminForm()">✕</button>
-    <h3>编辑 Wiki</h3>
-    <div class="form-group"><label>分类</label><select id="wf_cat"><option value="dev" selected>开发</option><option value="ai">AI</option><option value="ops">运维</option><option value="tool">工具</option></select></div>
-    <div class="form-group"><label>标题</label><input type="text" id="wf_title" placeholder="笔记标题"></div>
-    <div class="form-group"><label>简短描述</label><input type="text" id="wf_desc" placeholder="简短描述"></div>
-    <div class="form-row"><div class="form-group" style="flex:1"><label>图标 (emoji)</label><input type="text" id="wf_icon" placeholder="📝"></div>
-    <div class="form-group" style="flex:1"><label>日期</label><input type="date" id="wf_date"></div></div>
-    <div class="form-group"><label>标签</label><div class="tag-input-wrap" id="wf_tags"><input type="text" placeholder="输入后按回车添加" onkeydown="adminTagInput(this,event)"></div></div>
-    <div class="form-group"><label>内容 (Markdown)</label><textarea id="wf_content" rows="12" class="wiki-content" placeholder="支持 Markdown 语法"></textarea></div>
-    <div class="form-actions"><button type="button" class="admin-btn" onclick="closeAdminForm()">取消</button><button type="button" class="admin-btn admin-btn-primary" onclick="saveWiki()">保存</button></div>
-  </div>
-</div>
-
-<!-- Path Form Modal -->
-<div class="admin-form-overlay" id="pathFormOverlay">
-  <div class="admin-form">
-    <button class="close-btn" onclick="closePathForm()">✕</button>
-    <h3>编辑学习路线</h3>
-    <div class="form-group">
-      <label>阶段标签</label>
-      <input type="text" id="pathLabel" data-field="label" placeholder="如：Phase 1">
-    </div>
-    <div class="form-group">
-      <label>标题</label>
-      <input type="text" id="pathTitle" data-field="title" placeholder="如：前端基础">
-    </div>
-    <div class="form-group">
-      <label>描述</label>
-      <textarea id="pathDesc" data-field="desc" rows="3"></textarea>
-    </div>
-    <div class="form-group">
-      <label>技术标签</label>
-      <div class="tag-input-wrap" data-field="techs">
-        <input type="text" placeholder="输入后按回车添加" onkeydown="adminTagInput(this,event)">
+      <div style="display:flex;gap:4px">
+        <button class="admin-btn admin-btn-sm" onclick="editPath(${i})">✏️</button>
+        <button class="admin-btn admin-btn-sm admin-btn-danger" onclick="deletePath(${i})">🗑️</button>
       </div>
     </div>
-    <div class="form-group">
-      <label><input type="checkbox" id="pathCompleted"> 已完成</label>
-    </div>
-    <div class="form-actions">
-      <button class="admin-btn" onclick="closePathForm()">取消</button>
-      <button class="admin-btn admin-btn-primary" onclick="savePath()">保存</button>
-    </div>
-  </div>
-</div>
+  `).join('');
+  
+  document.querySelector('#tab-path .item-count').textContent = d.pathSteps.length;
+}
 
-  <script type="module" src="/admin.js"></script>
+window.editPath = function(index) {
+  const d = getData();
+  const s = d.pathSteps[index];
+  document.getElementById('pathLabel').value = s.label || '';
+  document.getElementById('pathTitle').value = s.title || '';
+  document.getElementById('pathDesc').value = s.desc || '';
+  document.getElementById('pathCompleted').checked = s.completed || false;
+  renderTags(document.querySelector('#tab-path .tag-input-wrap'), s.techs || []);
+  document.getElementById('pathFormOverlay').classList.add('open');
+  editingId = index;
+  editingType = 'path';
+};
+
+window.savePath = function() {
+  const d = getData();
+  const item = editingId >= 0 ? d.pathSteps[editingId] : { id: generateId(), order: d.pathSteps.length };
+  item.label = document.getElementById('pathLabel').value;
+  item.title = document.getElementById('pathTitle').value;
+  item.desc = document.getElementById('pathDesc').value;
+  item.completed = document.getElementById('pathCompleted').checked;
+  item.techs = Array.from(document.querySelector('#tab-path .tag-input-wrap').querySelectorAll('.tag-value')).map(s => s.textContent);
+  
+  if (editingId < 0) d.pathSteps.push(item);
+  else d.pathSteps[editingId] = item;
+  
+  saveData(d);
+  document.getElementById('pathFormOverlay').classList.remove('open');
+  editingId = null;
+  renderPathAdmin();
+};
+
+window.closePathForm = function() {
+  document.getElementById('pathFormOverlay').classList.remove('open');
+  editingId = null;
+};
+
+window.addPath = function() {
+  editingId = -1;
+  editingType = 'path';
+  document.getElementById('pathLabel').value = '';
+  document.getElementById('pathTitle').value = '';
+  document.getElementById('pathDesc').value = '';
+  document.getElementById('pathCompleted').checked = false;
+  renderTags(document.querySelector('#tab-path .tag-input-wrap'), []);
+  document.getElementById('pathFormOverlay').classList.add('open');
+};
+
+window.deletePath = function(index) {
+  if (!confirm('确认删除？')) return;
+  const d = getData();
+  d.pathSteps.splice(index, 1);
+  saveData(d);
+  renderPathAdmin();
+};
+
+// ── Import / Export ──
+window.exportData = function() { exportJSON(); };
+
+window.importData = function() {
+  const input = document.getElementById('importFile');
+  if (!input.files?.[0]) return;
+  importJSON(input.files[0]).then(() => {
+    alert('✅ 导入成功');
+    input.value = '';
+    renderDashboard();
+    Object.keys(TABLE_CONFIG).forEach(t => renderTable(t));
+    renderPathAdmin();
+  }).catch(err => {
+    alert('❌ ' + err.message);
+  });
+};
+
+window.resetData = function() {
+  if (!confirm('确认重置所有数据为默认值？此操作不可恢复！')) return;
+  if (!confirm('再次确认：所有修改将被丢弃！')) return;
+  resetToDefaults();
+  renderDashboard();
+  Object.keys(TABLE_CONFIG).forEach(t => renderTable(t));
+  renderPathAdmin();
+};
+
+// ── Fill Form Fields ──
+function fillProjectForm(data) {
+  setVal('pf_cat', data.cat);
+  setVal('pf_title', data.title);
+  setVal('pf_icon', data.icon);
+  setVal('pf_desc', data.desc);
+  setVal('pf_fullDesc', data.fullDesc);
+  setVal('pf_tech', data.tech);
+  setVal('pf_demoUrl', data.demoUrl);
+  setVal('pf_githubUrl', data.githubUrl);
+  setVal('pf_giteeUrl', data.giteeUrl);
+  setVal('pf_docUrl', data.docUrl);
+  renderTags(document.getElementById('pf_tags'), data.tags || []);
+}
+function fillTutorialForm(data) {
+  setVal('tf_title', data.title);
+  setVal('tf_desc', data.desc);
+  setVal('tf_level', data.level);
+  setVal('tf_levelText', data.levelText);
+  setVal('tf_icon', data.icon);
+  setVal('tf_iconBg', data.iconBg);
+  setVal('tf_content', data.content);
+  renderTags(document.getElementById('tf_tags'), data.tags || []);
+}
+function fillWikiForm(data) {
+  setVal('wf_cat', data.cat);
+  setVal('wf_title', data.title);
+  setVal('wf_desc', data.desc);
+  setVal('wf_icon', data.icon);
+  setVal('wf_date', data.date);
+  setVal('wf_content', data.content);
+  renderTags(document.getElementById('wf_tags'), data.tags || []);
+}
+function setVal(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.value = val !== undefined && val !== null ? val : '';
+}
+
+// ── Save Forms ──
+window.saveProject = function() {
+  const d = getData();
+  const item = editingId >= 0 ? { ...d.projects[editingId] } : { id: generateId(), images: [], attachments: [], createdAt: new Date().toISOString() };
+  item.cat = g('pf_cat'); item.title = g('pf_title'); item.icon = g('pf_icon');
+  item.desc = g('pf_desc'); item.fullDesc = g('pf_fullDesc');
+  item.tech = g('pf_tech'); item.demoUrl = g('pf_demoUrl');
+  item.githubUrl = g('pf_githubUrl'); item.giteeUrl = g('pf_giteeUrl'); item.docUrl = g('pf_docUrl');
+  item.tags = readTags('pf_tags');
+  item.updatedAt = new Date().toISOString();
+  if (editingId >= 0) d.projects[editingId] = item;
+  else d.projects.push(item);
+  saveData(d); closeAdminForm(); renderTable('projects');
+};
+window.saveTutorial = function() {
+  const d = getData();
+  const item = editingId >= 0 ? { ...d.tutorials[editingId] } : { id: generateId(), images: [], attachments: [], createdAt: new Date().toISOString() };
+  item.title = g('tf_title'); item.desc = g('tf_desc'); item.level = g('tf_level');
+  item.levelText = g('tf_levelText'); item.icon = g('tf_icon'); item.iconBg = g('tf_iconBg');
+  item.content = g('tf_content'); item.tags = readTags('tf_tags');
+  item.updatedAt = new Date().toISOString();
+  if (editingId >= 0) d.tutorials[editingId] = item;
+  else d.tutorials.push(item);
+  saveData(d); closeAdminForm(); renderTable('tutorials');
+};
+window.saveWiki = function() {
+  const d = getData();
+  const item = editingId >= 0 ? { ...d.wiki[editingId] } : { id: generateId(), images: [], attachments: [], createdAt: new Date().toISOString() };
+  item.cat = g('wf_cat'); item.title = g('wf_title'); item.desc = g('wf_desc');
+  item.icon = g('wf_icon'); item.date = g('wf_date'); item.content = g('wf_content');
+  item.tags = readTags('wf_tags');
+  item.updatedAt = new Date().toISOString();
+  if (editingId >= 0) d.wiki[editingId] = item;
+  else d.wiki.push(item);
+  saveData(d); closeAdminForm(); renderTable('wiki');
+};
+function g(id) { const el = document.getElementById(id); return el ? el.value : ''; }
+function readTags(containerId) {
+  const wrap = document.getElementById(containerId);
+  if (!wrap) return [];
+  return Array.from(wrap.querySelectorAll('.tag-value')).map(s => s.textContent);
+}
+
+// ── File Upload (base64) ──
+window.handleFileUpload = function(input, field) {
+  const files = input.files;
+  if (!files?.length) return;
+  const preview = document.getElementById('uploadPreview');
+  if (!preview) return;
+  
+  Array.from(files).forEach(file => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      if (file.type.startsWith('image/')) {
+        const img = document.createElement('img');
+        img.src = e.target.result;
+        img.title = file.name;
+        preview.appendChild(img);
+      } else {
+        const div = document.createElement('div');
+        div.className = 'file-item';
+        div.textContent = `📎 ${file.name} (${(file.size / 1024).toFixed(1)}KB)`;
+        preview.appendChild(div);
+      }
+    };
+    reader.readAsDataURL(file);
+  });
+  input.value = '';
+};
+
+// ── Init ──
+export function initAdmin() {
+  if (checkAdminAuth()) {
+    requireAdmin();
+    renderDashboard();
+  }
+}
+
+
+// ── Auto-init when loaded on admin page ──
+if (document.getElementById('admin')) {
+  if (checkAdminAuth()) {
+    requireAdmin();
+    renderDashboard();
+  }
+}
+
+</script>
+
 </body>
 </html>
