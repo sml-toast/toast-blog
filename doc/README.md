@@ -1,8 +1,8 @@
 # Toast Blog · 项目文档
 
 > 作者：简单的李
-> 仓库：https://github.com/tjlzw/toast-blog
-> 在线：https://tjlzw.github.io/toast-blog/
+> 仓库：https://github.com/sml-toast/toast-blog
+> 在线：https://sml-toast.github.io/toast-blog/
 > 最后更新：2026-06-16
 
 ---
@@ -229,7 +229,7 @@ npm run preview
 # Push 到 main 分支自动触发：
 # 1. npm ci + npm run build
 # 2. 上传 dist/ 到 Pages
-# 3. 部署到 https://tjlzw.github.io/toast-blog/
+# 3. 部署到 https://sml-toast.github.io/toast-blog/
 ```
 
 **手动触发：**
@@ -240,7 +240,7 @@ npm run build
 
 **GitHub Pages 配置：**
 - Source: GitHub Actions
-- 域名: https://tjlzw.github.io/toast-blog/（待修复）
+- 域名: https://sml-toast.github.io/toast-blog/（待修复）
 - 需要配置 Pages 自定义域名或等待 Actions 部署完成
 
 ## 八、开发任务 & 进度

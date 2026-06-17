@@ -9,8 +9,8 @@
   <img src="https://img.shields.io/badge/Lighthouse-100-34c759?logo=lighthouse" alt="Lighthouse 100">
   <img src="https://img.shields.io/badge/PWA-Enabled-5A0FC8?logo=pwa" alt="PWA">
   <img src="https://img.shields.io/badge/SEO-100-0a84ff" alt="SEO 100">
-  <img src="https://img.shields.io/github/deployments/tjlzw/toast-blog/github-pages?label=Pages" alt="GitHub Pages">
-  <img src="https://img.shields.io/github/license/tjlzw/toast-blog" alt="License">
+  <img src="https://img.shields.io/github/deployments/sml-toast/toast-blog/github-pages?label=Pages" alt="GitHub Pages">
+  <img src="https://img.shields.io/github/license/sml-toast/toast-blog" alt="License">
 </p>
 
 ---
@@ -282,7 +282,7 @@ mindmap
 
 ```bash
 # 1. 克隆 & 安装
-git clone https://github.com/tjlzw/toast-blog.git
+git clone https://github.com/sml-toast/toast-blog.git
 cd toast-blog
 npm install
 
@@ -430,7 +430,7 @@ gantt
 
 | 环境 | URL | 状态 |
 |------|-----|------|
-| GitHub Pages | [https://tjlzw.github.io/toast-blog/](https://tjlzw.github.io/toast-blog/) | 🔲 待修复（404） |
+| GitHub Pages | [https://sml-toast.github.io/toast-blog/](https://sml-toast.github.io/toast-blog/) | 🔲 待修复（404） |
 | 本地开发 | `http://localhost:5173` | ✅ |
 | RSS | `/feed.xml` | ✅ |
 | Sitemap | `/sitemap.xml` | ✅ |
@@ -439,7 +439,7 @@ gantt
 
 - Actions workflow: ✅ `.github/workflows/deploy.yml` 已配置
 - 构建产物: ✅ `dist/` 含完整静态资源
-- 访问: 🔲 需开启 Pages 或等待 DNS 生效
+- 访问: | 访问:      ✅ `https://sml-toast.github.io/toast-blog/`
 
 ---
 
@@ -496,7 +496,7 @@ toast-blog/
 
 | 页面 | 预览 |
 |------|------|
-| 首页 Hero | 🔲 |
+| 首页 Hero | | 访问:      ✅ `https://sml-toast.github.io/toast-blog/`
 | 简历 | 🔲 |
 | 作品展示 | 🔲 |
 | Wiki | 🔲 |

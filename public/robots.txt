@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://tjlzw.github.io/toast-blog/sitemap.xml
+Sitemap: https://sml-toast.github.io/toast-blog/sitemap.xml
