@@ -490,6 +490,34 @@ toast-blog/
 
 ---
 
+---
+
+## 🔐 后台管理 | Admin Panel
+
+加密访问的后台数据管理面板，无需后端服务器。
+
+| 功能 | 说明 |
+|------|------|
+| 🔑 密码保护 | 访问 `/#admin` → 输入密码 `admin` |
+| 📊 数据概览 | 仪表盘统计作品/教程/Wiki/学习路线数量 |
+| 📦 作品管理 | 增删改 — 标题/分类/描述/标签/GitHub/Gitee URL |
+| 📖 教程管理 | 增删改 — 标题/难度/内容 (Markdown) |
+| 📝 Wiki 管理 | 增删改 — 分类/标题/日期/内容 (Markdown) |
+| 🧭 学习路线 | 增删改 — 阶段/标题/描述/技术标签 |
+| 📥 导出 JSON | 一键导出所有数据为 JSON 备份 |
+| 📤 导入 JSON | 从 JSON 文件恢复数据 |
+| 🔄 重置默认 | 恢复为静态文件的默认数据 |
+
+### 数据流
+
+```
+用户操作 → admin.js → data/loader.js → localStorage
+                                          ↓
+前台 main.js ← CustomEvent(data-changed) ←┘
+```
+
+数据存储在浏览器 localStorage，关闭页面不丢失。建议定期导出 JSON 备份。
+
 ## 📸 截图预览 | Screenshots
 
 > 预览截图待补充（可使用 Playwright 自动生成）

@@ -136,6 +136,10 @@ window.addNew = function(type) { openForm(type, -1); };
 
 function closeForm() {
   document.getElementById('adminFormOverlay').classList.remove('open');
+  ['formProjects','formTutorials','formWiki'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
   editingId = null;
   editingType = null;
 }
@@ -152,70 +156,22 @@ function getEmptyItem(type) {
 }
 
 function fillForm(type, data) {
-  const form = document.getElementById('adminForm');
-  form.querySelector('h3').textContent = editingId >= 0 ? '编辑' : '新增';
-  
-  // Generate fields
-  const container = document.getElementById('adminFormFields');
-  container.innerHTML = generateFormFields(type, data);
-  
-  // Fill tags
-  container.querySelectorAll('.tag-input-wrap').forEach(wrap => {
-    const field = wrap.dataset.field;
-    const val = data[field] || [];
-    renderTags(wrap, typeof val === 'string' ? [] : val);
+  // Hide all forms, show the right one
+  ['formProjects','formTutorials','formWiki','formPath'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
   });
-}
-
-// ── Form Field Generator ──
-function generateFormFields(type, data) {
-  const F = (tag, attrs, inner) => '<' + tag + Object.entries(attrs || {}).map(([k,v]) => ' ' + k + '="' + v + '"').join('') + '>' + (inner || '') + '</' + tag.split(' ')[0] + '>';
-  const input = (field, type, placeholder) => F('input', { type: type || 'text', 'data-field': field, placeholder: placeholder || '', value: (data[field] || '').replace(/"/g,'&quot;') });
-  const textarea = (field, rows, placeholder, cls) => F('textarea', { 'data-field': field, rows: String(rows), placeholder: placeholder || '', class: cls || '' }, (data[field] || ''));
-  const select = (field, options) => '<select data-field="' + field + '">' + options.map(o => '<option value="' + o[0] + '"' + (data[field] === o[0] ? ' selected' : '') + '>' + o[1] + '</option>').join('') + '</select>';
-  const grp = (label, inner) => '<div class="form-group"><label>' + label + '</label>' + inner + '</div>';
-  const tagInput = (field) => '<div class="tag-input-wrap" data-field="' + field + '"><input type="text" placeholder="输入后按回车添加" onkeydown="adminTagInput(this,event)"></div>';
-
-  const fields = {
-    projects: [
-      grp('分类', select('cat', [['ai','AI / LLM'],['web','Web 应用'],['tool','开发工具']])),
-      grp('标题', input('title', 'text', '项目名称')),
-      grp('图标 (emoji)', input('icon', 'text', '🤖')),
-      grp('简短描述', input('desc', 'text', '简短的项目描述')),
-      grp('详细描述', textarea('fullDesc', 3, '完整项目描述')),
-      grp('技术标签', tagInput('tags')),
-      grp('技术栈文本', input('tech', 'text', 'React · Node.js · PostgreSQL')),
-      grp('Demo URL', input('demoUrl', 'url', 'https://')),
-      grp('GitHub URL', input('githubUrl', 'url', 'https://github.com/')),
-      grp('Gitee URL', input('giteeUrl', 'url', 'https://gitee.com/')),
-      grp('文档 URL', input('docUrl', 'url', 'https://')),
-    ],
-    tutorials: [
-      grp('标题', input('title', 'text', '教程标题')),
-      grp('简短描述', input('desc', 'text', '简短描述')),
-      grp('难度', select('level', [['beginner','入门'],['intermediate','进阶'],['advanced','高级']])),
-      grp('难度文本', input('levelText', 'text', '入门 / 进阶 / 高级')),
-      grp('图标 (emoji)', input('icon', 'text', '📖')),
-      grp('图标背景色', input('iconBg', 'text', '#e0e7ff')),
-      grp('标签', tagInput('tags')),
-      grp('内容 (Markdown)', textarea('content', 10, '支持 Markdown 语法', 'wiki-content')),
-    ],
-    wiki: [
-      grp('分类', select('cat', [['dev','开发'],['ai','AI'],['ops','运维'],['tool','工具']])),
-      grp('标题', input('title', 'text', '笔记标题')),
-      grp('简短描述', input('desc', 'text', '简短描述')),
-      grp('图标 (emoji)', input('icon', 'text', '📝')),
-      grp('日期', input('date', 'date', '')),
-      grp('标签', tagInput('tags')),
-      grp('内容 (Markdown)', textarea('content', 12, '支持 Markdown 语法', 'wiki-content')),
-    ],
-  };
   
-  return (fields[type] || []).join('') +
-    '<div class="form-actions">' +
-    '<button type="button" class="admin-btn" onclick="closeAdminForm()">取消</button>' +
-    '<button type="button" class="admin-btn admin-btn-primary" onclick="saveAdminForm()">保存</button>' +
-    '</div>';
+  const formMap = { projects: 'formProjects', tutorials: 'formTutorials', wiki: 'formWiki' };
+  const formId = formMap[type];
+  const form = document.getElementById(formId);
+  if (!form) return;
+  form.style.display = 'block';
+  
+  // Fill fields
+  if (type === 'projects') fillProjectForm(data);
+  else if (type === 'tutorials') fillTutorialForm(data);
+  else if (type === 'wiki') fillWikiForm(data);
 }
 
 function saveForm() {
@@ -391,6 +347,87 @@ window.resetData = function() {
   renderPathAdmin();
 };
 
+// ── Fill Form Fields ──
+function fillProjectForm(data) {
+  setVal('pf_cat', data.cat);
+  setVal('pf_title', data.title);
+  setVal('pf_icon', data.icon);
+  setVal('pf_desc', data.desc);
+  setVal('pf_fullDesc', data.fullDesc);
+  setVal('pf_tech', data.tech);
+  setVal('pf_demoUrl', data.demoUrl);
+  setVal('pf_githubUrl', data.githubUrl);
+  setVal('pf_giteeUrl', data.giteeUrl);
+  setVal('pf_docUrl', data.docUrl);
+  renderTags(document.getElementById('pf_tags'), data.tags || []);
+}
+function fillTutorialForm(data) {
+  setVal('tf_title', data.title);
+  setVal('tf_desc', data.desc);
+  setVal('tf_level', data.level);
+  setVal('tf_levelText', data.levelText);
+  setVal('tf_icon', data.icon);
+  setVal('tf_iconBg', data.iconBg);
+  setVal('tf_content', data.content);
+  renderTags(document.getElementById('tf_tags'), data.tags || []);
+}
+function fillWikiForm(data) {
+  setVal('wf_cat', data.cat);
+  setVal('wf_title', data.title);
+  setVal('wf_desc', data.desc);
+  setVal('wf_icon', data.icon);
+  setVal('wf_date', data.date);
+  setVal('wf_content', data.content);
+  renderTags(document.getElementById('wf_tags'), data.tags || []);
+}
+function setVal(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.value = val !== undefined && val !== null ? val : '';
+}
+
+// ── Save Forms ──
+window.saveProject = function() {
+  const d = getData();
+  const item = editingId >= 0 ? { ...d.projects[editingId] } : { id: generateId(), images: [], attachments: [], createdAt: new Date().toISOString() };
+  item.cat = g('pf_cat'); item.title = g('pf_title'); item.icon = g('pf_icon');
+  item.desc = g('pf_desc'); item.fullDesc = g('pf_fullDesc');
+  item.tech = g('pf_tech'); item.demoUrl = g('pf_demoUrl');
+  item.githubUrl = g('pf_githubUrl'); item.giteeUrl = g('pf_giteeUrl'); item.docUrl = g('pf_docUrl');
+  item.tags = readTags('pf_tags');
+  item.updatedAt = new Date().toISOString();
+  if (editingId >= 0) d.projects[editingId] = item;
+  else d.projects.push(item);
+  saveData(d); closeAdminForm(); renderTable('projects');
+};
+window.saveTutorial = function() {
+  const d = getData();
+  const item = editingId >= 0 ? { ...d.tutorials[editingId] } : { id: generateId(), images: [], attachments: [], createdAt: new Date().toISOString() };
+  item.title = g('tf_title'); item.desc = g('tf_desc'); item.level = g('tf_level');
+  item.levelText = g('tf_levelText'); item.icon = g('tf_icon'); item.iconBg = g('tf_iconBg');
+  item.content = g('tf_content'); item.tags = readTags('tf_tags');
+  item.updatedAt = new Date().toISOString();
+  if (editingId >= 0) d.tutorials[editingId] = item;
+  else d.tutorials.push(item);
+  saveData(d); closeAdminForm(); renderTable('tutorials');
+};
+window.saveWiki = function() {
+  const d = getData();
+  const item = editingId >= 0 ? { ...d.wiki[editingId] } : { id: generateId(), images: [], attachments: [], createdAt: new Date().toISOString() };
+  item.cat = g('wf_cat'); item.title = g('wf_title'); item.desc = g('wf_desc');
+  item.icon = g('wf_icon'); item.date = g('wf_date'); item.content = g('wf_content');
+  item.tags = readTags('wf_tags');
+  item.updatedAt = new Date().toISOString();
+  if (editingId >= 0) d.wiki[editingId] = item;
+  else d.wiki.push(item);
+  saveData(d); closeAdminForm(); renderTable('wiki');
+};
+function g(id) { const el = document.getElementById(id); return el ? el.value : ''; }
+function readTags(containerId) {
+  const wrap = document.getElementById(containerId);
+  if (!wrap) return [];
+  return Array.from(wrap.querySelectorAll('.tag-value')).map(s => s.textContent);
+}
+
 // ── File Upload (base64) ──
 window.handleFileUpload = function(input, field) {
   const files = input.files;
@@ -420,6 +457,15 @@ window.handleFileUpload = function(input, field) {
 
 // ── Init ──
 export function initAdmin() {
+  if (checkAdminAuth()) {
+    requireAdmin();
+    renderDashboard();
+  }
+}
+
+
+// ── Auto-init when loaded on admin page ──
+if (document.getElementById('admin')) {
   if (checkAdminAuth()) {
     requireAdmin();
     renderDashboard();

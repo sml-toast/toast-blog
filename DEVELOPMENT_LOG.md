@@ -2,11 +2,33 @@
 
 > 每完成一个功能，记录测试结果。
 
-## [2026-06-17] 后台管理面板规划
-- 完成 Iter 0-5 所有任务
-- 完成 Iter 6 增强（Pages 修复、Logo、弹窗、简历、打印）
-- 规划后台管理方案（localStorage → GitHub API → 独立后端）
-- 更新开发计划，新增 Iter 7
+## [2026-06-17] 后台管理面板 (Iter 7)
+
+### 架构
+- 数据层: data/loader.js → localStorage 优先，静态 JS 做默认值
+- 管理面板: admin.js + admin.css → 加密访问 + 5 页签管理
+- 前台: main.js 整合 loader，数据变更自动重新渲染
+
+### 功能
+- [x] 密码保护登录（默认密码 admin）
+- [x] 仪表盘：数据统计总览
+- [x] 作品 CRUD：表格 + 静态表单（分类/标题/描述/URL/标签）
+- [x] 教程 CRUD：表格 + 表单（标题/难度/图标/内容/Markdown）
+- [x] Wiki CRUD：表格 + 表单（分类/标题/日期/内容/Markdown）
+- [x] 学习路线 CRUD：拖拽样式列表
+- [x] JSON 导出/导入
+- [x] 数据重置为默认值
+
+### 数据流
+```
+用户操作 → admin.js → data/loader.js → localStorage
+                                          ↓
+前台 main.js ← CustomEvent(data-changed) ←┘
+```
+
+### 已知问题
+- admin.css 在构建时需要手动复制到 dist/
+- Vite 构建不支持动态生成表单字段 HTML，改用静态表单
 
 ## [2026-06-16] 项目文档 & 开源
 - 创建主目录 README.md（中英双语项目介绍）

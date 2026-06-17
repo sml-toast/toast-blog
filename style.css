@@ -1206,3 +1206,4 @@ footer {
 
 /* ── Logo ── */
 .logo svg { display: inline; }
+.hidden { display: none !important; }
