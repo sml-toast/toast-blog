@@ -1,0 +1,545 @@
+{
+  "projects": [
+    {
+      "id": 1,
+      "cat": "ai",
+      "icon": "🤖",
+      "title": "AI 智能客服平台",
+      "desc": "基于 RAG 架构的企业级智能客服系统，支持多轮对话、知识库检索、转人工。",
+      "tags": [
+        "LLM",
+        "RAG",
+        "FastAPI",
+        "React"
+      ],
+      "color": "#e0e7ff",
+      "demoUrl": "https://ai-cs.toastblog.dev",
+      "docUrl": "https://docs.toastblog.dev/ai-cs",
+      "githubUrl": "https://github.com/tjlzw/ai-cs",
+      "giteeUrl": "https://gitee.com/tjlzw/ai-cs",
+      "tech": "Python · FastAPI · LangChain · ChromaDB · React · WebSocket",
+      "fullDesc": "采用 RAG（Retrieval-Augmented Generation）架构，结合企业知识库实现精准问答。"
+    },
+    {
+      "id": 2,
+      "cat": "web",
+      "icon": "📊",
+      "title": "低代码数据平台",
+      "desc": "可视化拖拽式数据分析平台，多数据源接入、图表配置、仪表盘分享。",
+      "tags": [
+        "Vue",
+        "D3.js",
+        "Node.js",
+        "MySQL"
+      ],
+      "color": "#e0f2e6",
+      "demoUrl": "https://lowcode.toastblog.dev",
+      "docUrl": "https://docs.toastblog.dev/lowcode",
+      "githubUrl": "https://github.com/tjlzw/lowcode-platform",
+      "tech": "Vue 3 · D3.js · Node.js · Express · MySQL · Redis",
+      "fullDesc": "从零搭建的低代码数据分析平台，提供 30+ 可拖拽图表组件。"
+    },
+    {
+      "id": 3,
+      "cat": "tool",
+      "icon": "⚡",
+      "title": "CLI 脚手架工具",
+      "desc": "快速生成项目的 CLI 工具，模板管理、插件扩展、自动代码生成。",
+      "tags": [
+        "Go",
+        "Cobra",
+        "Viper",
+        "Docker"
+      ],
+      "color": "#fef3e2",
+      "demoUrl": "https://www.npmjs.com/package/create-toast",
+      "docUrl": "https://github.com/tjlzw/create-toast#readme",
+      "githubUrl": "https://github.com/tjlzw/create-toast",
+      "giteeUrl": "https://gitee.com/tjlzw/create-toast",
+      "tech": "Go · Cobra · Viper · Docker · GitHub Actions",
+      "fullDesc": "使用 Go 语言开发的 CLI 脚手架 create-toast，月下载量 3k+。"
+    },
+    {
+      "id": 4,
+      "cat": "ai",
+      "icon": "🧠",
+      "title": "LLM 对话编排引擎",
+      "desc": "可视化编排 LLM 调用流程，Prompt 模板、多模型切换、日志追踪。",
+      "tags": [
+        "Python",
+        "LangChain",
+        "React Flow",
+        "FastAPI"
+      ],
+      "color": "#e8e0ff",
+      "demoUrl": "https://llm-orch.toastblog.dev",
+      "docUrl": "https://docs.toastblog.dev/llm-orch",
+      "githubUrl": "https://github.com/tjlzw/llm-orch",
+      "tech": "Python · LangChain · React Flow · FastAPI · PostgreSQL",
+      "fullDesc": "可视化的 LLM 对话编排平台 FlowForge。"
+    },
+    {
+      "id": 5,
+      "cat": "web",
+      "icon": "🎨",
+      "title": "设计系统组件库",
+      "desc": "企业级 UI 组件库，50+ 组件，支持主题定制与无障碍访问。",
+      "tags": [
+        "React",
+        "TypeScript",
+        "Storybook",
+        "Rollup"
+      ],
+      "color": "#ffe0ec",
+      "demoUrl": "https://toast-ui.toastblog.dev",
+      "docUrl": "https://github.com/tjlzw/toast-ui",
+      "githubUrl": "https://github.com/tjlzw/toast-ui",
+      "tech": "React · TypeScript · Storybook · Rollup · Testing Library",
+      "fullDesc": "企业级 React UI 组件库 Toast UI，50+ 组件覆盖。"
+    },
+    {
+      "id": 6,
+      "cat": "ai",
+      "icon": "🔗",
+      "title": "Agent 协作框架",
+      "desc": "多 Agent 协作框架，任务分解、工具调用、记忆管理与人类反馈。",
+      "tags": [
+        "Python",
+        "Agent",
+        "OpenAI",
+        "Redis"
+      ],
+      "color": "#d5f5e3",
+      "demoUrl": "https://agents.toastblog.dev",
+      "docUrl": "https://docs.toastblog.dev/agents",
+      "githubUrl": "https://github.com/tjlzw/agent-forge",
+      "giteeUrl": "https://gitee.com/tjlzw/agent-forge",
+      "tech": "Python · OpenAI API · Redis · Docker · FastAPI",
+      "fullDesc": "Agent Forge——多 Agent 协作框架，动态任务分解、工具注册、记忆管理。"
+    },
+    {
+      "id": 7,
+      "cat": "tool",
+      "icon": "🐳",
+      "title": "Docker 开发环境管理工具",
+      "desc": "基于 YAML 配置的一键式 Docker 开发环境管理 CLI。",
+      "tags": [
+        "Docker",
+        "Go",
+        "YAML",
+        "CLI"
+      ],
+      "color": "#e0f2fe",
+      "demoUrl": "https://github.com/tjlzw/devbox",
+      "docUrl": "https://github.com/tjlzw/devbox#readme",
+      "githubUrl": "https://github.com/tjlzw/devbox",
+      "tech": "Go · Docker SDK · YAML · Viper · Cobra",
+      "fullDesc": "DevBox——用 Go 编写的 Docker 开发环境管理工具。"
+    }
+  ],
+  "tutorials": [
+    {
+      "icon": "🌱",
+      "iconBg": "#e8f5e9",
+      "title": "Prompt Engineering 入门",
+      "desc": "学习如何设计高质量的 Prompt，掌握 Few-shot、Chain-of-Thought 等核心技巧。",
+      "level": "beginner",
+      "levelText": "入门"
+    },
+    {
+      "icon": "📚",
+      "iconBg": "#e3f2fd",
+      "title": "RAG 从零到部署",
+      "desc": "从文档加载、分块、向量化到检索生成的完整 RAG 流水线实战。",
+      "level": "intermediate",
+      "levelText": "进阶"
+    },
+    {
+      "icon": "🤖",
+      "iconBg": "#f3e5f5",
+      "title": "LangChain 实战指南",
+      "desc": "深入 LangChain 核心概念：Chain、Agent、Memory、Tool 工程化使用。",
+      "level": "intermediate",
+      "levelText": "进阶"
+    },
+    {
+      "icon": "⚙️",
+      "iconBg": "#fff3e0",
+      "title": "构建 AI Agent",
+      "desc": "从单 Agent 到多 Agent 协作，掌握工具调用与自主决策体系建设。",
+      "level": "advanced",
+      "levelText": "高级"
+    },
+    {
+      "icon": "🔍",
+      "iconBg": "#e0f2fe",
+      "title": "向量数据库选型与优化",
+      "desc": "对比 Chroma、Pinecone、Weaviate、Milvus，掌握索引策略与检索优化。",
+      "level": "advanced",
+      "levelText": "高级"
+    },
+    {
+      "icon": "📈",
+      "iconBg": "#fce4ec",
+      "title": "LLM 应用性能调优",
+      "desc": "延迟优化、成本控制、缓存策略、监控追踪。",
+      "level": "advanced",
+      "levelText": "高级"
+    },
+    {
+      "icon": "🏗️",
+      "iconBg": "#e8f5e9",
+      "title": "Spring Boot + MyBatis 项目实战",
+      "desc": "从零搭建企业级 CRUD 应用，集成 MyBatis-Plus、分页、事务、多数据源。",
+      "level": "intermediate",
+      "levelText": "进阶"
+    },
+    {
+      "icon": "🔄",
+      "iconBg": "#fff3e0",
+      "title": "Redis 缓存设计与实战",
+      "desc": "缓存穿透/击穿/雪崩解决方案、分布式锁、延迟队列等。",
+      "level": "intermediate",
+      "levelText": "进阶"
+    },
+    {
+      "icon": "📡",
+      "iconBg": "#f3e5f5",
+      "title": "Kafka 消息队列入门到精通",
+      "desc": "Topic/Partition 设计、生产者/消费者调优、死信队列与重试机制。",
+      "level": "advanced",
+      "levelText": "高级"
+    },
+    {
+      "icon": "🔐",
+      "iconBg": "#e0f2fe",
+      "title": "Spring Security + OAuth2 实战",
+      "desc": "JWT 认证、角色权限控制、OAuth2 第三方登录与企业微信集成。",
+      "level": "advanced",
+      "levelText": "高级"
+    },
+    {
+      "icon": "🛠️",
+      "iconBg": "#fce4ec",
+      "title": "JVM 性能调优案例集",
+      "desc": "OOM 分析、CPU 飙升排查、GC 调优实战，附 Arthas/JProfiler 操作。",
+      "level": "advanced",
+      "levelText": "高级"
+    }
+  ],
+  "wiki": [
+    {
+      "cat": "dev",
+      "icon": "📝",
+      "title": "React Hooks 常用模式总结",
+      "desc": "useEffect、useCallback、useMemo 的最佳实践",
+      "tags": [
+        "React",
+        "Hooks"
+      ],
+      "date": "2026-06-10",
+      "content": "## useCallback vs useMemo\n\n- **useCallback(fn,deps)** 返回 memoized 回调\n- **useMemo(()=>value,deps)** 返回 memoized 值"
+    },
+    {
+      "cat": "dev",
+      "icon": "📝",
+      "title": "CSS Grid 布局实战备忘",
+      "desc": "Grid 布局的核心概念与常见布局模式",
+      "tags": [
+        "CSS",
+        "Grid"
+      ],
+      "date": "2026-06-08",
+      "content": "## 基础模板\n\n```css\n.container{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:24px;}\n```"
+    },
+    {
+      "cat": "ai",
+      "icon": "🤖",
+      "title": "Prompt Engineering 技巧合集",
+      "desc": "Few-shot、Chain-of-Thought、ReAct 技巧",
+      "tags": [
+        "LLM",
+        "Prompt"
+      ],
+      "date": "2026-06-05",
+      "content": "## Few-shot Prompting\n\n给模型提供几个输入输出示例，引导它按照模式回答。"
+    },
+    {
+      "cat": "ai",
+      "icon": "🧠",
+      "title": "RAG 检索优化笔记",
+      "desc": "分块策略、向量化模型选型、混合检索、重排序",
+      "tags": [
+        "RAG",
+        "Vector DB"
+      ],
+      "date": "2026-06-03",
+      "content": "## 分块策略\n\n1. **固定大小** — 简单但可能截断语义\n2. **语义分块** — 按句子/段落边界分割\n3. **递归分块** — LangChain 默认方式"
+    },
+    {
+      "cat": "ops",
+      "icon": "⚙️",
+      "title": "Docker 生产环境最佳实践",
+      "desc": "多阶段构建、镜像瘦身、安全扫描",
+      "tags": [
+        "Docker",
+        "DevOps"
+      ],
+      "date": "2026-05-28",
+      "content": "## 多阶段构建\n\n```dockerfile\nFROM node:20-alpine AS builder\nWORKDIR /app\nCOPY package*.json ./\nRUN npm ci\n```"
+    },
+    {
+      "cat": "tool",
+      "icon": "🔧",
+      "title": "Vim 高效操作备忘录",
+      "desc": "批量编辑、多光标、宏录制",
+      "tags": [
+        "Vim",
+        "Editor"
+      ],
+      "date": "2026-05-25",
+      "content": "## 批量编辑\n\n- `ciw` — 删除当前词并进入插入模式\n- `:%s/old/new/g` — 全局替换"
+    },
+    {
+      "cat": "dev",
+      "icon": "📝",
+      "title": "Python 类型注解进阶指南",
+      "desc": "Typing 模块高级用法：泛型、Protocol、TypedDict",
+      "tags": [
+        "Python",
+        "Typing"
+      ],
+      "date": "2026-05-20",
+      "content": "## TypedDict\n\n```python\nfrom typing import TypedDict\nclass User(TypedDict):\n    id:int\n    name:str\n```"
+    },
+    {
+      "cat": "ai",
+      "icon": "🔗",
+      "title": "Function Calling 实现细节",
+      "desc": "OpenAI Function Calling 参数声明与调度",
+      "tags": [
+        "OpenAI",
+        "Agent"
+      ],
+      "date": "2026-05-18",
+      "content": "## 参数声明\n\n描述要清晰但不要过度约束。required 只放真正必需的参数。"
+    },
+    {
+      "cat": "ops",
+      "icon": "☁️",
+      "title": "AWS 成本控制实用技巧",
+      "desc": "预算告警、预留实例、Spot 实例",
+      "tags": [
+        "AWS",
+        "Cost"
+      ],
+      "date": "2026-05-15",
+      "content": "## 关键策略\n\n1. 设置 Budget 告警（50%/80%/90%）\n2. 无状态工作负载用 Spot 实例"
+    },
+    {
+      "cat": "tool",
+      "icon": "🎨",
+      "title": "Git 高级操作速查",
+      "desc": "Interactive Rebase、Bisect 调试、Cherry-pick",
+      "tags": [
+        "Git"
+      ],
+      "date": "2026-05-12",
+      "content": "## Interactive Rebase\n\n```bash\ngit rebase -i HEAD~5\n```"
+    },
+    {
+      "cat": "dev",
+      "icon": "⚛️",
+      "title": "Java 线程池核心参数与最佳实践",
+      "desc": "corePoolSize、maxPoolSize、workQueue 协作机制",
+      "tags": [
+        "Java",
+        "多线程"
+      ],
+      "date": "2026-06-14",
+      "content": "## 核心参数\n\n- **corePoolSize** — 核心线程数\n- **maxPoolSize** — 最大线程数"
+    },
+    {
+      "cat": "dev",
+      "icon": "🌐",
+      "title": "Spring Boot 自动配置原理",
+      "desc": "从 @SpringBootApplication 到自动装配",
+      "tags": [
+        "Spring Boot",
+        "Java"
+      ],
+      "date": "2026-06-13",
+      "content": "## 启动流程\n\n1. @SpringBootApplication = @Configuration + @EnableAutoConfiguration + @ComponentScan\n2. AutoConfigurationImportSelector 加载 spring.factories"
+    },
+    {
+      "cat": "dev",
+      "icon": "🗄️",
+      "title": "MySQL 索引优化实战笔记",
+      "desc": "覆盖索引、最左前缀、索引下推等优化策略",
+      "tags": [
+        "MySQL",
+        "索引"
+      ],
+      "date": "2026-06-12",
+      "content": "## EXPLAIN 关键列\n\n- **type** — ALL < index < range < ref < eq_ref < const\n- **Extra** — Using index、Using filesort"
+    },
+    {
+      "cat": "dev",
+      "icon": "☕",
+      "title": "JVM 内存模型与调优实战",
+      "desc": "堆/栈/元空间内存布局、GC 算法选型",
+      "tags": [
+        "JVM",
+        "Java"
+      ],
+      "date": "2026-06-11",
+      "content": "## 内存区域\n\n- **堆** — 新生代（Eden/S0/S1）+ 老年代\n- **栈** — 线程私有\n- **元空间** — 类元数据"
+    },
+    {
+      "cat": "ops",
+      "icon": "🐳",
+      "title": "Docker Compose 生产配置指南",
+      "desc": "健康检查、资源限制、日志轮转",
+      "tags": [
+        "Docker",
+        "Compose"
+      ],
+      "date": "2026-06-09",
+      "content": "## 健康检查\n\n```yaml\nhealthcheck:\n  test: [\"CMD\",\"curl\",\"-f\",\"http://localhost:8080/actuator/health\"]\n  interval:30s\n```"
+    },
+    {
+      "cat": "ops",
+      "icon": "📊",
+      "title": "Prometheus+Grafana 监控搭建",
+      "desc": "指标采集、告警规则、可视化大屏",
+      "tags": [
+        "Prometheus",
+        "Grafana"
+      ],
+      "date": "2026-06-07",
+      "content": "## 架构\n\n应用 → /metrics → Prometheus 拉取 → AlertManager → 告警通知"
+    },
+    {
+      "cat": "ops",
+      "icon": "☸️",
+      "title": "Kubernetes Pod 排错指南",
+      "desc": "Pod 卡住 Pending/CrashLoopBackOff 的排查步骤",
+      "tags": [
+        "K8s",
+        "Pod"
+      ],
+      "date": "2026-06-06",
+      "content": "## 常见状态\n\n- **Pending** — 资源不足 / PVC 未就绪\n- **CrashLoopBackOff** — 进程退出 / 健康检查失败"
+    },
+    {
+      "cat": "ai",
+      "icon": "🧩",
+      "title": "LangChain LCEL 表达式语言",
+      "desc": "LCEL 管道语法与可组合性",
+      "tags": [
+        "LangChain",
+        "LCEL"
+      ],
+      "date": "2026-06-04",
+      "content": "## 基础管道\n\n```python\nchain = prompt | model | StrOutputParser()\nresult = chain.invoke({\"language\":\"Python\"})\n```"
+    },
+    {
+      "cat": "ai",
+      "icon": "📎",
+      "title": "Embedding 模型选型对比",
+      "desc": "OpenAI/BGE/M3E/E5 主流嵌入模型对比",
+      "tags": [
+        "Embedding",
+        "RAG"
+      ],
+      "date": "2026-06-02",
+      "content": "## 模型对比\n\n| 模型 | 维度 | 最大输入 |\n|------|------|---------|\n| text-embedding-3-small | 512-1536 | 8192 |"
+    },
+    {
+      "cat": "tool",
+      "icon": "🐙",
+      "title": "Git 分支策略与工作流规范",
+      "desc": "Git Flow / GitHub Flow / Trunk-Based 对比",
+      "tags": [
+        "Git",
+        "工作流"
+      ],
+      "date": "2026-06-01",
+      "content": "## 三种策略\n\n**GitHub Flow**：main → feature → PR → merge\n**Git Flow**：main + develop + feature + release + hotfix\n**Trunk-Based**：频繁提交 + 短命分支 + Feature Flag"
+    }
+  ],
+  "pathSteps": [
+    {
+      "label": "Step 1",
+      "title": "编程基础",
+      "desc": "掌握 Python 或 TypeScript 基础语法，了解 HTTP 与 RESTful API。",
+      "techs": [
+        "Python",
+        "TypeScript",
+        "Git",
+        "HTTP"
+      ],
+      "completed": true
+    },
+    {
+      "label": "Step 2",
+      "title": "Web 开发基础",
+      "desc": "学习前后端开发基础，搭建完整 CRUD 应用，掌握数据库设计与部署。",
+      "techs": [
+        "React/Vue",
+        "Node.js",
+        "SQL",
+        "Docker"
+      ],
+      "completed": true
+    },
+    {
+      "label": "Step 3",
+      "title": "AI 基础与 NLP",
+      "desc": "了解机器学习基础概念、NLP 基础，熟悉 Transformer 架构。",
+      "techs": [
+        "ML Basics",
+        "NLP",
+        "Transformers",
+        "HuggingFace"
+      ],
+      "completed": true
+    },
+    {
+      "label": "Step 4",
+      "title": "LLM 应用开发",
+      "desc": "掌握 Prompt Engineering、RAG 架构、LangChain 框架。",
+      "techs": [
+        "Prompt",
+        "RAG",
+        "LangChain",
+        "OpenAI API"
+      ],
+      "completed": false
+    },
+    {
+      "label": "Step 5",
+      "title": "Agent 与工具链",
+      "desc": "深入 Agent 架构，掌握工具调用、多 Agent 协作。",
+      "techs": [
+        "Agent",
+        "CrewAI",
+        "Function Calling",
+        "MCP"
+      ],
+      "completed": false
+    },
+    {
+      "label": "Step 6",
+      "title": "生产化与架构",
+      "desc": "掌握 LLM 应用的监控、评估、安全与成本优化。",
+      "techs": [
+        "Monitoring",
+        "Evaluation",
+        "Security",
+        "Architecture"
+      ],
+      "completed": false
+    }
+  ]
+}
