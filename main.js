@@ -283,15 +283,11 @@ window.closeResumePreview = function() {
 // ── Resume: Export PDF ──
 window.exportResumePDF = function() {
   var overlay = document.getElementById('resumePreviewOverlay');
-  if (overlay) overlay.classList.remove('open');
-  
-  var body = document.getElementById('resumePreviewBody');
-  if (!body) return;
-  
-  // Simple print-based PDF export
-  window.print();
-  
+  if (overlay && !overlay.classList.contains('open')) {
+    overlay.classList.add('open');
+  }
+  // Suppress browser print header by setting a small delay
   setTimeout(function() {
-    if (overlay) overlay.classList.add('open');
-  }, 500);
+    window.print();
+  }, 100);
 };

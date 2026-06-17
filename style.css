@@ -1111,6 +1111,7 @@ footer {
     box-shadow: none !important;
     margin: 0 !important;
     border-radius: 0 !important;
+    border: none !important;
   }
 
   .resume-preview-header {
@@ -1118,7 +1119,7 @@ footer {
   }
 
   .resume-preview-body {
-    padding: 20px !important;
+    padding: 15px !important;
   }
 
   .enc-toggle {
@@ -1146,8 +1147,9 @@ footer {
 
 
   @page {
-    margin: 15mm;
+    margin: 0;
   }
+  body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }
 
 /* ── Hero Social Links ── */
