@@ -37,11 +37,16 @@
 <meta name="theme-color" content="#0a0a0f" />
   <script type="module" src="/main.js"></script>
   <link rel="stylesheet" href="/style.css">
+  <link rel="icon" type="image/svg+xml" href="/toast-blog/logo/toast-favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/toast-blog/logo/icon-32.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/toast-blog/logo/icon-192.png">
+  <link rel="apple-touch-icon" href="/toast-blog/logo/apple-touch-icon.png">
+  <link rel="mask-icon" href="/toast-blog/logo/toast-favicon.svg" color="#0A84FF">
 </head>
 <body>
 
 <nav role="navigation" aria-label="主导航">
-  <div class="logo">Toast<span>Blog</span></div>
+  <div class="logo"><svg width="28" height="28" viewBox="0 0 512 512" style="vertical-align:middle;margin-right:6px"><path d="M76 160Q76 64 160 48L352 48Q436 64 436 160L436 384Q436 432 384 440L128 440Q76 432 76 384Z" fill="#8B4513"/><path d="M100 168Q100 86 172 72L340 72Q412 86 412 168L412 376Q412 416 374 424L138 424Q100 416 100 376Z" fill="#F5D98C"/><path d="M220 160L220 360L292 360L292 320L264 320L264 200L320 200L320 160Z" fill="#0A84FF"/></svg>Toast<span>Blog</span></div>
   <ul>
     <li><a href="#home" class="active">首页</a></li>
     <li><a href="#resume">简历</a></li>
@@ -57,7 +62,29 @@
 <section class="hero" id="home" aria-label="首页">
   <div class="container">
     <div class="hero-avatar">
-      <span class="hero-avatar__initials">LW</span>
+      <svg viewBox="0 0 512 512" width="80" height="80">
+        <defs>
+          <linearGradient id="h_crust" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#D4923E"/>
+            <stop offset="100%" style="stop-color:#B87333"/>
+          </linearGradient>
+          <linearGradient id="h_bread" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#F5D98C"/>
+            <stop offset="100%" style="stop-color:#E8C56E"/>
+          </linearGradient>
+          <linearGradient id="h_accent" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#0A84FF"/>
+            <stop offset="100%" style="stop-color:#5E5CE6"/>
+          </linearGradient>
+        </defs>
+        <path d="M76 160Q76 64 160 48L352 48Q436 64 436 160L436 384Q436 432 384 440L128 440Q76 432 76 384Z" fill="url(#h_crust)" stroke="#8B5A2B" stroke-width="4"/>
+        <path d="M100 168Q100 86 172 72L340 72Q412 86 412 168L412 376Q412 416 374 424L138 424Q100 416 100 376Z" fill="url(#h_bread)"/>
+        <circle cx="200" cy="140" r="5" fill="#D4A84B" opacity="0.3"/>
+        <circle cx="310" cy="180" r="4" fill="#D4A84B" opacity="0.25"/>
+        <circle cx="180" cy="250" r="4" fill="#D4A84B" opacity="0.2"/>
+        <circle cx="300" cy="320" r="5" fill="#D4A84B" opacity="0.25"/>
+        <text x="256" y="275" font-family="'Courier New', monospace" font-size="120" font-weight="bold" fill="url(#h_accent)" text-anchor="middle" dominant-baseline="middle">&lt;/&gt;</text>
+      </svg>
       <span class="status-dot"></span>
     </div>
     <div class="hero-content">

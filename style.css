@@ -1200,3 +1200,7 @@ footer {
   color: #fff;
   letter-spacing: 2px;
 }
+
+
+/* ── Logo ── */
+.logo svg { display: inline; }
