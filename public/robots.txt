@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://toastblog.dev/sitemap.xml
+Sitemap: https://tjlzw.github.io/toast-blog/sitemap.xml

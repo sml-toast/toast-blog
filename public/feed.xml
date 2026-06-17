@@ -2,10 +2,10 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>简单的李 · 技术博客</title>
-    <link>https://toastblog.dev/</link>
+    <link>https://tjlzw.github.io/toast-blog/</link>
     <description>10+ 年 Java 后端开发，架构设计、AI Agent、RAG 知识库</description>
     <language>zh-CN</language>
     <lastBuildDate>Mon, 16 Jun 2026 00:00:00 +0800</lastBuildDate>
-    <atom:link href="https://toastblog.dev/feed.xml" rel="self" type="application/rss+xml"/>
+    <atom:link href="https://tjlzw.github.io/toast-blog/feed.xml" rel="self" type="application/rss+xml"/>
   </channel>
 </rss>
