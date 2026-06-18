@@ -11,6 +11,7 @@ let currentLang = 'zh-CN';
 let strings = {};
 let config = {
   enabled: true,
+  envEnabled: true,
   defaultLang: 'zh-CN',
   supportedLangs: ['zh-CN', 'en']
 };

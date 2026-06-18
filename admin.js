@@ -732,19 +732,25 @@ function renderI18nConfig() {
 }
 
 window.saveI18nConfig = function() {
-  const s = window.saveConfig || function(c){return c;};
   const enabled = document.getElementById('i18nEnabled')?.checked ?? true;
   const envEnabled = document.getElementById('envSwitcherEnabled')?.checked ?? true;
   const defaultLang = document.getElementById('i18nDefault')?.value || 'zh-CN';
   const checkboxes = document.querySelectorAll('#tab-i18n input[type="checkbox"][value]');
   const supportedLangs = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
   
-  s({
+  const cfg = {
     enabled: enabled,
     envEnabled: envEnabled,
     defaultLang: supportedLangs.includes(defaultLang) ? defaultLang : supportedLangs[0] || 'zh-CN',
     supportedLangs: supportedLangs.length > 0 ? supportedLangs : ['zh-CN']
-  });
+  };
+  
+  // Save to localStorage directly
+  localStorage.setItem('toast_blog_i18n_config', JSON.stringify(cfg));
+  
+  // Also call window.saveConfig if available
+  const s = window.saveConfig;
+  if (s) s(cfg);
 };
 
 window.addCustomLang = function() {

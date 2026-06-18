@@ -195,25 +195,46 @@ function renderPath() {
 let langSwitcherEl = null;
 
 function buildLangSwitcher() {
-  if (langSwitcherEl) return;
   const cfg = getConfig();
-  if (!cfg.enabled || cfg.supportedLangs.length <= 1) return;
+  if (!cfg.enabled || cfg.supportedLangs.length <= 1) {
+    // Remove existing switcher if disabled
+    if (langSwitcherEl) { langSwitcherEl.remove(); langSwitcherEl = null; }
+    return;
+  }
   
   const nav = document.querySelector('nav');
   if (!nav) return;
   
-  langSwitcherEl = document.createElement('div');
-  langSwitcherEl.className = 'lang-switcher';
-  langSwitcherEl.setAttribute('role', 'button');
-  langSwitcherEl.setAttribute('tabindex', '0');
-  langSwitcherEl.setAttribute('aria-label', t('common.switchLang', 'Switch Language'));
+  // Create or reuse the container
+  if (!langSwitcherEl) {
+    langSwitcherEl = document.createElement('div');
+    langSwitcherEl.className = 'lang-switcher';
+    langSwitcherEl.setAttribute('role', 'button');
+    langSwitcherEl.setAttribute('tabindex', '0');
+    nav.appendChild(langSwitcherEl);
+  }
+  langSwitcherEl.innerHTML = '';
   
   const current = getLangMeta(getLang());
-  langSwitcherEl.innerHTML = '<span class="lang-flag">' + current.flag + '</span><span class="lang-name">' + current.nativeName + '</span>';
+  const flagSpan = document.createElement('span');
+  flagSpan.className = 'lang-flag';
+  flagSpan.textContent = current.flag;
+  langSwitcherEl.appendChild(flagSpan);
   
-  const dropdown = document.createElement('div');
-  dropdown.className = 'lang-dropdown';
-  dropdown.setAttribute('role', 'menu');
+  const nameSpan = document.createElement('span');
+  nameSpan.className = 'lang-name';
+  nameSpan.textContent = current.nativeName;
+  langSwitcherEl.appendChild(nameSpan);
+  
+  // Create/reuse dropdown
+  let dropdown = langSwitcherEl.querySelector('.lang-dropdown');
+  if (!dropdown) {
+    dropdown = document.createElement('div');
+    dropdown.className = 'lang-dropdown';
+    dropdown.setAttribute('role', 'menu');
+    langSwitcherEl.appendChild(dropdown);
+  }
+  dropdown.innerHTML = '';
   
   cfg.supportedLangs.forEach(l => {
     const meta = getLangMeta(l);
@@ -223,7 +244,8 @@ function buildLangSwitcher() {
     item.innerHTML = '<span class="lflag">' + meta.flag + '</span><span>' + meta.nativeName + '</span><span class="lcheck">' + (l === getLang() ? '✓' : '') + '</span>';
     item.onclick = async function() {
       await setLang(l);
-      langSwitcherEl.innerHTML = '<span class="lang-flag">' + meta.flag + '</span><span class="lang-name">' + meta.nativeName + '</span>';
+      flagSpan.textContent = meta.flag;
+      nameSpan.textContent = meta.nativeName;
       dropdown.querySelectorAll('.lang-dropdown-item').forEach(di => {
         di.classList.toggle('active', di === item);
         di.querySelector('.lcheck').textContent = di === item ? '✓' : '';
@@ -238,26 +260,38 @@ function buildLangSwitcher() {
     dropdown.appendChild(item);
   });
   
-  langSwitcherEl.appendChild(dropdown);
-  
-  langSwitcherEl.onclick = function(e) {
-    e.stopPropagation();
-    dropdown.classList.toggle('open');
-  };
-  
-  // Close dropdown on outside click
-  document.addEventListener('click', function() {
-    dropdown.classList.remove('open');
-  });
-  
-  nav.appendChild(langSwitcherEl);
+  // Attach click handler once
+  if (!langSwitcherEl._clickAttached) {
+    langSwitcherEl.onclick = function(e) {
+      e.stopPropagation();
+      const dd = this.querySelector('.lang-dropdown');
+      if (dd) dd.classList.toggle('open');
+    };
+    document.addEventListener('click', function() {
+      const dd = document.querySelector('.lang-dropdown');
+      if (dd) dd.classList.remove('open');
+    });
+    langSwitcherEl._clickAttached = true;
+  }
 }
 
 
 // ── Build Environment Switcher (frontend) ──
 function buildEnvSwitcher() {
+  const cfg = getConfig();
+  if (!cfg.envEnabled) return;
+  
   const nav = document.querySelector('nav');
   if (!nav) return;
+  
+  let el = nav.querySelector('.env-badge-wrap');
+  if (!el) {
+    el = document.createElement('div');
+    el.className = 'env-badge-wrap';
+    el.style.cssText = 'display:flex;align-items:center;margin:0 2px;cursor:pointer;position:relative';
+    nav.appendChild(el);
+  }
+  el.innerHTML = '';
   
   const env = localStorage.getItem('toast_blog_env') || 'prod';
   const envMap = { dev: { label: 'DEV', color: '#2e7d32', bg: '#e8f5e9' },
@@ -265,25 +299,28 @@ function buildEnvSwitcher() {
                    prod: { label: 'PROD', color: '#1565c0', bg: '#e3f2fd' } };
   const current = envMap[env] || envMap.prod;
   
-  const el = document.createElement('div');
-  el.style.cssText = 'display:flex;align-items:center;gap:4px;margin-right:8px;cursor:pointer;position:relative';
-  el.setAttribute('title', '当前环境: ' + env.toUpperCase());
+  el.setAttribute('title', '环境: ' + env.toUpperCase());
   
   const badge = document.createElement('span');
   badge.textContent = current.label;
-  badge.style.cssText = 'font-size:11px;font-weight:700;padding:2px 8px;border-radius:4px;background:' + current.bg + ';color:' + current.color + ';transition:all 0.3s';
+  badge.style.cssText = 'font-size:10px;font-weight:700;padding:1px 6px;border-radius:3px;background:' + current.bg + ';color:' + current.color;
   el.appendChild(badge);
   
-  // Dropdown for switching
-  const dd = document.createElement('div');
-  dd.style.cssText = 'position:absolute;top:100%;right:0;margin-top:6px;background:var(--surface);border:1px solid var(--border);border-radius:8px;box-shadow:0 8px 32px rgba(0,0,0,0.12);display:none;z-index:200;overflow:hidden;min-width:100px';
-  dd.className = 'env-dd';
+  // Dropdown
+  let dd = el.querySelector('.env-dd');
+  if (!dd) {
+    dd = document.createElement('div');
+    dd.className = 'env-dd';
+    dd.style.cssText = 'position:absolute;top:100%;right:0;margin-top:4px;background:var(--surface);border:1px solid var(--border);border-radius:6px;box-shadow:0 4px 16px rgba(0,0,0,0.1);display:none;z-index:200;overflow:hidden;min-width:80px';
+    el.appendChild(dd);
+  }
+  dd.innerHTML = '';
   
   Object.keys(envMap).forEach(key => {
     const m = envMap[key];
     const item = document.createElement('button');
-    item.style.cssText = 'display:flex;align-items:center;gap:6px;padding:8px 12px;border:none;background:none;width:100%;text-align:left;cursor:pointer;font-size:13px;font-weight:' + (key === env ? '700' : '400') + ';color:var(--text)';
-    item.innerHTML = '<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:' + m.color + '"></span> ' + m.label;
+    item.style.cssText = 'display:flex;align-items:center;gap:4px;padding:6px 10px;border:none;background:none;width:100%;text-align:left;cursor:pointer;font-size:12px;font-weight:' + (key === env ? '700' : '400') + ';color:var(--text)';
+    item.innerHTML = '<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:' + m.color + '"></span> ' + m.label;
     item.onmouseover = function() { this.style.background = 'var(--accent-light)'; };
     item.onmouseout = function() { this.style.background = 'none'; };
     item.onclick = function() {
@@ -297,11 +334,10 @@ function buildEnvSwitcher() {
     dd.appendChild(item);
   });
   
-  el.appendChild(dd);
-  el.onclick = function(e) { e.stopPropagation(); dd.style.display = dd.style.display === 'block' ? 'none' : 'block'; };
-  document.addEventListener('click', function() { dd.style.display = 'none'; });
-  
-  nav.appendChild(el);
+  if (!el._clickAttached) {
+    el.onclick = function(e) { e.stopPropagation(); var d = this.querySelector(".env-dd"); if (d) d.style.display = d.style.display === "block" ? "none" : "block"; };
+    el._clickAttached = true;
+  }
 }
 // ── Translate Static Page Elements ──
 function translatePage() {
