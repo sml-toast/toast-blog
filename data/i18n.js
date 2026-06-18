@@ -1,6 +1,5 @@
 
 // ── i18n attached to window to prevent tree-shaking ──
-window.__i18n = { initI18n, setLang, getLang, t, getLangMeta, onLangChange, getConfig, saveConfig, LANG_META };
 /**
  * i18n 多语言引擎
  * 用法: import { t, setLang, getLang, initI18n } from './data/i18n.js'
@@ -19,7 +18,7 @@ let loadedLangs = {};
 let callbacks = [];
 
 // 语言元数据
-window.LANG_META = {
+export const LANG_META = {
   'zh-CN': { name: '中文', flag: '🇨🇳', nativeName: '中文' },
   'en': { name: 'English', flag: '🇺🇸', nativeName: 'English' }
 };
@@ -44,7 +43,7 @@ async function loadLang(lang) {
 }
 
 // 翻译函数
-window.t = function(key, replacements = {}) {
+export function t(key, replacements = {}) {
   let val = getValue(strings, key);
   if (!val) {
     // 回退到英文
@@ -63,10 +62,10 @@ window.t = function(key, replacements = {}) {
 }
 
 // 获取当前语言
-window.getLang = function() { return currentLang; }
+export function getLang() { return currentLang; }
 
 // 获取语言元数据
-window.getLangMeta = function(lang) { return LANG_META[lang] || LANG_META['zh-CN']; }
+export function getLangMeta(lang) { return LANG_META[lang] || LANG_META['zh-CN']; }
 
 // 设置语言
 export async function setLang(lang) {
@@ -83,7 +82,7 @@ export async function setLang(lang) {
 }
 
 // 注册语言变更回调
-window.onLangChange = function(fn) {
+export function onLangChange(fn) {
   callbacks.push(fn);
   return () => { callbacks = callbacks.filter(f => f !== fn); };
 }
@@ -101,7 +100,7 @@ function updateMeta() {
 }
 
 // 初始化 i18n
-window.initI18n = async function() {
+export async function initI18n() {
   // 加载配置
   loadConfig();
   
@@ -121,7 +120,7 @@ window.initI18n = async function() {
 }
 
 // ── 配置管理 ──
-window.loadConfig = function() {
+export function loadConfig() {
   try {
     const saved = localStorage.getItem(CONFIG_KEY);
     if (saved) {
@@ -132,10 +131,22 @@ window.loadConfig = function() {
   return config;
 }
 
-window.saveConfig = function(newConfig) {
+export function saveConfig(newConfig) {
   config = { ...config, ...newConfig };
   localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
   return config;
 }
 
-window.getConfig = function() { return config; }
+export function getConfig() { return config; }
+
+// ── Globals for admin panel access ──
+window.initI18n = initI18n;
+window.setLang = setLang;
+window.getLang = getLang;
+window.t = t;
+window.getLangMeta = getLangMeta;
+window.onLangChange = onLangChange;
+window.getConfig = getConfig;
+window.saveConfig = saveConfig;
+window.loadConfig = loadConfig;
+window.LANG_META = LANG_META;
