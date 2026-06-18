@@ -17,7 +17,15 @@ function sha256(str) {
 }
 
 export function checkAdminAuth() {
-  return sessionStorage.getItem('toast_admin_auth') === '1';
+  const auth = localStorage.getItem('toast_admin_auth');
+  const expiry = localStorage.getItem('toast_admin_expiry');
+  if (auth !== '1' || !expiry) return false;
+  if (Date.now() > parseInt(expiry)) {
+    localStorage.removeItem('toast_admin_auth');
+    localStorage.removeItem('toast_admin_expiry');
+    return false;
+  }
+  return true;
 }
 
 export function requireAdmin() {
@@ -32,7 +40,8 @@ window.adminLogin = function() {
   const err = document.getElementById('adminLoginErr');
   const hash = sha256(input?.value || '');
   if (hash === ADMIN_PASSWORD_HASH || input?.value === 'admin') {
-    sessionStorage.setItem('toast_admin_auth', '1');
+    localStorage.setItem('toast_admin_auth', '1');
+    localStorage.setItem('toast_admin_expiry', String(Date.now() + 30 * 60 * 1000));
     requireAdmin();
     renderDashboard();
   } else {
@@ -42,7 +51,8 @@ window.adminLogin = function() {
 };
 
 window.adminLogout = function() {
-  sessionStorage.removeItem('toast_admin_auth');
+  localStorage.removeItem('toast_admin_auth');
+  localStorage.removeItem('toast_admin_expiry');
   document.getElementById('adminLogin')?.classList.remove('hidden');
   document.getElementById('adminPanel')?.classList.add('hidden');
 };
