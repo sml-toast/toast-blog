@@ -1,0 +1,96 @@
+{
+  "lang": "zh-CN",
+  "name": "中文",
+  "flag": "🇨🇳",
+  "meta": {
+    "title": "Toast Blog · 简单的李 · 技术博客",
+    "description": "10+ 年 Java 后端开发，架构设计、AI Agent、RAG 知识库",
+    "ogTitle": "Toast Blog · 简单的李 · 技术博客",
+    "ogDescription": "10+ 年 Java 后端开发经验，分享架构设计、AI Agent、RAG 知识库等实战经验。"
+  },
+  "nav": {
+    "home": "首页",
+    "resume": "简历",
+    "workspace": "作品",
+    "tutorials": "教程",
+    "wiki": "Wiki",
+    "learningPath": "学习路线"
+  },
+  "hero": {
+    "greeting": "Hi, 我是",
+    "name": "Toast",
+    "tagline": "全栈开发者 · AI 技术布道者 · 开源贡献者",
+    "viewWorks": "查看作品 →",
+    "aboutMe": "关于我",
+    "tags": ["React / Vue", "Python / Go", "LLM / RAG", "DevOps", "系统设计"]
+  },
+  "resume": {
+    "title": "个人简历",
+    "desc": "10+ 年 Java 后端开发经验，架构设计、性能调优、团队管理。",
+    "encrypt": {
+      "name": "姓名",
+      "phone": "电话",
+      "email": "邮箱",
+      "school": "毕业院校",
+      "company": "当前单位"
+    },
+    "workExp": "工作经历",
+    "education": "教育 & 技能",
+    "preview": "预览完整简历",
+    "exportPdf": "导出 PDF"
+  },
+  "workspace": {
+    "title": "工作台 · 作品展示",
+    "desc": "点击任一卡片查看详细的项目文档、演示链接与技术栈信息。",
+    "filterAll": "全部",
+    "filterAi": "AI / LLM",
+    "filterWeb": "Web 应用",
+    "filterTool": "开发工具",
+    "categories": {
+      "ai": "AI / LLM",
+      "web": "Web 应用",
+      "tool": "开发工具"
+    }
+  },
+  "tutorials": {
+    "title": "AI 技术教程",
+    "desc": "从入门到进阶，涵盖 LLM 应用开发、RAG 实战、Agent 构建等热门方向。",
+    "levels": {
+      "beginner": "入门",
+      "intermediate": "进阶",
+      "advanced": "高级"
+    }
+  },
+  "wiki": {
+    "title": "知识笔记",
+    "desc": "日常积累的技术笔记、踩坑记录与实用速查。",
+    "filterAll": "全部",
+    "categories": {
+      "dev": "开发",
+      "ai": "AI",
+      "ops": "运维",
+      "tool": "工具"
+    }
+  },
+  "learningPath": {
+    "title": "学习路线",
+    "desc": "一条从零基础到 AI 全栈工程师的系统学习路径。"
+  },
+  "common": {
+    "loading": "加载中...",
+    "close": "关闭",
+    "save": "保存",
+    "cancel": "取消",
+    "delete": "删除",
+    "confirm": "确认",
+    "demo": "Demo",
+    "docs": "文档",
+    "comments": "评论",
+    "admin": "管理",
+    "backToTop": "回到顶部",
+    "themeToggle": "切换主题"
+  },
+  "footer": {
+    "builtWith": "Built with ❤️"
+  }
+}

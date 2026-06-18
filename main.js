@@ -1,4 +1,5 @@
 import { initData, getData } from "./data/loader.js";
+import { initI18n, setLang, getLang, t, getLangMeta, onLangChange, getConfig } from "./data/i18n.js";
 
 let projects = [], tutorials = [], wikiEntries = [], pathSteps = [];
 
@@ -184,6 +185,92 @@ function renderPath() {
   </div>
 `).join('');
 
+// ── Language Switcher ──
+let langSwitcherEl = null;
+
+function buildLangSwitcher() {
+  if (langSwitcherEl) return;
+  const cfg = getConfig();
+  if (!cfg.enabled || cfg.supportedLangs.length <= 1) return;
+  
+  const nav = document.querySelector('nav');
+  if (!nav) return;
+  
+  langSwitcherEl = document.createElement('div');
+  langSwitcherEl.className = 'lang-switcher';
+  langSwitcherEl.setAttribute('role', 'button');
+  langSwitcherEl.setAttribute('tabindex', '0');
+  langSwitcherEl.setAttribute('aria-label', t('common.switchLang', 'Switch Language'));
+  
+  const current = getLangMeta(getLang());
+  langSwitcherEl.innerHTML = '<span class="lang-flag">' + current.flag + '</span><span class="lang-name">' + current.nativeName + '</span>';
+  
+  const dropdown = document.createElement('div');
+  dropdown.className = 'lang-dropdown';
+  dropdown.setAttribute('role', 'menu');
+  
+  cfg.supportedLangs.forEach(l => {
+    const meta = getLangMeta(l);
+    const item = document.createElement('button');
+    item.className = 'lang-dropdown-item' + (l === getLang() ? ' active' : '');
+    item.setAttribute('role', 'menuitem');
+    item.innerHTML = '<span class="lflag">' + meta.flag + '</span><span>' + meta.nativeName + '</span><span class="lcheck">' + (l === getLang() ? '✓' : '') + '</span>';
+    item.onclick = async function() {
+      await setLang(l);
+      langSwitcherEl.innerHTML = '<span class="lang-flag">' + meta.flag + '</span><span class="lang-name">' + meta.nativeName + '</span>';
+      dropdown.querySelectorAll('.lang-dropdown-item').forEach(di => {
+        di.classList.toggle('active', di === item);
+        di.querySelector('.lcheck').textContent = di === item ? '✓' : '';
+      });
+      dropdown.classList.remove('open');
+      translatePage();
+      renderProjects();
+      renderWiki();
+      renderTutorials();
+      renderPath();
+    };
+    dropdown.appendChild(item);
+  });
+  
+  langSwitcherEl.appendChild(dropdown);
+  
+  langSwitcherEl.onclick = function(e) {
+    e.stopPropagation();
+    dropdown.classList.toggle('open');
+  };
+  
+  // Close dropdown on outside click
+  document.addEventListener('click', function() {
+    dropdown.classList.remove('open');
+  });
+  
+  nav.appendChild(langSwitcherEl);
+}
+
+// ── Translate Static Page Elements ──
+function translatePage() {
+  // Translate nav items
+  document.querySelectorAll('nav a[data-i18n]').forEach(el => {
+    el.textContent = t(el.dataset.i18n);
+  });
+  
+  // Translate static text elements
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    if (!key) return;
+    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+      el.placeholder = t(key);
+    } else if (el.dataset.i18nHtml) {
+      el.innerHTML = t(key);
+    } else {
+      el.textContent = t(key);
+    }
+  });
+  
+  // Translate section labels and titles
+  const sectionLabel = document.querySelector('.section-label');
+  // These are handled by dynamic rendering
+}
 
 // ── Listen for data changes ──
 window.addEventListener('toast:data-changed', async (e) => {

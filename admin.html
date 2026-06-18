@@ -1216,6 +1216,67 @@ footer {
 .logo svg { display: inline; }
 .hidden { display: none !important; }
 
+/* ── Language Switcher ── */
+.lang-switcher {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 13px;
+  transition: all 0.2s;
+  user-select: none;
+  position: relative;
+  color: var(--text-secondary);
+}
+.lang-switcher:hover { background: rgba(0,0,0,0.05); }
+[data-theme="dark"] .lang-switcher:hover { background: rgba(255,255,255,0.08); }
+
+.lang-switcher .lang-flag { font-size: 18px; line-height: 1; }
+.lang-switcher .lang-name { font-weight: 500; }
+
+.lang-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 6px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  min-width: 140px;
+  display: none;
+  z-index: 200;
+  overflow: hidden;
+}
+.lang-dropdown.open { display: block; }
+.lang-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.15s;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  color: var(--text);
+}
+.lang-dropdown-item:hover { background: var(--accent-light); }
+.lang-dropdown-item.active { background: var(--accent-light); font-weight: 600; color: var(--accent); }
+.lang-dropdown-item .lflag { font-size: 20px; }
+.lang-dropdown-item .lcheck { margin-left: auto; opacity: 0.6; }
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .lang-switcher { padding: 4px 6px; }
+  .lang-switcher .lang-name { display: none; }
+  .lang-dropdown { right: 0; left: auto; }
+}
+
 /* ── Admin Panel ── */
 #admin {
   padding-top: 80px;
@@ -1449,6 +1510,7 @@ footer {
         <button data-tab="tutorials" onclick="switchAdminTab('tutorials')">📖 教程</button>
         <button data-tab="wiki" onclick="switchAdminTab('wiki')">📝 Wiki</button>
         <button data-tab="path" onclick="switchAdminTab('path')">🧭 学习路线</button>
+        <button data-tab="i18n" onclick="switchAdminTab('i18n')">🌐 多语言</button>
       </div>
 
       <div id="tab-dashboard" class="admin-tab-content active">
@@ -1490,6 +1552,8 @@ footer {
           <table class="admin-table"><thead><tr><th>标题</th><th>分类</th><th>日期</th><th>描述</th><th>操作</th></tr></thead><tbody></tbody></table>
         </div>
       </div>
+
+      <div id="tab-i18n" class="admin-tab-content"></div>
 
       <div id="tab-path" class="admin-tab-content">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
@@ -2236,6 +2300,90 @@ window.handleUpload = function(input, previewId) {
   input.value = '';
 };
 
+
+// ── i18n Configuration ──
+import { getConfig, saveConfig, LANG_META, t, setLang } from './data/i18n.js';
+
+function renderI18nConfig() {
+  const cfg = getConfig();
+  const container = document.getElementById('tab-i18n');
+  if (!container) return;
+  
+  container.innerHTML = \`
+    <h3 style="margin-bottom:16px">🌐 多语言配置</h3>
+    <div class="form-group">
+      <label><input type="checkbox" id="i18nEnabled" \${cfg.enabled ? 'checked' : ''} onchange="saveI18nConfig()"> 启用前台语言切换</label>
+    </div>
+    <div class="form-group">
+      <label>默认语言</label>
+      <select id="i18nDefault" onchange="saveI18nConfig()">
+        \${cfg.supportedLangs.map(l => '<option value="' + l + '"' + (l === cfg.defaultLang ? ' selected' : '') + '>' + (LANG_META[l]?.flag || '') + ' ' + (LANG_META[l]?.name || l) + '</option>').join('')}
+      </select>
+    </div>
+    <div class="form-group">
+      <label>支持语言（勾选可用语言）</label>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;padding:8px 0">
+        \${Object.keys(LANG_META).map(l => \`
+          <label style="display:flex;align-items:center;gap:4px;cursor:pointer;padding:6px 12px;border:1px solid var(--border);border-radius:8px">
+            <input type="checkbox" value="\${l}" \${cfg.supportedLangs.includes(l) ? 'checked' : ''} onchange="saveI18nConfig()">
+            \${LANG_META[l].flag} \${LANG_META[l].name}
+          </label>
+        \`).join('')}
+        <button class="admin-btn admin-btn-sm" onclick="addCustomLang()" style="margin-left:8px">＋ 添加语言</button>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>配置说明</label>
+      <p style="font-size:13px;color:var(--text-secondary);line-height:1.6">
+        • 关闭"启用前台语言切换"后，导航栏语言按钮将隐藏<br>
+        • 默认语言为首次访问用户展示的语言<br>
+        • 取消勾选所有语言时，系统默认使用简体中文<br>
+        • 配置修改后立即生效，无需刷新
+      </p>
+    </div>
+  \`;
+}
+
+window.saveI18nConfig = function() {
+  const enabled = document.getElementById('i18nEnabled')?.checked ?? true;
+  const defaultLang = document.getElementById('i18nDefault')?.value || 'zh-CN';
+  const checkboxes = document.querySelectorAll('#tab-i18n input[type="checkbox"][value]');
+  const supportedLangs = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
+  
+  const cfg = saveConfig({
+    enabled: enabled,
+    defaultLang: supportedLangs.includes(defaultLang) ? defaultLang : supportedLangs[0] || 'zh-CN',
+    supportedLangs: supportedLangs.length > 0 ? supportedLangs : ['zh-CN']
+  });
+};
+
+window.addCustomLang = function() {
+  const code = prompt('输入语言代码（如：ja、ko）：');
+  if (!code) return;
+  const name = prompt('输入语言名称（如：日本語、한국어）：');
+  if (!name) return;
+  const flag = prompt('输入国旗 Emoji（如：🇯🇵、🇰🇷）：');
+  if (!flag) return;
+  
+  import('./data/i18n.js').then(i18n => {
+    // Add to LANG_META
+    i18n.LANG_META[code] = { name, flag, nativeName: name };
+    
+    const cfg = getConfig();
+    if (!cfg.supportedLangs.includes(code)) {
+      cfg.supportedLangs.push(code);
+      saveConfig(cfg);
+    }
+    renderI18nConfig();
+  });
+};
+
+window.switchAdminTab = (function(original) {
+  return function(tab) {
+    original(tab);
+    if (tab === 'i18n') renderI18nConfig();
+  };
+})(window.switchAdminTab);
 // ── Environment Switcher ──
 
 export function initEnvSwitcher() {

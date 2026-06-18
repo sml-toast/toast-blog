@@ -665,6 +665,90 @@ window.handleUpload = function(input, previewId) {
   input.value = '';
 };
 
+
+// ── i18n Configuration ──
+import { getConfig, saveConfig, LANG_META, t, setLang } from './data/i18n.js';
+
+function renderI18nConfig() {
+  const cfg = getConfig();
+  const container = document.getElementById('tab-i18n');
+  if (!container) return;
+  
+  container.innerHTML = \`
+    <h3 style="margin-bottom:16px">🌐 多语言配置</h3>
+    <div class="form-group">
+      <label><input type="checkbox" id="i18nEnabled" \${cfg.enabled ? 'checked' : ''} onchange="saveI18nConfig()"> 启用前台语言切换</label>
+    </div>
+    <div class="form-group">
+      <label>默认语言</label>
+      <select id="i18nDefault" onchange="saveI18nConfig()">
+        \${cfg.supportedLangs.map(l => '<option value="' + l + '"' + (l === cfg.defaultLang ? ' selected' : '') + '>' + (LANG_META[l]?.flag || '') + ' ' + (LANG_META[l]?.name || l) + '</option>').join('')}
+      </select>
+    </div>
+    <div class="form-group">
+      <label>支持语言（勾选可用语言）</label>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;padding:8px 0">
+        \${Object.keys(LANG_META).map(l => \`
+          <label style="display:flex;align-items:center;gap:4px;cursor:pointer;padding:6px 12px;border:1px solid var(--border);border-radius:8px">
+            <input type="checkbox" value="\${l}" \${cfg.supportedLangs.includes(l) ? 'checked' : ''} onchange="saveI18nConfig()">
+            \${LANG_META[l].flag} \${LANG_META[l].name}
+          </label>
+        \`).join('')}
+        <button class="admin-btn admin-btn-sm" onclick="addCustomLang()" style="margin-left:8px">＋ 添加语言</button>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>配置说明</label>
+      <p style="font-size:13px;color:var(--text-secondary);line-height:1.6">
+        • 关闭"启用前台语言切换"后，导航栏语言按钮将隐藏<br>
+        • 默认语言为首次访问用户展示的语言<br>
+        • 取消勾选所有语言时，系统默认使用简体中文<br>
+        • 配置修改后立即生效，无需刷新
+      </p>
+    </div>
+  \`;
+}
+
+window.saveI18nConfig = function() {
+  const enabled = document.getElementById('i18nEnabled')?.checked ?? true;
+  const defaultLang = document.getElementById('i18nDefault')?.value || 'zh-CN';
+  const checkboxes = document.querySelectorAll('#tab-i18n input[type="checkbox"][value]');
+  const supportedLangs = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
+  
+  const cfg = saveConfig({
+    enabled: enabled,
+    defaultLang: supportedLangs.includes(defaultLang) ? defaultLang : supportedLangs[0] || 'zh-CN',
+    supportedLangs: supportedLangs.length > 0 ? supportedLangs : ['zh-CN']
+  });
+};
+
+window.addCustomLang = function() {
+  const code = prompt('输入语言代码（如：ja、ko）：');
+  if (!code) return;
+  const name = prompt('输入语言名称（如：日本語、한국어）：');
+  if (!name) return;
+  const flag = prompt('输入国旗 Emoji（如：🇯🇵、🇰🇷）：');
+  if (!flag) return;
+  
+  import('./data/i18n.js').then(i18n => {
+    // Add to LANG_META
+    i18n.LANG_META[code] = { name, flag, nativeName: name };
+    
+    const cfg = getConfig();
+    if (!cfg.supportedLangs.includes(code)) {
+      cfg.supportedLangs.push(code);
+      saveConfig(cfg);
+    }
+    renderI18nConfig();
+  });
+};
+
+window.switchAdminTab = (function(original) {
+  return function(tab) {
+    original(tab);
+    if (tab === 'i18n') renderI18nConfig();
+  };
+})(window.switchAdminTab);
 // ── Environment Switcher ──
 
 export function initEnvSwitcher() {

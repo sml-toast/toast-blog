@@ -1,0 +1,96 @@
+{
+  "lang": "en",
+  "name": "English",
+  "flag": "🇺🇸",
+  "meta": {
+    "title": "Toast Blog · Li Zhiwei · Tech Blog",
+    "description": "10+ years Java backend development, architecture design, AI Agent, RAG knowledge base",
+    "ogTitle": "Toast Blog · Li Zhiwei · Tech Blog",
+    "ogDescription": "10+ years of Java backend experience sharing architecture, AI Agent, RAG practices."
+  },
+  "nav": {
+    "home": "Home",
+    "resume": "Resume",
+    "workspace": "Portfolio",
+    "tutorials": "Tutorials",
+    "wiki": "Wiki",
+    "learningPath": "Learning Path"
+  },
+  "hero": {
+    "greeting": "Hi, I'm",
+    "name": "Toast",
+    "tagline": "Full-stack Dev · AI Advocate · Open Source Contributor",
+    "viewWorks": "View Works →",
+    "aboutMe": "About Me",
+    "tags": ["React / Vue", "Python / Go", "LLM / RAG", "DevOps", "System Design"]
+  },
+  "resume": {
+    "title": "Resume",
+    "desc": "10+ years Java backend development, architecture design, performance tuning, team management.",
+    "encrypt": {
+      "name": "Name",
+      "phone": "Phone",
+      "email": "Email",
+      "school": "School",
+      "company": "Company"
+    },
+    "workExp": "Work Experience",
+    "education": "Education & Skills",
+    "preview": "Preview Resume",
+    "exportPdf": "Export PDF"
+  },
+  "workspace": {
+    "title": "Portfolio · Projects",
+    "desc": "Click any card to view project details, demo links and tech stack.",
+    "filterAll": "All",
+    "filterAi": "AI / LLM",
+    "filterWeb": "Web Apps",
+    "filterTool": "Dev Tools",
+    "categories": {
+      "ai": "AI / LLM",
+      "web": "Web Apps",
+      "tool": "Dev Tools"
+    }
+  },
+  "tutorials": {
+    "title": "AI Tutorials",
+    "desc": "From beginner to advanced, covering LLM, RAG, Agent development.",
+    "levels": {
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "advanced": "Advanced"
+    }
+  },
+  "wiki": {
+    "title": "Knowledge Base",
+    "desc": "Daily technical notes, troubleshooting, and quick references.",
+    "filterAll": "All",
+    "categories": {
+      "dev": "Dev",
+      "ai": "AI",
+      "ops": "Ops",
+      "tool": "Tools"
+    }
+  },
+  "learningPath": {
+    "title": "Learning Path",
+    "desc": "A systematic path from zero to AI full-stack engineer."
+  },
+  "common": {
+    "loading": "Loading...",
+    "close": "Close",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "confirm": "Confirm",
+    "demo": "Demo",
+    "docs": "Docs",
+    "comments": "Comments",
+    "admin": "Admin",
+    "backToTop": "Back to Top",
+    "themeToggle": "Toggle Theme"
+  },
+  "footer": {
+    "builtWith": "Built with ❤️"
+  }
+}
