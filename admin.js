@@ -679,9 +679,12 @@ window.handleUpload = function(input, previewId) {
 // i18n functions accessible via window globals (set by main.js)
 
 function renderI18nConfig() {
-  const getConfig = window.getConfig || function(){ return {enabled:true, defaultLang:"zh-CN", supportedLangs:["zh-CN","en"]}; };
-  const saveConfig = window.saveConfig || function(c){ return c; };
-  const LANG_META = window.LANG_META || { "zh-CN": {name:"中文",flag:"🇨🇳",nativeName:"中文"}, "en": {name:"English",flag:"🇺🇸",nativeName:"English"} };
+  var gc = window.getConfig || function(){ return {enabled:true, defaultLang:"zh-CN", supportedLangs:["zh-CN","en"]}; };
+  var sc = window.saveConfig || function(c){ return c; };
+  var LM = window.LANG_META || { "zh-CN": {name:"中文",flag:"🇨🇳",nativeName:"中文"}, "en": {name:"English",flag:"🇺🇸",nativeName:"English"} };
+  const getConfig = gc;
+  const saveConfig = sc;
+  const LANG_META = LM;
   const cfg = getConfig();
   const container = document.getElementById('tab-i18n');
   if (!container) return;
@@ -722,12 +725,13 @@ function renderI18nConfig() {
 }
 
 window.saveI18nConfig = function() {
+  const s = window.saveConfig || function(c){return c;};
   const enabled = document.getElementById('i18nEnabled')?.checked ?? true;
   const defaultLang = document.getElementById('i18nDefault')?.value || 'zh-CN';
   const checkboxes = document.querySelectorAll('#tab-i18n input[type="checkbox"][value]');
   const supportedLangs = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
   
-  const cfg = saveConfig({
+  s({
     enabled: enabled,
     defaultLang: supportedLangs.includes(defaultLang) ? defaultLang : supportedLangs[0] || 'zh-CN',
     supportedLangs: supportedLangs.length > 0 ? supportedLangs : ['zh-CN']
