@@ -2302,9 +2302,12 @@ window.handleUpload = function(input, previewId) {
 
 
 // ── i18n Configuration ──
-import { getConfig, saveConfig, LANG_META, t, setLang } from './data/i18n.js';
+// i18n functions accessible via window globals (set by main.js)
 
 function renderI18nConfig() {
+  const getConfig = window.getConfig || function(){ return {enabled:true, defaultLang:"zh-CN", supportedLangs:["zh-CN","en"]}; };
+  const saveConfig = window.saveConfig || function(c){ return c; };
+  const LANG_META = window.LANG_META || { "zh-CN": {name:"中文",flag:"🇨🇳",nativeName:"中文"}, "en": {name:"English",flag:"🇺🇸",nativeName:"English"} };
   const cfg = getConfig();
   const container = document.getElementById('tab-i18n');
   if (!container) return;
@@ -2358,6 +2361,8 @@ window.saveI18nConfig = function() {
 };
 
 window.addCustomLang = function() {
+  const saveConfig = window.saveConfig || function(c){};
+  const getConfig = window.getConfig || function(){ return {supportedLangs:[]}; };
   const code = prompt('输入语言代码（如：ja、ko）：');
   if (!code) return;
   const name = prompt('输入语言名称（如：日本語、한국어）：');
