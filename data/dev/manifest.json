@@ -1,0 +1,19 @@
+{
+  "environment": "dev",
+  "version": "1.0",
+  "description": "开发环境 — 数据文件与附件清单",
+  "updatedAt": "",
+  "dataFile": "data.json",
+  "attachments": {
+    "2026-06": {
+      "count": 0,
+      "files": [],
+      "note": "附件按 YYYY-MM 目录按月归档"
+    }
+  },
+  "schema": {
+    "data.json": "localStorage 完整数据备份，包含 projects/tutorials/wiki/pathSteps/files",
+    "attachments/": "上传的图片与附件原始文件，按 YYYY-MM 目录归档",
+    "manifest.json": "本文件 — 环境文件清单与说明"
+  }
+}

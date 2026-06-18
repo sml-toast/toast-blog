@@ -474,6 +474,158 @@ if (document.getElementById('admin')) {
 }
 
 
+
+
+// ── Backup & Restore ──
+window.backupData = function() {
+  const d = getData();
+  const env = getCurrentEnv();
+  
+  // Collect files from data (base64 images/attachments)
+  const files = {};
+  const types = ['projects', 'tutorials', 'wiki'];
+  const now = new Date();
+  const monthDir = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+  
+  types.forEach(type => {
+    (d[type] || []).forEach(item => {
+      (item.images || []).forEach((img, i) => {
+        if (img && img.startsWith('data:')) {
+          const name = type + '_' + item.id + '_img_' + i;
+          files['attachments/' + monthDir + '/' + name + '.png'] = img;
+        }
+      });
+      (item.attachments || []).forEach((att, i) => {
+        if (att && att.startsWith('data:')) {
+          const name = type + '_' + item.id + '_att_' + i;
+          const ext = att.includes('application/pdf') ? '.pdf' : att.includes('application/zip') ? '.zip' : '.bin';
+          files['attachments/' + monthDir + '/' + name + ext] = att;
+        }
+      });
+    });
+  });
+  
+  const desc = prompt('备份说明（可选）：');
+  
+  const backup = {
+    version: '1.0',
+    environment: env,
+    exportedAt: now.toISOString(),
+    description: desc || '',
+    data: d,
+    files: files,
+    directories: {
+      dataFile: 'data.json',
+      attachments: 'attachments/' + monthDir + '/',
+      manifest: 'manifest.json'
+    }
+  };
+  
+  // Save as downloadable JSON
+  const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'data-' + env + '-' + now.toISOString().slice(0, 10) + '.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  
+  // Also generate manifest update content
+  const manifest = {
+    environment: env,
+    version: '1.0',
+    description: desc || '',
+    updatedAt: now.toISOString(),
+    dataFile: 'data.json',
+    attachments: {}
+  };
+  
+  // Count files per month
+  Object.keys(files).forEach(fpath => {
+    const parts = fpath.split('/');
+    const monthKey = parts[1]; // YYYY-MM
+    if (!manifest.attachments[monthKey]) {
+      manifest.attachments[monthKey] = { count: 0, files: [], note: '' };
+    }
+    manifest.attachments[monthKey].count++;
+    manifest.attachments[monthKey].files.push(parts.slice(2).join('/'));
+  });
+  
+  // Save manifest as downloadable JSON
+  const mBlob = new Blob([JSON.stringify(manifest, null, 2)], { type: 'application/json' });
+  const mUrl = URL.createObjectURL(mBlob);
+  const mA = document.createElement('a');
+  mA.href = mUrl;
+  mA.download = 'manifest-' + env + '.json';
+  mA.click();
+  URL.revokeObjectURL(mUrl);
+  
+  alert('✅ 备份完成！\n\n1. 保存 data.json → data/' + env + '/\n2. 附件解压 → data/' + env + '/attachments/' + monthDir + '/\n3. 更新 data/' + env + '/manifest.json');
+};
+
+window.restoreData = function() {
+  const input = document.getElementById('restoreFile');
+  if (!input.files || !input.files[0]) {
+    alert('请选择备份文件');
+    return;
+  }
+  
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const backup = JSON.parse(e.target.result);
+      
+      if (!backup.version || !backup.data) {
+        alert('❌ 备份文件格式不正确');
+        return;
+      }
+      
+      const env = backup.environment || 'unknown';
+      const currentEnv = getCurrentEnv();
+      
+      if (env !== currentEnv) {
+        if (!confirm('备份环境 (' + env + ') 与当前环境 (' + currentEnv + ') 不一致，确定还原？')) {
+          input.value = '';
+          return;
+        }
+      }
+      
+      // Restore data
+      saveData(backup.data);
+      
+      // Restore files into data items
+      if (backup.files) {
+        const types = ['projects', 'tutorials', 'wiki'];
+        types.forEach(type => {
+          (backup.data[type] || []).forEach(item => {
+            Object.keys(backup.files).forEach(fpath => {
+              const filename = fpath.split('/').pop();
+              if (filename.startsWith(type + '_' + item.id + '_img')) {
+                if (!item.images) item.images = [];
+                item.images.push(backup.files[fpath]);
+              } else if (filename.startsWith(type + '_' + item.id + '_att')) {
+                if (!item.attachments) item.attachments = [];
+                item.attachments.push(backup.files[fpath]);
+              }
+            });
+          });
+        });
+        saveData(backup.data);
+      }
+      
+      alert('✅ 还原成功！\n环境: ' + env + '\n数据: ' + Object.keys(backup.data).join(', '));
+      input.value = '';
+      renderDashboard();
+      ['projects', 'tutorials', 'wiki'].forEach(t => { if (typeof renderTable === 'function') renderTable(t); });
+      if (typeof renderPathAdmin === 'function') renderPathAdmin();
+      
+    } catch(err) {
+      alert('❌ 解析失败: ' + err.message);
+    }
+  };
+  reader.readAsText(input.files[0]);
+};
+
 // ── File Upload Handler ──
 window.handleUpload = function(input, previewId) {
   const preview = document.getElementById(previewId);
