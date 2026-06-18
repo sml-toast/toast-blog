@@ -716,11 +716,15 @@ function renderI18nConfig() {
       </div>
     </div>
     <div class="form-group">
+      <label><input type="checkbox" id="envSwitcherEnabled" onchange="saveI18nConfig()"> 启用前台环境切换</label>
+    </div>
+    <div class="form-group">
       <label>配置说明</label>
       <p style="font-size:13px;color:var(--text-secondary);line-height:1.6">
         • 关闭"启用前台语言切换"后，导航栏语言按钮将隐藏<br>
+        • "启用前台环境切换"控制导航栏 DEV/TEST/PROD 色块显示<br>
         • 默认语言为首次访问用户展示的语言<br>
-        • 取消勾选所有语言时，系统默认使用简体中文<br>
+        • 环境标签点击可切换，数据与后台管理同步<br>
         • 配置修改后立即生效，无需刷新
       </p>
     </div>
@@ -730,12 +734,14 @@ function renderI18nConfig() {
 window.saveI18nConfig = function() {
   const s = window.saveConfig || function(c){return c;};
   const enabled = document.getElementById('i18nEnabled')?.checked ?? true;
+  const envEnabled = document.getElementById('envSwitcherEnabled')?.checked ?? true;
   const defaultLang = document.getElementById('i18nDefault')?.value || 'zh-CN';
   const checkboxes = document.querySelectorAll('#tab-i18n input[type="checkbox"][value]');
   const supportedLangs = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
   
   s({
     enabled: enabled,
+    envEnabled: envEnabled,
     defaultLang: supportedLangs.includes(defaultLang) ? defaultLang : supportedLangs[0] || 'zh-CN',
     supportedLangs: supportedLangs.length > 0 ? supportedLangs : ['zh-CN']
   });

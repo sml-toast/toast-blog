@@ -248,6 +248,56 @@ function buildLangSwitcher() {
   nav.appendChild(langSwitcherEl);
 }
 
+
+// ── Build Environment Switcher (frontend) ──
+function buildEnvSwitcher() {
+  const nav = document.querySelector('nav');
+  if (!nav) return;
+  
+  const env = localStorage.getItem('toast_blog_env') || 'prod';
+  const envMap = { dev: { label: 'DEV', color: '#2e7d32', bg: '#e8f5e9' },
+                   test: { label: 'TEST', color: '#e65100', bg: '#fff3e0' },
+                   prod: { label: 'PROD', color: '#1565c0', bg: '#e3f2fd' } };
+  const current = envMap[env] || envMap.prod;
+  
+  const el = document.createElement('div');
+  el.style.cssText = 'display:flex;align-items:center;gap:4px;margin-right:8px;cursor:pointer;position:relative';
+  el.setAttribute('title', '当前环境: ' + env.toUpperCase());
+  
+  const badge = document.createElement('span');
+  badge.textContent = current.label;
+  badge.style.cssText = 'font-size:11px;font-weight:700;padding:2px 8px;border-radius:4px;background:' + current.bg + ';color:' + current.color + ';transition:all 0.3s';
+  el.appendChild(badge);
+  
+  // Dropdown for switching
+  const dd = document.createElement('div');
+  dd.style.cssText = 'position:absolute;top:100%;right:0;margin-top:6px;background:var(--surface);border:1px solid var(--border);border-radius:8px;box-shadow:0 8px 32px rgba(0,0,0,0.12);display:none;z-index:200;overflow:hidden;min-width:100px';
+  dd.className = 'env-dd';
+  
+  Object.keys(envMap).forEach(key => {
+    const m = envMap[key];
+    const item = document.createElement('button');
+    item.style.cssText = 'display:flex;align-items:center;gap:6px;padding:8px 12px;border:none;background:none;width:100%;text-align:left;cursor:pointer;font-size:13px;font-weight:' + (key === env ? '700' : '400') + ';color:var(--text)';
+    item.innerHTML = '<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:' + m.color + '"></span> ' + m.label;
+    item.onmouseover = function() { this.style.background = 'var(--accent-light)'; };
+    item.onmouseout = function() { this.style.background = 'none'; };
+    item.onclick = function() {
+      localStorage.setItem('toast_blog_env', key);
+      badge.textContent = m.label;
+      badge.style.background = m.bg;
+      badge.style.color = m.color;
+      dd.style.display = 'none';
+      location.reload();
+    };
+    dd.appendChild(item);
+  });
+  
+  el.appendChild(dd);
+  el.onclick = function(e) { e.stopPropagation(); dd.style.display = dd.style.display === 'block' ? 'none' : 'block'; };
+  document.addEventListener('click', function() { dd.style.display = 'none'; });
+  
+  nav.appendChild(el);
+}
 // ── Translate Static Page Elements ──
 function translatePage() {
   // Translate nav items
