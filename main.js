@@ -17,6 +17,11 @@ let projects = [], tutorials = [], wikiEntries = [], pathSteps = [];
   renderTutorials();
   renderPath();
   observeContainers();
+  // Initialize i18n and UI switchers
+  await initI18n();
+  buildLangSwitcher();
+  buildEnvSwitcher();
+  translatePage();
 })();
 
 // ── Skeleton Loading ──
