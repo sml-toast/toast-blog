@@ -1,153 +1,144 @@
-
-// ── i18n attached to window to prevent tree-shaking ──
 /**
- * i18n 多语言引擎
- * 用法: import { t, setLang, getLang, initI18n } from './data/i18n.js'
+ * i18n 多语言引擎 — 使用 window 作为共享状态
  */
 
 const LANG_KEY = 'toast_blog_lang';
 const CONFIG_KEY = 'toast_blog_i18n_config';
-let currentLang = 'zh-CN';
-let strings = {};
-let config = {
-  enabled: true,
-  envEnabled: true,
-  defaultLang: 'zh-CN',
-  supportedLangs: ['zh-CN', 'en']
-};
-let loadedLangs = {};
-let callbacks = [];
 
-// 语言元数据
-export const LANG_META = {
+// 默认配置
+window.__i18nState = {
+  currentLang: 'zh-CN',
+  strings: {},
+  loadedLangs: {},
+  config: {
+    enabled: true,
+    envEnabled: true,
+    defaultLang: 'zh-CN',
+    supportedLangs: ['zh-CN', 'en']
+  }
+};
+
+export const LANG_META = window.LANG_META = {
   'zh-CN': { name: '中文', flag: '🇨🇳', nativeName: '中文' },
   'en': { name: 'English', flag: '🇺🇸', nativeName: 'English' }
 };
 
-// 获取深层嵌套值
 function getValue(obj, path) {
   return path.split('.').reduce((acc, part) => acc && acc[part], obj);
 }
 
-// 加载语言包
 async function loadLang(lang) {
-  if (loadedLangs[lang]) return loadedLangs[lang];
+  const state = window.__i18nState;
+  if (state.loadedLangs[lang]) return state.loadedLangs[lang];
   try {
-    const module = await import(`./lang/${lang}.json`);
-    loadedLangs[lang] = module.default || module;
-    return loadedLangs[lang];
+    const resp = await fetch('./data/lang/' + lang + '.json');
+    const data = await resp.json();
+    state.loadedLangs[lang] = data;
+    return data;
   } catch (e) {
-    console.warn(`[i18n] Failed to load ${lang}, falling back to zh-CN`);
+    console.warn('[i18n] Failed to load ' + lang);
     if (lang !== 'zh-CN') return loadLang('zh-CN');
     return {};
   }
 }
 
-// 翻译函数
 export function t(key, replacements = {}) {
-  let val = getValue(strings, key);
-  if (!val) {
-    // 回退到英文
-    if (currentLang !== 'en') {
-      const enStrings = loadedLangs['en'];
-      val = enStrings ? getValue(enStrings, key) : undefined;
-    }
-    if (!val) return key;
+  const state = window.__i18nState;
+  let val = getValue(state.strings, key);
+  if (!val && state.loadedLangs[state.currentLang]) {
+    val = getValue(state.loadedLangs[state.currentLang], key);
   }
+  if (!val && state.currentLang !== 'en' && state.loadedLangs['en']) {
+    val = getValue(state.loadedLangs['en'], key);
+  }
+  if (!val) return key;
   if (typeof val === 'string') {
     Object.entries(replacements).forEach(([k, v]) => {
-      val = val.replace(`{${k}}`, v);
+      val = val.replace('{' + k + '}', v);
     });
   }
   return val;
 }
+window.t = t;
 
-// 获取当前语言
-export function getLang() { return currentLang; }
+export function getLang() {
+  return window.__i18nState.currentLang;
+}
+window.getLang = getLang;
 
-// 获取语言元数据
-export function getLangMeta(lang) { return LANG_META[lang] || LANG_META['zh-CN']; }
+export function getLangMeta(lang) {
+  return LANG_META[lang] || LANG_META['zh-CN'];
+}
+window.getLangMeta = getLangMeta;
 
-// 设置语言
 export async function setLang(lang) {
-  if (!config.supportedLangs.includes(lang)) return;
-  currentLang = lang;
-  strings = await loadLang(lang);
+  const state = window.__i18nState;
+  if (!state.config.supportedLangs.includes(lang)) return;
+  state.currentLang = lang;
+  state.strings = await loadLang(lang);
   localStorage.setItem(LANG_KEY, lang);
   document.documentElement.lang = lang;
-  // 触发回调
-  callbacks.forEach(fn => fn(lang, strings));
-  // 更新 meta
   updateMeta();
-  return strings;
+  return state.strings;
 }
+window.setLang = setLang;
 
-// 注册语言变更回调
 export function onLangChange(fn) {
-  callbacks.push(fn);
-  return () => { callbacks = callbacks.filter(f => f !== fn); };
+  window.__i18nState.callbacks = window.__i18nState.callbacks || [];
+  window.__i18nState.callbacks.push(fn);
+  return () => {
+    window.__i18nState.callbacks = window.__i18nState.callbacks.filter(f => f !== fn);
+  };
 }
+window.onLangChange = onLangChange;
 
-// 更新页面 meta
 function updateMeta() {
-  const meta = strings.meta || {};
-  document.title = meta.title || document.title;
+  const state = window.__i18nState;
+  const meta = state.strings.meta || {};
+  if (meta.title) document.title = meta.title;
   const desc = document.querySelector('meta[name="description"]');
   if (desc && meta.description) desc.content = meta.description;
-  const ogTitle = document.querySelector('meta[property="og:title"]');
-  if (ogTitle && meta.ogTitle) ogTitle.content = meta.ogTitle;
-  const ogDesc = document.querySelector('meta[property="og:description"]');
-  if (ogDesc && meta.ogDescription) ogDesc.content = meta.ogDescription;
 }
 
-// 初始化 i18n
 export async function initI18n() {
-  // 加载配置
+  const state = window.__i18nState;
   loadConfig();
   
-  // 从 localStorage 或配置加载语言
-  const saved = localStorage.getItem(LANG_KEY) || config.defaultLang;
-  currentLang = config.supportedLangs.includes(saved) ? saved : config.defaultLang;
+  const saved = localStorage.getItem(LANG_KEY) || state.config.defaultLang;
+  state.currentLang = state.config.supportedLangs.includes(saved) ? saved : state.config.defaultLang;
   
-  // 预加载所有支持的语言
-  await Promise.all(config.supportedLangs.map(loadLang));
+  await Promise.all(state.config.supportedLangs.map(loadLang));
+  state.strings = await loadLang(state.currentLang);
   
-  // 设置当前语言
-  strings = await loadLang(currentLang);
-  document.documentElement.lang = currentLang;
+  document.documentElement.lang = state.currentLang;
   updateMeta();
   
-  return { currentLang, strings, config };
+  return state;
 }
+window.initI18n = initI18n;
 
-// ── 配置管理 ──
 export function loadConfig() {
+  const state = window.__i18nState;
   try {
     const saved = localStorage.getItem(CONFIG_KEY);
     if (saved) {
       const parsed = JSON.parse(saved);
-      config = { ...config, ...parsed };
+      state.config = { ...state.config, ...parsed };
     }
   } catch(e) {}
-  return config;
+  return state.config;
 }
+window.loadConfig = loadConfig;
 
 export function saveConfig(newConfig) {
-  config = { ...config, ...newConfig };
-  localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
-  return config;
+  const state = window.__i18nState;
+  state.config = { ...state.config, ...newConfig };
+  localStorage.setItem(CONFIG_KEY, JSON.stringify(state.config));
+  return state.config;
 }
-
-export function getConfig() { return config; }
-
-// ── Globals for admin panel access ──
-window.initI18n = initI18n;
-window.setLang = setLang;
-window.getLang = getLang;
-window.t = t;
-window.getLangMeta = getLangMeta;
-window.onLangChange = onLangChange;
-window.getConfig = getConfig;
 window.saveConfig = saveConfig;
-window.loadConfig = loadConfig;
-window.LANG_META = LANG_META;
+
+export function getConfig() {
+  return window.__i18nState.config;
+}
+window.getConfig = getConfig;
