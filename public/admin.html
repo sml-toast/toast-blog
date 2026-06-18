@@ -1487,6 +1487,7 @@ footer {
 
 
 
+
 <div class="env-loading" id="envLoader"><div class="spinner"></div></div>
 
 
@@ -1497,7 +1498,7 @@ footer {
 <div id="adminLogin" class="admin-login">
 <h2>🔐 管理后台</h2>
 <p style="color:var(--text-secondary);font-size:13px">请输入管理密码</p>
-<input type="password" id="adminPwd" placeholder="密码" autocomplete="off">
+<form id="adminLoginForm" onsubmit="adminLogin();return false" style="display:contents"><input type="password" id="adminPwd" placeholder="密码" autocomplete="off"></form>
 <button class="btn btn-primary" onclick="adminLogin()">登录</button>
 <div id="adminLoginErr" class="error"></div>
 </div>
@@ -1629,6 +1630,7 @@ footer {
 <div class="form-group"><label><input type="checkbox" id="pathCompleted"> 已完成</label></div>
 <div class="form-actions"><button class="admin-btn" onclick="closePathForm()">取消</button><button class="admin-btn admin-btn-primary" onclick="savePath()">保存</button></div>
 </div></div>
+
 
 
 
@@ -2231,11 +2233,14 @@ export function initAdmin() {
 
 // ── Auto-init when loaded on admin page ──
 if (document.getElementById('admin')) {
-  if (checkAdminAuth()) {
-    requireAdmin();
-    renderDashboard();
-    initEnvSwitcher();
-  }
+  // Wait for data to load then init
+  initData().then(function() {
+    if (checkAdminAuth()) {
+      requireAdmin();
+      renderDashboard();
+      initEnvSwitcher();
+    }
+  });
 }
 
 

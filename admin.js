@@ -475,11 +475,14 @@ export function initAdmin() {
 
 // ── Auto-init when loaded on admin page ──
 if (document.getElementById('admin')) {
-  if (checkAdminAuth()) {
-    requireAdmin();
-    renderDashboard();
-    initEnvSwitcher();
-  }
+  // Wait for data to load then init
+  initData().then(function() {
+    if (checkAdminAuth()) {
+      requireAdmin();
+      renderDashboard();
+      initEnvSwitcher();
+    }
+  });
 }
 
 
