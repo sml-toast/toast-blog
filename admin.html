@@ -2313,11 +2313,7 @@ window.backupData = function() {
   mA.click();
   URL.revokeObjectURL(mUrl);
   
-  alert('✅ 备份完成！
-
-1. 保存 data.json → data/' + env + '/
-2. 附件解压 → data/' + env + '/attachments/' + monthDir + '/
-3. 更新 data/' + env + '/manifest.json');
+  alert('✅ 备份完成！ 1.保存 data.json → data/' + env + '/ 2.附件解压 → data/' + env + '/attachments/' + monthDir + '/ 3.更新 manifest.json');
 };
 
 window.restoreData = function() {
