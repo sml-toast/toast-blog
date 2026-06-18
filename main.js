@@ -1,5 +1,5 @@
 import { initData, getData } from "./data/loader.js";
-import { initI18n, setLang, getLang, t, getLangMeta, onLangChange, getConfig } from "./data/i18n.js";
+import "./data/i18n.js";
 
 let projects = [], tutorials = [], wikiEntries = [], pathSteps = [];
 
@@ -184,6 +184,7 @@ function renderPath() {
     </div>
   </div>
 `).join('');
+}
 
 // ── Language Switcher ──
 let langSwitcherEl = null;

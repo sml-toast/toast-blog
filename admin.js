@@ -667,7 +667,7 @@ window.handleUpload = function(input, previewId) {
 
 
 // ── i18n Configuration ──
-import { getConfig, saveConfig, LANG_META, t, setLang } from './data/i18n.js';
+// i18n loaded via window globals from main.js
 
 function renderI18nConfig() {
   const cfg = getConfig();

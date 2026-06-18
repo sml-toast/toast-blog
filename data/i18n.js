@@ -1,3 +1,6 @@
+
+// ── i18n attached to window to prevent tree-shaking ──
+window.__i18n = { initI18n, setLang, getLang, t, getLangMeta, onLangChange, getConfig, saveConfig, LANG_META };
 /**
  * i18n 多语言引擎
  * 用法: import { t, setLang, getLang, initI18n } from './data/i18n.js'
@@ -16,7 +19,7 @@ let loadedLangs = {};
 let callbacks = [];
 
 // 语言元数据
-export const LANG_META = {
+window.LANG_META = {
   'zh-CN': { name: '中文', flag: '🇨🇳', nativeName: '中文' },
   'en': { name: 'English', flag: '🇺🇸', nativeName: 'English' }
 };
@@ -41,7 +44,7 @@ async function loadLang(lang) {
 }
 
 // 翻译函数
-export function t(key, replacements = {}) {
+window.t = function(key, replacements = {}) {
   let val = getValue(strings, key);
   if (!val) {
     // 回退到英文
@@ -60,10 +63,10 @@ export function t(key, replacements = {}) {
 }
 
 // 获取当前语言
-export function getLang() { return currentLang; }
+window.getLang = function() { return currentLang; }
 
 // 获取语言元数据
-export function getLangMeta(lang) { return LANG_META[lang] || LANG_META['zh-CN']; }
+window.getLangMeta = function(lang) { return LANG_META[lang] || LANG_META['zh-CN']; }
 
 // 设置语言
 export async function setLang(lang) {
@@ -80,7 +83,7 @@ export async function setLang(lang) {
 }
 
 // 注册语言变更回调
-export function onLangChange(fn) {
+window.onLangChange = function(fn) {
   callbacks.push(fn);
   return () => { callbacks = callbacks.filter(f => f !== fn); };
 }
@@ -98,7 +101,7 @@ function updateMeta() {
 }
 
 // 初始化 i18n
-export async function initI18n() {
+window.initI18n = async function() {
   // 加载配置
   loadConfig();
   
@@ -118,7 +121,7 @@ export async function initI18n() {
 }
 
 // ── 配置管理 ──
-export function loadConfig() {
+window.loadConfig = function() {
   try {
     const saved = localStorage.getItem(CONFIG_KEY);
     if (saved) {
@@ -129,10 +132,10 @@ export function loadConfig() {
   return config;
 }
 
-export function saveConfig(newConfig) {
+window.saveConfig = function(newConfig) {
   config = { ...config, ...newConfig };
   localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
   return config;
 }
 
-export function getConfig() { return config; }
+window.getConfig = function() { return config; }
