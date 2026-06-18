@@ -44,3 +44,17 @@
 - 手动重建 data/projects.js (7)、tutorials.js (11)、wiki.js (20)、path.js (6)
 - 重建 main.js、public/sw.js / 404.html / manifest.json
 - 构建: ✅ 通过
+
+## [2026-06-18] Phase 1 — 后台管理重构
+
+### 1.1 登录缓存 (✅)
+- sessionStorage → localStorage + 30min 过期
+- 退出按钮清除 auth + expiry
+- 页面刷新不丢失登录状态，超时自动过期
+
+### 1.2 环境切换配色 (✅)
+- DEV 🟢 / TEST 🟠 / PROD 🔵 色块标签
+- 切换时 loading 动画
+- 当前环境高亮 + 色块区分
+- DEV 🟢 / TEST 🟠 / PROD 🔵 色块标签
+- 切换时动画反馈

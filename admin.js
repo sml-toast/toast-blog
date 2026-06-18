@@ -773,6 +773,10 @@ export function initEnvSwitcher() {
 }
 
 window.switchEnv = async function(env) {
+  // Show loading
+  const loader = document.getElementById('envLoader');
+  if (loader) loader.classList.add('active');
+  
   await setEnv(env);
   initEnvSwitcher();
   
@@ -781,10 +785,14 @@ window.switchEnv = async function(env) {
   ['projects', 'tutorials', 'wiki'].forEach(t => renderTable(t));
   if (typeof renderPathAdmin === 'function') renderPathAdmin();
   
-  // Notify frontend to refresh (if main page is also open)
+  // Notify frontend
   window.dispatchEvent(new CustomEvent('toast:data-changed', { detail: getData() }));
   
-  // Update document title with env indicator
+  // Update title with env color tag
   const envName = { dev: 'DEV', test: 'TEST', prod: 'PROD' }[env] || env;
-  document.title = '管理后台 · ' + envName + ' · Toast Blog';
+  const envColors = { dev: '🟢', test: '🟠', prod: '🔵' };
+  document.title = envColors[env] + ' ' + envName + ' · 管理后台 · Toast Blog';
+  
+  // Hide loading
+  if (loader) setTimeout(() => loader.classList.remove('active'), 300);
 };
