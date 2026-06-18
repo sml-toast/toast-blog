@@ -765,10 +765,16 @@ export function initEnvSwitcher() {
 window.switchEnv = async function(env) {
   await setEnv(env);
   initEnvSwitcher();
-  // Refresh admin panel
+  
+  // Refresh all admin content with new environment data
   renderDashboard();
-  if (typeof renderTable === 'function') {
-    ['projects', 'tutorials', 'wiki'].forEach(t => renderTable(t));
-  }
+  ['projects', 'tutorials', 'wiki'].forEach(t => renderTable(t));
   if (typeof renderPathAdmin === 'function') renderPathAdmin();
+  
+  // Notify frontend to refresh (if main page is also open)
+  window.dispatchEvent(new CustomEvent('toast:data-changed', { detail: getData() }));
+  
+  // Update document title with env indicator
+  const envName = { dev: 'DEV', test: 'TEST', prod: 'PROD' }[env] || env;
+  document.title = '管理后台 · ' + envName + ' · Toast Blog';
 };
