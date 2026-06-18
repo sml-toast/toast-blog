@@ -474,6 +474,45 @@ if (document.getElementById('admin')) {
 }
 
 
+// ── File Upload Handler ──
+window.handleUpload = function(input, previewId) {
+  const preview = document.getElementById(previewId);
+  if (!preview || !input.files) return;
+  Array.from(input.files).forEach(file => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const div = document.createElement('div');
+      div.style.position = 'relative';
+      div.style.display = 'inline-block';
+      if (file.type.startsWith('image/')) {
+        const img = document.createElement('img');
+        img.src = e.target.result;
+        img.style.width = '64px';
+        img.style.height = '64px';
+        img.style.objectFit = 'cover';
+        img.style.borderRadius = '6px';
+        img.style.border = '1px solid var(--border)';
+        img.title = file.name;
+        div.appendChild(img);
+      } else {
+        div.style.padding = '4px 8px';
+        div.style.background = 'var(--accent-light)';
+        div.style.borderRadius = '4px';
+        div.style.fontSize = '12px';
+        div.textContent = '📎 ' + file.name + ' (' + (file.size / 1024).toFixed(1) + 'KB)';
+      }
+      const rm = document.createElement('span');
+      rm.textContent = '×';
+      rm.style.cssText = 'position:absolute;top:-4px;right:-4px;width:16px;height:16px;border-radius:50%;background:#dc2626;color:#fff;font-size:12px;line-height:16px;text-align:center;cursor:pointer';
+      rm.onclick = function() { div.remove(); };
+      div.appendChild(rm);
+      preview.appendChild(div);
+    };
+    reader.readAsDataURL(file);
+  });
+  input.value = '';
+};
+
 // ── Environment Switcher ──
 
 export function initEnvSwitcher() {
