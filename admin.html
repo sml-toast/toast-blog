@@ -1530,7 +1530,8 @@ footer {
 <button data-tab="tutorials" onclick="switchAdminTab('tutorials')">📖 教程</button>
 <button data-tab="wiki" onclick="switchAdminTab('wiki')">📝 Wiki</button>
 <button data-tab="path" onclick="switchAdminTab('path')">🧭 学习路线</button>
-<button data-tab="i18n" onclick="switchAdminTab('i18n')">🌐 多语言</button>
+<button data-tab="env" onclick="switchAdminTab('env')">⚙️ 多环境</button>
+        <button data-tab="i18n" onclick="switchAdminTab('i18n')">🌐 多语言</button>
 </div>
 
 <div id="tab-dashboard" class="admin-tab-content active">
@@ -1559,7 +1560,9 @@ footer {
 <button class="admin-btn admin-btn-primary" onclick="addNew('wiki')">＋ 新增</button></div>
 <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>标题</th><th>分类</th><th>日期</th><th>描述</th><th>操作</th></tr></thead><tbody></tbody></table></div></div>
 
-<div id="tab-i18n" class="admin-tab-content"></div>
+<div id="tab-env" class="admin-tab-content"></div>
+
+      <div id="tab-i18n" class="admin-tab-content"></div>
 
 <div id="tab-path" class="admin-tab-content">
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
@@ -2503,7 +2506,8 @@ window.saveI18nConfig = function() {
     enabled: enabled,
     envEnabled: envEnabled,
     defaultLang: supportedLangs.includes(defaultLang) ? defaultLang : supportedLangs[0] || 'zh-CN',
-    supportedLangs: supportedLangs.length > 0 ? supportedLangs : ['zh-CN']
+    supportedLangs: supportedLangs.length > 0 ? supportedLangs : ['zh-CN'],
+    enabledEnvs: ['dev', 'test', 'pro']
   });
 };
 

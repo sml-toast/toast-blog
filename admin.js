@@ -488,6 +488,69 @@ if (document.getElementById('admin')) {
 
 
 
+
+// ── Environment Configuration ──
+function renderEnvConfig() {
+  const gc = window.getConfig || function(){ return {envEnabled:true, supportedLangs:["zh-CN","en"], enabled:true}; };
+  const sc = window.saveConfig || function(c){ return c; };
+  const getConfig = gc;
+  const saveConfig = sc;
+  const cfg = getConfig();
+  const container = document.getElementById('tab-env');
+  if (!container) return;
+  
+  const envList = ['dev', 'test', 'pro'];
+  const envLabels = { dev: '开发 (DEV)', test: '测试 (TEST)', pro: '生产 (PRO)' };
+  const envColors = { dev: '#2e7d32', test: '#e65100', pro: '#1565c0' };
+  const enabledEnvs = cfg.enabledEnvs || ['dev', 'test', 'pro'];
+  
+  container.innerHTML = `
+    <h3 style="margin-bottom:16px">⚙️ 多环境配置</h3>
+    <div class="form-group">
+      <label><input type="checkbox" id="envSwitcherEnabled" ${cfg.envEnabled ? 'checked' : ''} onchange="saveEnvConfig()"> 启用前台环境切换</label>
+    </div>
+    <div class="form-group">
+      <label>启用环境（至少勾选 2 个）</label>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;padding:8px 0">
+        ${envList.map(e => `
+          <label style="display:flex;align-items:center;gap:4px;cursor:pointer;padding:6px 12px;border:1px solid var(--border);border-radius:8px">
+            <input type="checkbox" value="${e}" ${enabledEnvs.includes(e) ? 'checked' : ''} onchange="saveEnvConfig()" class="env-cb">
+            <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${envColors[e]}"></span>
+            ${envLabels[e]}
+          </label>
+        `).join('')}
+      </div>
+      <p id="envWarning" style="color:#dc2626;font-size:13px;display:none">⚠️ 至少启用 2 个环境</p>
+    </div>
+    <div class="form-group">
+      <label>配置说明</label>
+      <p style="font-size:13px;color:var(--text-secondary);line-height:1.6">
+        • 关闭"启用前台环境切换"后，导航栏环境标签将隐藏<br>
+        • 取消勾选环境后，该环境将不在前台切换列表中显示<br>
+        • 至少保留 2 个环境以确保切换功能正常<br>
+        • 当前环境不会被取消勾选影响<br>
+        • 配置修改后立即生效，无需刷新
+      </p>
+    </div>
+  `;
+}
+
+window.saveEnvConfig = function() {
+  const s = window.saveConfig || function(c){ return c; };
+  const envEnabled = document.getElementById('envSwitcherEnabled')?.checked ?? true;
+  const checkboxes = document.querySelectorAll('#tab-env .env-cb');
+  const enabledEnvs = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
+  const warn = document.getElementById('envWarning');
+  
+  if (enabledEnvs.length < 2) {
+    if (warn) warn.style.display = 'block';
+    return;
+  }
+  if (warn) warn.style.display = 'none';
+  
+  const cfg = window.getConfig ? window.getConfig() : {};
+  s({ ...cfg, envEnabled, enabledEnvs });
+};
 // ── Backup & Restore ──
 window.backupData = function() {
   const d = getData();
@@ -733,22 +796,25 @@ function renderI18nConfig() {
 
 window.saveI18nConfig = function() {
   const enabled = document.getElementById('i18nEnabled')?.checked ?? true;
-  const envEnabled = document.getElementById('envSwitcherEnabled')?.checked ?? true;
   const defaultLang = document.getElementById('i18nDefault')?.value || 'zh-CN';
   const checkboxes = document.querySelectorAll('#tab-i18n input[type="checkbox"][value]');
   const supportedLangs = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
+  const warn = document.getElementById('i18nWarning');
+  
+  if (supportedLangs.length < 2) {
+    if (warn) warn.style.display = 'block';
+    return;
+  }
+  if (warn) warn.style.display = 'none';
   
   const cfg = {
     enabled: enabled,
-    envEnabled: envEnabled,
     defaultLang: supportedLangs.includes(defaultLang) ? defaultLang : supportedLangs[0] || 'zh-CN',
-    supportedLangs: supportedLangs.length > 0 ? supportedLangs : ['zh-CN']
+    supportedLangs: supportedLangs.length > 0 ? supportedLangs : ['zh-CN'],
+    enabledEnvs: ['dev', 'test', 'pro']
   };
   
-  // Save to localStorage directly
   localStorage.setItem('toast_blog_i18n_config', JSON.stringify(cfg));
-  
-  // Also call window.saveConfig if available
   const s = window.saveConfig;
   if (s) s(cfg);
 };
@@ -780,6 +846,7 @@ window.switchAdminTab = (function(original) {
   return function(tab) {
     original(tab);
     if (tab === 'i18n') renderI18nConfig();
+    if (tab === 'env') renderEnvConfig();
   };
 })(window.switchAdminTab);
 // ── Environment Switcher ──
