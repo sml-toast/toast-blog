@@ -431,7 +431,7 @@ gantt
 | 环境 | URL | 状态 |
 |------|-----|------|
 | GitHub Pages | [https://sml-toast.github.io/toast-blog/](https://sml-toast.github.io/toast-blog/) | 🔲 待修复（404） |
-| 本地开发 | `http://localhost:5173` | ✅ |
+| 本地开发 | `http://localhost:5174` | ✅ |
 | RSS | `/feed.xml` | ✅ |
 | Sitemap | `/sitemap.xml` | ✅ |
 

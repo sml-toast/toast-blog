@@ -10,7 +10,7 @@ cd "$(dirname "$0")/.."
 pkill -f "vite" 2>/dev/null
 sleep 1
 
-PORT="${1:-5173}"
+PORT="${1:-5174}"
 
 # 启动 Vite 并将进程写到 PID 文件
 nohup npx vite --host localhost --port "$PORT" > .vite.log 2>&1 &
