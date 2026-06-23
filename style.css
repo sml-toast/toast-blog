@@ -53,11 +53,48 @@ nav {
   height: 60px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 24px;
 }
-nav .logo { font-weight: 700; font-size: 18px; color: var(--accent); letter-spacing: -0.3px; }
-nav .logo span { color: var(--text); }
-nav ul { -webkit-tap-highlight-color: transparent; display: flex; gap: 32px; list-style: none; }
+
+/* Left: Logo */
+.nav-left {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+.nav-left .logo {
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--accent);
+  letter-spacing: -0.3px;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+}
+.nav-left .logo span { color: var(--text); }
+
+/* Center: Menu */
+.nav-center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+nav ul {
+  -webkit-tap-highlight-color: transparent;
+  display: flex;
+  gap: 32px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Right: Switchers */
+.nav-right {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
 nav ul li a {
   text-decoration: none;
   color: var(--text-secondary);

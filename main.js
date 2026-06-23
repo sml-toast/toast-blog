@@ -212,15 +212,10 @@ function buildLangSwitcher() {
   langSwitcherEl.style.margin = '0 2px';
     langSwitcherEl.setAttribute('role', 'button');
     langSwitcherEl.setAttribute('tabindex', '0');
-    // Group in nav-right
-    let rightGroup = nav.querySelector('.nav-right');
-    if (!rightGroup) {
-      rightGroup = document.createElement('div');
-      rightGroup.className = 'nav-right';
-      rightGroup.style.cssText = 'display:flex;align-items:center;gap:4px;margin-left:auto';
-      nav.appendChild(rightGroup);
-    }
-    rightGroup.appendChild(langSwitcherEl);
+    // Append to nav-right container
+    let rightGroup = nav.querySelector('#navRight');
+    if (!rightGroup) { rightGroup = nav.querySelector('.nav-right'); }
+    if (rightGroup) rightGroup.appendChild(langSwitcherEl);
   }
   langSwitcherEl.innerHTML = '';
   
@@ -298,15 +293,10 @@ function buildEnvSwitcher() {
     el = document.createElement('div');
     el.className = 'env-badge-wrap';
     el.style.cssText = 'display:flex;align-items:center;margin:0;cursor:pointer;position:relative';
-    // Add to nav-right group
-    let rightGroup = nav.querySelector('.nav-right');
-    if (!rightGroup) {
-      rightGroup = document.createElement('div');
-      rightGroup.className = 'nav-right';
-      rightGroup.style.cssText = 'display:flex;align-items:center;gap:4px;margin-left:auto';
-      nav.appendChild(rightGroup);
-    }
-    rightGroup.appendChild(el);
+    // Append to nav-right container
+    let rightGroup = nav.querySelector('#navRight');
+    if (!rightGroup) { rightGroup = nav.querySelector('.nav-right'); }
+    if (rightGroup) rightGroup.appendChild(el);
   }
   el.innerHTML = '';
   
