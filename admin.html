@@ -1839,6 +1839,8 @@ window.switchAdminTab = function(tab) {
     case 'tutorials': renderTable('tutorials'); break;
     case 'wiki': renderTable('wiki'); break;
     case 'path': renderPathAdmin(); break;
+    case 'env': renderEnvConfig(); break;
+    case 'i18n': renderI18nConfig(); break;
   }
 };
 
@@ -2485,7 +2487,7 @@ function renderI18nConfig() {
       <label>配置说明</label>
       <p style="font-size:13px;color:var(--text-secondary);line-height:1.6">
         • 关闭"启用前台语言切换"后，导航栏语言按钮将隐藏<br>
-        • "启用前台环境切换"控制导航栏 DEV/TEST/PROD 色块显示<br>
+
         • 默认语言为首次访问用户展示的语言<br>
         • 环境标签点击可切换，数据与后台管理同步<br>
         • 配置修改后立即生效，无需刷新
@@ -2497,7 +2499,7 @@ function renderI18nConfig() {
 window.saveI18nConfig = function() {
   const s = window.saveConfig || function(c){return c;};
   const enabled = document.getElementById('i18nEnabled')?.checked ?? true;
-  const envEnabled = document.getElementById('envSwitcherEnabled')?.checked ?? true;
+  // envEnabled now managed in tab-env
   const defaultLang = document.getElementById('i18nDefault')?.value || 'zh-CN';
   const checkboxes = document.querySelectorAll('#tab-i18n input[type="checkbox"][value]');
   const supportedLangs = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
@@ -2532,6 +2534,39 @@ window.addCustomLang = function() {
     }
     renderI18nConfig();
   });
+};
+
+// ── Render Environment Config Tab ──
+function renderEnvConfig() {
+  const cfg = getConfig();
+  const container = document.getElementById('tab-env');
+  if (!container) return;
+  
+  container.innerHTML = `
+    <h3>⚙️ 环境配置</h3>
+    <div class="form-group">
+      <label><input type="checkbox" id="envEnabled" ${cfg.envEnabled !== false ? 'checked' : ''} onchange="saveEnvConfig()"> 启用前台环境切换</label>
+      <p style="font-size:12px;color:var(--text-secondary);margin-top:4px">关闭后导航栏 DEV/TEST/PROD 切换按钮将隐藏</p>
+    </div>
+    <div class="env-switcher" style="margin-top:16px">
+      <div style="display:flex;gap:8px;margin-bottom:12px">
+        <button class="admin-btn env-btn ${cfg.env === 'prod' ? 'active' : ''}" data-env="prod" onclick="switchEnv('prod')">PROD</button>
+        <button class="admin-btn env-btn ${cfg.env === 'test' ? 'active' : ''}" data-env="test" onclick="switchEnv('test')">TEST</button>
+        <button class="admin-btn env-btn ${cfg.env === 'dev' ? 'active' : ''}" data-env="dev" onclick="switchEnv('dev')">DEV</button>
+      </div>
+      <p style="font-size:13px;color:var(--text-secondary)">
+        当前环境: <strong>${cfg.env || 'prod'}</strong><br>
+        数据来源: <code>data/${cfg.env || 'prod'}/</code>
+      </p>
+    </div>
+  `;
+}
+
+window.saveEnvConfig = function() {
+  const cfg = getConfig();
+  cfg.envEnabled = document.getElementById('envEnabled')?.checked ?? true;
+  saveConfig(cfg);
+  alert('✅ 环境配置已保存');
 };
 
 window.switchAdminTab = (function(original) {
