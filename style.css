@@ -2,6 +2,7 @@
 
 :root {
   --bg: #f5f5f7;
+  --section-alt: #ffffff;
   --surface: #ffffff;
   --border: #e8e8ed;
   --text: #1d1d1f;
@@ -575,6 +576,7 @@ footer {
    ══════════════════════════════════════════════ */
 [data-theme="dark"] {
   --bg: #000000;
+  --section-alt: #1c1c1e;
   --surface: #1c1c1e;
   --border: #38383a;
   --text: #f5f5f7;
@@ -1305,10 +1307,12 @@ footer {
 
 
 /* ── Floating Action Button (FAB) ── */
+/* Floating Action Button container – shifted upward to avoid overlap with back‑to‑top arrow */
 .fab-container {
   position: fixed;
   right: 24px;
-  bottom: 80px;
+  /* original bottom:80px conflicted with .back-to-top (also 80px) */
+  bottom: 120px; /* give a comfortable gap */
   z-index: 999;
   display: flex;
   flex-direction: column-reverse;
