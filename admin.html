@@ -1643,6 +1643,27 @@ footer {
 
 
 <script type="module">
+// ── Global Config (shared with frontend) ──
+window.CONFIG_KEY = 'toast_blog_i18n_config';
+window.getConfig = function() {
+  const defaults = {
+    enabled: true,
+    envEnabled: true,
+    defaultLang: 'zh-CN',
+    supportedLangs: ['zh-CN', 'en'],
+    enabledEnvs: ['dev', 'test', 'pro']
+  };
+  try {
+    const saved = JSON.parse(localStorage.getItem(window.CONFIG_KEY) || '{}');
+    return Object.assign({}, defaults, saved);
+  } catch(_) { return defaults; }
+};
+window.saveConfig = function(cfg) {
+  const merged = Object.assign({}, window.getConfig(), cfg);
+  localStorage.setItem(window.CONFIG_KEY, JSON.stringify(merged));
+};
+
+
 /**
  * 数据加载层 — localStorage 优先，静态文件做默认值
  * 前台通过此模块读取数据，后台通过此模块读写数据
