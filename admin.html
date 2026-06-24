@@ -2503,11 +2503,12 @@ window.saveI18nConfig = function() {
   
   s({
     enabled: enabled,
-    envEnabled: envEnabled,
+    // envEnabled moved to tab-env
     defaultLang: supportedLangs.includes(defaultLang) ? defaultLang : supportedLangs[0] || 'zh-CN',
     supportedLangs: supportedLangs.length > 0 ? supportedLangs : ['zh-CN'],
     enabledEnvs: ['dev', 'test', 'pro']
   });
+  alert('✅ 语言配置已保存');
 };
 
 window.addCustomLang = function() {
