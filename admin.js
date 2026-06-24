@@ -884,18 +884,28 @@ window.switchEnv = async function(env) {
 };
 
 // Make getConfig/saveConfig available globally for admin.html inline handlers
+// Unified config key: use the SAME key as frontend (toast_blog_i18n_config)
+window.CONFIG_KEY = 'toast_blog_i18n_config';
+
 window.getConfig = function() {
-  return JSON.parse(localStorage.getItem('admin_config') || '{}') || {
+  const defaults = {
     enabled: true,
     envEnabled: true,
     defaultLang: 'zh-CN',
     supportedLangs: ['zh-CN', 'en'],
     enabledEnvs: ['dev', 'test', 'pro']
   };
+  try {
+    const saved = JSON.parse(localStorage.getItem(window.CONFIG_KEY) || '{}');
+    return Object.assign({}, defaults, saved);
+  } catch(_) {
+    return defaults;
+  }
 };
 
 window.saveConfig = function(cfg) {
-  localStorage.setItem('admin_config', JSON.stringify(cfg));
+  const merged = Object.assign({}, window.getConfig(), cfg);
+  localStorage.setItem(window.CONFIG_KEY, JSON.stringify(merged));
 };
 
 // Ensure i18n config also reflects envEnabled, because frontend reads envEnabled from i18n config.
