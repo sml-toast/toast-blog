@@ -882,3 +882,31 @@ window.switchEnv = async function(env) {
   // Hide loading
   if (loader) setTimeout(() => loader.classList.remove('active'), 300);
 };
+
+// Make getConfig/saveConfig available globally for admin.html inline handlers
+window.getConfig = function() {
+  return JSON.parse(localStorage.getItem('admin_config') || '{}') || {
+    enabled: true,
+    envEnabled: true,
+    defaultLang: 'zh-CN',
+    supportedLangs: ['zh-CN', 'en'],
+    enabledEnvs: ['dev', 'test', 'pro']
+  };
+};
+
+window.saveConfig = function(cfg) {
+  localStorage.setItem('admin_config', JSON.stringify(cfg));
+};
+
+// Ensure i18n config also reflects envEnabled, because frontend reads envEnabled from i18n config.
+// This helper updates the shared key used by main.js (`toast_blog_i18n_config`).
+function syncEnvEnabledToI18n(cfg) {
+  try {
+    const i18nKey = 'toast_blog_i18n_config';
+    const prev = JSON.parse(localStorage.getItem(i18nKey) || '{}');
+    const merged = Object.assign({}, prev, { envEnabled: cfg.envEnabled });
+    localStorage.setItem(i18nKey, JSON.stringify(merged));
+  } catch (_) {
+    // ignore sync errors – admin config will still be saved.
+  }
+}

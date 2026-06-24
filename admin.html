@@ -2554,6 +2554,13 @@ window.saveEnvConfig = function() {
   const cfg = gc();
   cfg.envEnabled = document.getElementById('envEnabled')?.checked ?? true;
   sc(cfg);
+  // Sync envEnabled to i18n config key (frontend reads from this key)
+  try {
+    const i18nKey = 'toast_blog_i18n_config';
+    const prev = JSON.parse(localStorage.getItem(i18nKey) || '{}');
+    prev.envEnabled = cfg.envEnabled;
+    localStorage.setItem(i18nKey, JSON.stringify(prev));
+  } catch(_) {}
   alert('✅ 环境配置已保存');
 };
 
