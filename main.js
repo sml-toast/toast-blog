@@ -386,20 +386,18 @@ window.addEventListener('toast:data-changed', async (e) => {
 });
 
 // ── Theme Toggle ──
-const themeBtn = document.createElement('button');
-themeBtn.className = 'theme-toggle-btn';
-themeBtn.setAttribute('aria-label', '切换主题');
-const savedTheme = localStorage.getItem('theme') || 'light';
-document.documentElement.setAttribute('data-theme', savedTheme);
-themeBtn.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
-themeBtn.addEventListener('click', () => {
-  const current = document.documentElement.getAttribute('data-theme');
+// ── Global Theme Toggle (called from FAB) ──
+window.toggleTheme = function() {
+  const current = document.documentElement.getAttribute('data-theme') || 'light';
   const next = current === 'dark' ? 'light' : 'dark';
   document.documentElement.setAttribute('data-theme', next);
   localStorage.setItem('theme', next);
-  themeBtn.textContent = next === 'dark' ? '☀️' : '🌙';
-});
-document.body.appendChild(themeBtn);
+};
+// Restore saved theme
+(function() {
+  const saved = localStorage.getItem('theme') || 'light';
+  document.documentElement.setAttribute('data-theme', saved);
+})();
 
 // ── Entry Animation ──
 const observer = new IntersectionObserver((entries) => {
@@ -416,6 +414,31 @@ const observeContainers = () => {
   });
 };
 setTimeout(observeContainers, 100);
+
+
+// ── FAB (Floating Action Button) Toggle ──
+window.toggleFab = function() {
+  const container = document.getElementById('fabContainer');
+  if (!container) return;
+  const main = container.querySelector('.fab-main');
+  const menu = container.querySelector('.fab-menu');
+  if (!main || !menu) return;
+  main.classList.toggle('open');
+  menu.classList.toggle('open');
+};
+
+// Click outside FAB to close
+document.addEventListener('click', function(e) {
+  const container = document.getElementById('fabContainer');
+  if (container && !container.contains(e.target)) {
+    const main = container.querySelector('.fab-main');
+    const menu = container.querySelector('.fab-menu');
+    if (main && menu) {
+      main.classList.remove('open');
+      menu.classList.remove('open');
+    }
+  }
+});
 
 // ── Back to Top ──
 const backToTop = document.createElement('button');

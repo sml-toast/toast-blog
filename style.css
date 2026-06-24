@@ -1,8 +1,5 @@
 
-.feedback-rail { position: fixed; right: 16px; bottom: 80px; z-index: 999; }
-.feedback-btn { display: flex; align-items: center; gap: 4px; padding: 8px 14px; background: var(--accent,#0a84ff); color: #fff; border-radius: 24px; text-decoration: none; font-size: 13px; font-weight: 500; box-shadow: 0 2px 8px rgba(0,0,0,0.15); transition: transform 0.2s; }
-.feedback-btn:hover { transform: translateY(-2px); background: var(--accent-hover,#0a6ed1); }
-.dark .feedback-btn { box-shadow: 0 2px 8px rgba(0,0,0,0.4); }
+
 :root {
   --bg: #f5f5f7;
   --surface: #ffffff;
@@ -1304,4 +1301,92 @@ footer {
   .lang-switcher { padding: 4px 6px; }
   .lang-switcher .lang-name { display: none; }
   .lang-dropdown { right: 0; left: auto; }
+}
+
+
+/* ── Floating Action Button (FAB) ── */
+.fab-container {
+  position: fixed;
+  right: 24px;
+  bottom: 80px;
+  z-index: 999;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  gap: 8px;
+}
+
+.fab-main {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: none;
+  background: var(--accent);
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  transition: transform 0.25s, background 0.2s;
+}
+.fab-main:hover { transform: scale(1.08); background: #0062c4; }
+.fab-main.open { transform: rotate(45deg); }
+.fab-main svg { transition: transform 0.25s; }
+.fab-main.open svg { transform: rotate(45deg); }
+
+.fab-menu {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 8px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(8px);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.fab-menu.open {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.fab-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 24px;
+  border: none;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: background 0.15s, transform 0.15s;
+}
+.fab-item:hover {
+  background: var(--accent-light);
+  color: var(--accent);
+  transform: translateX(-4px);
+}
+.fab-item svg {
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+.fab-item:hover svg {
+  opacity: 1;
+}
+
+.dark .fab-container .fab-main { box-shadow: 0 4px 16px rgba(0,0,0,0.4); }
+.dark .fab-item { background: #2c2c2e; color: #f5f5f7; border: 1px solid var(--border); }
+.dark .fab-item:hover { background: #3a3a3c; color: var(--accent); }
+
+@media (max-width: 600px) {
+  .fab-container { right: 12px; bottom: 68px; }
+  .fab-main { width: 42px; height: 42px; }
+  .fab-item span { display: none; }
+  .fab-item { padding: 8px; border-radius: 50%; }
 }
