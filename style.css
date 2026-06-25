@@ -670,35 +670,6 @@ footer {
 }
 
 /* ══════════════════════════════════════════════
-   3. BACK TO TOP
-   ══════════════════════════════════════════════ */
-.back-to-top {
-  position: fixed;
-  bottom: 80px;
-  right: 24px;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: 1px solid var(--border);
-  background: var(--surface);
-  cursor: pointer;
-  font-size: 18px;
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.3s, transform 0.3s;
-  z-index: 99;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text);
-}
-
-.back-to-top.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.back-to-top:hover {
   border-color: var(--accent);
   color: var(--accent);
 }
@@ -1171,7 +1142,6 @@ footer {
 
 
   /* 强制隐藏非预览元素 */
-  nav, footer, .feedback-rail, .back-to-top, .theme-toggle-btn,
   .hero, #workspace, #tutorials, #wiki, #learning-path, #comments,
   section:not(.resume-preview-overlay) {
     display: none !important;
@@ -1307,12 +1277,37 @@ footer {
 
 
 /* ── Floating Action Button (FAB) ── */
-/* Floating Action Button container – shifted upward to avoid overlap with back‑to‑top arrow */
+/* ── Back-to-top (merged into FAB) ── */
+.fab-back-top {
+  display: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  font-size: 18px;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.3s, transform 0.3s;
+  flex-shrink: 0;
+}
+.fab-back-top:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.dark .fab-back-top {
+  background: #2c2c2e;
+  border-color: var(--border);
+  color: #f5f5f7;
+}
+
+/* FAB below back-to-top arrow, same column */
 .fab-container {
   position: fixed;
   right: 24px;
-  /* original bottom:80px conflicted with .back-to-top (also 80px) */
-  bottom: 120px; /* give a comfortable gap */
+  bottom: 32px;
   z-index: 999;
   display: flex;
   flex-direction: column-reverse;

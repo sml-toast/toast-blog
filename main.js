@@ -440,14 +440,13 @@ document.addEventListener('click', function(e) {
   }
 });
 
-// ── Back to Top ──
-const backToTop = document.createElement('button');
-backToTop.className = 'back-to-top';
-backToTop.setAttribute('aria-label', '回到顶部');
-backToTop.textContent = '↑';
-backToTop.addEventListener('click', () => { window.scrollTo(0, 0); backToTop.classList.remove('visible'); });
-document.body.appendChild(backToTop);
-window.addEventListener('scroll', () => backToTop.classList.toggle('visible', window.scrollY > 300));
+// ── Back to Top (merged into FAB) ──
+const fabBackTop = document.getElementById('fabBackTop');
+if (fabBackTop) {
+  window.addEventListener('scroll', () => { 
+    fabBackTop.style.display = window.scrollY > 300 ? 'flex' : 'none'; 
+  });
+}
 
 // ── Modal ESC ──
 document.addEventListener('keydown', (e) => {
