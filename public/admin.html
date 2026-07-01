@@ -1530,7 +1530,8 @@ footer {
 <button data-tab="tutorials" onclick="switchAdminTab('tutorials')">📖 教程</button>
 <button data-tab="wiki" onclick="switchAdminTab('wiki')">📝 Wiki</button>
 <button data-tab="path" onclick="switchAdminTab('path')">🧭 学习路线</button>
-<button data-tab="i18n" onclick="switchAdminTab('i18n')">🌐 多语言</button>
+<button data-tab="env" onclick="switchAdminTab('env')">⚙️ 多环境</button>
+        <button data-tab="i18n" onclick="switchAdminTab('i18n')">🌐 多语言</button>
 </div>
 
 <div id="tab-dashboard" class="admin-tab-content active">
@@ -1559,7 +1560,9 @@ footer {
 <button class="admin-btn admin-btn-primary" onclick="addNew('wiki')">＋ 新增</button></div>
 <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>标题</th><th>分类</th><th>日期</th><th>描述</th><th>操作</th></tr></thead><tbody></tbody></table></div></div>
 
-<div id="tab-i18n" class="admin-tab-content"></div>
+<div id="tab-env" class="admin-tab-content"></div>
+
+      <div id="tab-i18n" class="admin-tab-content"></div>
 
 <div id="tab-path" class="admin-tab-content">
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
@@ -1640,6 +1643,27 @@ footer {
 
 
 <script type="module">
+// ── Global Config (shared with frontend) ──
+window.CONFIG_KEY = 'toast_blog_i18n_config';
+window.getConfig = function() {
+  const defaults = {
+    enabled: true,
+    envEnabled: true,
+    defaultLang: 'zh-CN',
+    supportedLangs: ['zh-CN', 'en'],
+    enabledEnvs: ['dev', 'test', 'pro']
+  };
+  try {
+    const saved = JSON.parse(localStorage.getItem(window.CONFIG_KEY) || '{}');
+    return Object.assign({}, defaults, saved);
+  } catch(_) { return defaults; }
+};
+window.saveConfig = function(cfg) {
+  const merged = Object.assign({}, window.getConfig(), cfg);
+  localStorage.setItem(window.CONFIG_KEY, JSON.stringify(merged));
+};
+
+
 /**
  * 数据加载层 — localStorage 优先，静态文件做默认值
  * 前台通过此模块读取数据，后台通过此模块读写数据
@@ -1836,6 +1860,8 @@ window.switchAdminTab = function(tab) {
     case 'tutorials': renderTable('tutorials'); break;
     case 'wiki': renderTable('wiki'); break;
     case 'path': renderPathAdmin(); break;
+    case 'env': renderEnvConfig(); break;
+    case 'i18n': renderI18nConfig(); break;
   }
 };
 
@@ -2441,14 +2467,16 @@ window.handleUpload = function(input, previewId) {
 // ── i18n Configuration ──
 // i18n functions accessible via window globals (set by main.js)
 
+function getI18nConfig() {
+  const env = localStorage.getItem('toast_blog_env') || 'prod';
+  const def = { enabled: true, defaultLang: 'zh-CN', supportedLangs: ['zh-CN', 'en'] };
+  try { return Object.assign({}, def, JSON.parse(localStorage.getItem('toast_blog_i18n_config_' + env) || '{}')); }
+  catch(_) { return def; }
+}
 function renderI18nConfig() {
-  var gc = window.getConfig || function(){ return {enabled:true, defaultLang:"zh-CN", supportedLangs:["zh-CN","en"]}; };
-  var sc = window.saveConfig || function(c){ return c; };
   var LM = window.LANG_META || { "zh-CN": {name:"中文",flag:"🇨🇳",nativeName:"中文"}, "en": {name:"English",flag:"🇺🇸",nativeName:"English"} };
-  const getConfig = gc;
-  const saveConfig = sc;
   const LANG_META = LM;
-  const cfg = getConfig();
+  const cfg = getI18nConfig();
   const container = document.getElementById('tab-i18n');
   if (!container) return;
   
@@ -2475,16 +2503,13 @@ function renderI18nConfig() {
         <button class="admin-btn admin-btn-sm" onclick="addCustomLang()" style="margin-left:8px">＋ 添加语言</button>
       </div>
     </div>
-    <div class="form-group">
-      <label><input type="checkbox" id="envSwitcherEnabled" onchange="saveI18nConfig()"> 启用前台环境切换</label>
-    </div>
+
     <div class="form-group">
       <label>配置说明</label>
       <p style="font-size:13px;color:var(--text-secondary);line-height:1.6">
         • 关闭"启用前台语言切换"后，导航栏语言按钮将隐藏<br>
-        • "启用前台环境切换"控制导航栏 DEV/TEST/PROD 色块显示<br>
+
         • 默认语言为首次访问用户展示的语言<br>
-        • 环境标签点击可切换，数据与后台管理同步<br>
         • 配置修改后立即生效，无需刷新
       </p>
     </div>
@@ -2492,19 +2517,15 @@ function renderI18nConfig() {
 }
 
 window.saveI18nConfig = function() {
-  const s = window.saveConfig || function(c){return c;};
+  const env = localStorage.getItem('toast_blog_env') || 'prod';
   const enabled = document.getElementById('i18nEnabled')?.checked ?? true;
-  const envEnabled = document.getElementById('envSwitcherEnabled')?.checked ?? true;
   const defaultLang = document.getElementById('i18nDefault')?.value || 'zh-CN';
   const checkboxes = document.querySelectorAll('#tab-i18n input[type="checkbox"][value]');
   const supportedLangs = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
-  
-  s({
-    enabled: enabled,
-    envEnabled: envEnabled,
-    defaultLang: supportedLangs.includes(defaultLang) ? defaultLang : supportedLangs[0] || 'zh-CN',
-    supportedLangs: supportedLangs.length > 0 ? supportedLangs : ['zh-CN']
-  });
+  const old = JSON.parse(localStorage.getItem('toast_blog_i18n_config_' + env) || '{}');
+  const data = { enabled: enabled, defaultLang: supportedLangs.includes(defaultLang) ? defaultLang : supportedLangs[0] || 'zh-CN', supportedLangs: supportedLangs.length > 0 ? supportedLangs : ['zh-CN'] };
+  localStorage.setItem('toast_blog_i18n_config_' + env, JSON.stringify(Object.assign({}, old, data)));
+  alert('✅ 语言配置已保存');
 };
 
 window.addCustomLang = function() {
@@ -2528,6 +2549,29 @@ window.addCustomLang = function() {
     }
     renderI18nConfig();
   });
+};
+
+// ── Render Environment Config Tab ──
+function renderEnvConfig() {
+  const env = localStorage.getItem('toast_blog_env') || 'prod';
+  const def = { envEnabled: true, enabledEnvs: ['dev', 'test', 'pro'] };
+  const cfg = (() => { try { return Object.assign({}, def, JSON.parse(localStorage.getItem('toast_blog_env_config_' + env) || '{}')); } catch(_) { return def; } })();
+  const container = document.getElementById('tab-env');
+  if (!container) return;
+  
+  container.innerHTML = `
+    <div class="form-group">
+      <label><input type="checkbox" id="envEnabled" ${cfg.envEnabled !== false ? 'checked' : ''} onchange="saveEnvConfig()"> 启用前台环境切换</label>
+    </div>
+  `;
+}
+
+window.saveEnvConfig = function() {
+  const env = localStorage.getItem('toast_blog_env') || 'prod';
+  const old = JSON.parse(localStorage.getItem('toast_blog_env_config_' + env) || '{}');
+  const enabled = document.getElementById('envEnabled')?.checked ?? true;
+  localStorage.setItem('toast_blog_env_config_' + env, JSON.stringify(Object.assign({}, old, { envEnabled: enabled })));
+  alert('✅ 环境配置已保存');
 };
 
 window.switchAdminTab = (function(original) {

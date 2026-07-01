@@ -1,5 +1,19 @@
 export const projects = [
   {
+    id: 0,
+    cat: 'web',
+    icon: '🍞',
+    title: 'Toast Blog',
+    desc: '零框架依赖的个人技术博客与作品集，Vite 6 + 原生 JS 构建，支持多环境/多语言切换、PWA、SEO 100。',
+    tags: ['Vite 6', 'Vanilla JS', 'CSS Variables', 'PWA', 'Lighthouse 100'],
+    color: '#fff3e0',
+    demoUrl: 'https://sml-toast.github.io/toast-blog/',
+    docUrl: '/doc.html',
+    githubUrl: 'https://github.com/sml-toast/toast-blog',
+    giteeUrl: 'https://gitee.com/sml-toast/toast-blog',
+    tech: 'Vite 6 · Vanilla JS · CSS Variables · localStorage · html2pdf.js · Lucide Icons',
+    fullDesc: '这是当前工作台的"项目文档"，即本工作台的展示页，点击导航栏的"环境切换"可查看不同环境的配置，"多语言"模块可切换不同语言。'
+  },  {
     id: 1,
     cat: 'ai',
     icon: '🤖',

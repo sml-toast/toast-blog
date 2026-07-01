@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>文档 | Toast Blog</title>
+<link rel="stylesheet" href="/style.css" />
+<style>
+/* ── Doc Layout ── */
+.doc-page { display: flex; min-height: 100vh; }
+.doc-sidebar {
+  width: 280px; flex-shrink: 0;
+  background: var(--surface); border-right: 1px solid var(--border);
+  overflow-y: auto; position: fixed; top: 0; left: 0; height: 100vh; z-index: 10;
+  padding: 20px 0;
+}
+.doc-main { margin-left: 280px; flex: 1; padding: 40px 48px; max-width: 960px; }
+.doc-sidebar .logo-wrap {
+  display: flex; align-items: center; gap: 8px; padding: 0 20px 16px;
+  border-bottom: 1px solid var(--border); margin-bottom: 12px;
+}
+.doc-sidebar .logo-wrap svg { flex-shrink: 0; }
+.doc-sidebar .logo-wrap span { font-size: 16px; font-weight: 700; }
+.doc-sidebar .sidebar-section { margin-bottom: 8px; }
+.doc-sidebar .sidebar-category {
+  padding: 8px 20px; font-size: 12px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 1px; color: var(--text-secondary);
+}
+.doc-sidebar .sidebar-item {
+  display: block; padding: 6px 20px 6px 28px; font-size: 14px;
+  color: var(--text); text-decoration: none; border-left: 2px solid transparent;
+  transition: all .15s;
+}
+.doc-sidebar .sidebar-item:hover { color: var(--accent); }
+.doc-sidebar .sidebar-item.active {
+  color: var(--accent); border-left-color: var(--accent);
+  background: var(--accent-light);
+}
+.doc-main h1 { font-size: 32px; margin-bottom: 8px; }
+.doc-main h2 { font-size: 24px; margin-top: 32px; margin-bottom: 12px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+.doc-main h3 { font-size: 18px; margin-top: 24px; margin-bottom: 8px; }
+.doc-main p { line-height: 1.7; margin-bottom: 16px; }
+.doc-main code { background: var(--accent-light); padding: 2px 6px; border-radius: 4px; font-size: 13px; font-family: 'JetBrains Mono', monospace; }
+.doc-main pre { background: var(--section-alt); padding: 16px; border-radius: 8px; overflow-x: auto; margin-bottom: 16px; }
+.doc-main table { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
+.doc-main th, .doc-main td { padding: 10px 12px; border: 1px solid var(--border); text-align: left; }
+.doc-main th { background: var(--section-alt); font-weight: 600; }
+.doc-nav { position: fixed; top: 12px; right: 20px; z-index: 20; display: flex; gap: 8px; }
+.doc-nav a { display: inline-flex; align-items: center; gap: 4px; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 500; text-decoration: none; background: var(--surface); border: 1px solid var(--border); color: var(--text); transition: all .15s; }
+.doc-nav a:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+@media (max-width: 768px) {
+  .doc-sidebar { width: 100%; position: relative; height: auto; }
+  .doc-main { margin-left: 0; padding: 20px; }
+  .doc-page { flex-direction: column; }
+}
+</style>
+</head>
+<body>
+<div class="doc-nav">
+  <a href="/">← 返回博客</a>
+  <a href="https://github.com/sml-toast/toast-blog" target="_blank">GitHub</a>
+  <a href="/admin.html">管理后台</a>
+</div>
+<div class="doc-page">
+  <aside class="doc-sidebar" id="docSidebar">
+    <div class="logo-wrap">
+      <svg width="24" height="24" viewBox="0 0 512 512"><path d="M76 160Q76 64 160 48L352 48Q436 64 436 160L436 384Q436 432 384 440L128 440Q76 432 76 384Z" fill="#8B4513"/><path d="M100 168Q100 86 172 72L340 72Q412 86 412 168L412 376Q412 416 374 424L138 424Q100 416 100 376Z" fill="#F5D98C"/><path d="M220 160L220 360L292 360L292 320L264 320L264 200L320 200L320 160Z" fill="#0A84FF"/></svg>
+      <span>Toast Blog 文档</span>
+    </div>
+    <div class="sidebar-section" data-section="intro">
+      <div class="sidebar-category">介绍</div>
+      <a class="sidebar-item" onclick="scrollToSection('about')">关于项目</a>
+      <a class="sidebar-item" onclick="scrollToSection('tech')">技术栈</a>
+    </div>
+    <div class="sidebar-section" data-section="guide">
+      <div class="sidebar-category">使用指南</div>
+      <a class="sidebar-item" onclick="scrollToSection('start')">快速开始</a>
+      <a class="sidebar-item" onclick="scrollToSection('scripts')">脚本说明</a>
+      <a class="sidebar-item" onclick="scrollToSection('env')">多环境切换</a>
+      <a class="sidebar-item" onclick="scrollToSection('i18n')">多语言配置</a>
+    </div>
+    <div class="sidebar-section" data-section="admin">
+      <div class="sidebar-category">后台管理</div>
+      <a class="sidebar-item" onclick="scrollToSection('login')">登录与缓存</a>
+      <a class="sidebar-item" onclick="scrollToSection('data')">数据管理</a>
+      <a class="sidebar-item" onclick="scrollToSection('backup')">备份与还原</a>
+    </div>
+    <div class="sidebar-section" data-section="dev">
+      <div class="sidebar-category">开发</div>
+      <a class="sidebar-item" onclick="scrollToSection('structure')">目录结构</a>
+      <a class="sidebar-item" onclick="scrollToSection('deploy')">部署指南</a>
+      <a class="sidebar-item" onclick="scrollToSection('changelog')">更新日志</a>
+    </div>
+  </aside>
+
+  <main class="doc-main" id="docContent">
+    <h1 id="about">🍞 Toast Blog 文档</h1>
+    <p>零框架依赖的个人技术博客与作品集网站，使用 <strong>Vite 6 + 原生 JavaScript</strong> 构建。</p>
+    <p>本文档覆盖项目的架构设计、功能模块、开发指南与运维说明。</p>
+
+    <h2 id="tech">技术栈</h2>
+    <table>
+      <tr><th>类别</th><th>技术</th></tr>
+      <tr><td>构建工具</td><td>Vite 6</td></tr>
+      <tr><td>前端框架</td><td>无（原生 JS / HTML / CSS）</td></tr>
+      <tr><td>样式方案</td><td>CSS Variables（深色/浅色主题）</td></tr>
+      <tr><td>图标</td><td>Lucide Icons + Emoji</td></tr>
+      <tr><td>PDF 导出</td><td>html2pdf.js</td></tr>
+      <tr><td>数据持久化</td><td>localStorage</td></tr>
+      <tr><td>在线评论</td><td>Giscus（GitHub Discussions）</td></tr>
+      <tr><td>CI/CD</td><td>GitHub Actions → GitHub Pages</td></tr>
+    </table>
+
+    <h2 id="start">快速开始</h2>
+    <pre><code>git clone https://github.com/sml-toast/toast-blog.git
+cd toast-blog
+npm install
+npm run dev   # 启动开发服务器 → http://localhost:5174</code></pre>
+    <p>更多脚本见 README。</p>
+
+    <h2 id="scripts">脚本说明</h2>
+    <table>
+      <tr><th>脚本</th><th>说明</th></tr>
+      <tr><td><code>npm run dev</code></td><td>开发服务器（自动清理端口）</td></tr>
+      <tr><td><code>npm run build</code></td><td>构建生产版本 → dist/</td></tr>
+      <tr><td><code>npm run preview</code></td><td>预览构建产物</td></tr>
+      <tr><td><code>bash scripts/start.sh</code></td><td>后台持久运行</td></tr>
+      <tr><td><code>bash scripts/stop.sh</code></td><td>停止 Vite 进程</td></tr>
+    </table>
+
+    <h2 id="env">多环境切换</h2>
+    <p>支持 <strong>DEV</strong> / <strong>TEST</strong> / <strong>PROD</strong> 三套独立配置。</p>
+    <p>每个环境拥有独立的 <code>localStorage</code> 数据存储和配置开关（多语言启用/禁用、环境切换按钮显示等）。</p>
+    <table>
+      <tr><th>环境</th><th>标识色</th><th>存储 key 前缀</th></tr>
+      <tr><td style="color:#2e7d32">DEV</td><td>绿色</td><td><code>toast_blog_config_dev</code></td></tr>
+      <tr><td style="color:#e65100">TEST</td><td>橙色</td><td><code>toast_blog_config_test</code></td></tr>
+      <tr><td style="color:#1565c0">PROD</td><td>蓝色</td><td><code>toast_blog_config_prod</code></td></tr>
+    </table>
+
+    <h2 id="i18n">多语言配置</h2>
+    <p>支持中文和英文两种语言，语言包位于 <code>data/lang/</code> 目录。</p>
+
+    <h2 id="login">登录与缓存</h2>
+    <p>管理后台 /admin.html 访问需密码 <code>admin</code>。</p>
+    <p>登录后 30 分钟内免登录，关闭浏览器仍然有效。退出时清除缓存。</p>
+
+    <h2 id="data">数据管理</h2>
+    <p>后台支持作品/教程/Wiki/学习路线的 CRUD 操作，数据存储在 localStorage，环境隔离。</p>
+
+    <h2 id="backup">备份与还原</h2>
+    <p>支持导出 ZIP（含附件）和 JSON 两种格式。还原时选择备份文件恢复。</p>
+
+    <h2 id="structure">目录结构</h2>
+    <pre><code>toast-blog/
+├── index.html            # 主页面
+├── main.js               # 核心 JS
+├── style.css             # 全局样式
+├── doc.html              # 文档页（当前）
+├── admin.html            # 管理后台
+├── admin.js              # 后台脚本
+├── data/                 # 数据层
+│   ├── projects.js
+│   ├── tutorials.js
+│   ├── wiki.js
+│   ├── path.js
+│   ├── loader.js
+│   └── i18n.js
+├── public/               # 静态资源
+├── scripts/              # 工具脚本
+└── doc/                  # 设计文档</code></pre>
+
+    <h2 id="deploy">部署指南</h2>
+    <p>推送 main 分支即可触发 GitHub Actions 自动构建和部署：</p>
+    <pre><code>git push origin main
+# GitHub Actions 自动运行 → GitHub Pages</code></pre>
+
+    <h2 id="changelog">更新日志</h2>
+    <table>
+      <tr><th>日期</th><th>内容</th></tr>
+      <tr><td>2026-06-28</td><td>多环境配置隔离，每个环境独立存储语言/环境开关</td></tr>
+      <tr><td>2026-06-25</td><td>返回箭头合并进 FAB 浮标</td></tr>
+      <tr><td>2026-06-24</td><td>FAB 浮标上线，快捷管理/反馈/外观切换</td></tr>
+    </table>
+  </main>
+</div>
+<script>
+function scrollToSection(id) {
+  const el = document.getElementById(id);
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  // Update active sidebar
+  document.querySelectorAll('.sidebar-item').forEach(item => item.classList.remove('active'));
+  const link = document.querySelector('.sidebar-item[onclick*="' + id + '"]');
+  if (link) link.classList.add('active');
+}
+// Highlight current section on scroll
+document.addEventListener('scroll', () => {
+  const sections = ['about','tech','start','scripts','env','i18n','login','data','backup','structure','deploy','changelog'];
+  let activeId = sections[0];
+  for (const id of sections) {
+    const el = document.getElementById(id);
+    if (el && window.scrollY + 80 >= el.offsetTop) activeId = id;
+  }
+  document.querySelectorAll('.sidebar-item').forEach(item => item.classList.remove('active'));
+  const link = document.querySelector('.sidebar-item[onclick*="' + activeId + '"]');
+  if (link) link.classList.add('active');
+});
+</script>
+</body>
+</html>

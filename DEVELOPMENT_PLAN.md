@@ -1,39 +1,87 @@
-# Toast Blog — 开发计划
+# 开发任务计划
 
-> 最后更新: 2026-06-17 | 项目: Vite 6 + 原生 JS
+---
 
-## 迭代完成状态
+## 任务 1：后台管理多语言与多环境功能独立
 
-| 迭代 | 状态 | 核心内容 |
-|------|------|---------|
-| Iter 0: 骨架 | ✅ | Vite 初始化、6 板块 HTML、CSS 变量、导航 |
-| Iter 1: MVP | ✅ | 深色模式、入场动画、返回顶部、ESC 关闭、汉堡菜单 |
-| Iter 2: 内容 | ✅ | Wiki 20 条、教程 11 条、作品 7 个、简历数据 |
-| Iter 3: 性能 | ✅ | Lighthouse P100、a11y 93、SEO 100 |
-| Iter 4: 平台 | ✅ | JSON-LD、Sitemap、RSS、PWA、Giscus、GitHub Actions |
-| Iter 5: 迭代 | ✅ | 数据统计、反馈通道、技术栈评估 |
-| Iter 6: 增强 | ✅ | Pages 部署修复、Logo 设计、弹窗修复、简历功能补齐、打印优化 |
-| Iter 7: 管理 | 🔜 | 后台管理面板 — localStorage CRUD + 加密访问 + 静态表单 |
-| Iter 8: 存储 | 💡 | GitHub API 数据持久化 + 文件上传 |
+**状态：进行中**
+**目标：** 多语言配置、多环境配置在管理后台互为独立模块，各自独立控制博客首页显示
 
-## 后台管理 (Iter 7)
+### 确认事项
+- 多语言（enabled / defaultLang / supportedLangs）→ `toast_blog_i18n_config_{env}`
+- 多环境（envEnabled / enabledEnvs）→ `toast_blog_env_config_{env}`
+- 两个模块的启用/禁用只影响博客首页的切换按钮显示
+- 不干预后台管理界面的环境切换（DEV/TEST/PROD 数据隔离）
 
-| # | 任务 | 状态 |
-|---|------|------|
-| 7.1 | data/loader.js — 数据层（localStorage 优先） | ✅ |
-| 7.2 | main.js — 整合数据加载器 | ✅ |
-| 7.3 | admin.js — 管理面板（登录/CRUD/导入导出） | ✅ |
-| 7.4 | admin.css — 管理面板样式 | ✅ |
-| 7.5 | index.html — 后台管理 section + 表单 + 导航 | ✅ |
-| 7.6 | 后台管理文档 | 🔜 |
-| 7.7 | 测试 & 修复 | 🔜 |
-| 7.8 | 构建 & 部署验证 | 🔜 |
+### 已完成
+- [x] admin.html 清理内联 getConfig/saveConfig 脚本，统一走 admin.js
+- [x] admin.js getConfig/saveConfig 改用 per-env 独立 key
+- [x] admin.html renderEnvConfig() 读取 cfg.envEnabled
+- [x] admin.html renderI18nConfig() 读取 cfg.enabled / defaultLang / supportedLangs
+- [x] admin.html saveEnvConfig() / saveI18nConfig() 分别写入独立 key
 
-## 后续迭代
+### 待测试
+- [ ] DEV 开启多语言 → 博客首页出现语言切换按钮
+- [ ] DEV 关闭多环境 → 博客首页隐藏环境标签
+- [ ] PROD 设置不同值 → 互相不影响
+- [ ] 管理后台环境切换时，数据/配置完全独立
 
-| # | 任务 | 优先级 | 状态 |
-|---|------|--------|------|
-| 8.1 | GitHub API 数据持久化 | P1 | 💡 |
-| 8.2 | 图片/文件上传（GitHub commit） | P1 | 💡 |
-| 8.3 | 页面动效增强 | P2 | 🔲 |
-| 8.4 | 图片懒加载 | P2 | 🔲 |
+---
+
+## 任务 2：后台管理增加简历模块
+
+**状态：待开发**
+**目标：** 在管理后台新增「简历管理」标签页，提供：
+- 简历文件导入（PDF / Word / Markdown）
+- 简历内容智能解析（职能/技能/经验识别）
+- 解析结果回填到简历模板
+- 预生成 3 套简历模板
+
+### 功能拆分
+
+#### 2.1 简历文件上传与解析
+```
+[上传简历] → [文件格式校验] → [内容提取] → [职能/技能/经验识别] → [结构化数据]
+```
+- 支持 PDF、Word（.docx）、Markdown
+- 使用正则或简单 NLP 提取：姓名、电话、邮箱、教育经历、工作经历、技能标签
+- 解析结果存入 localStorage（per-env 隔离）
+
+#### 2.2 解析数据回填
+```
+[结构化数据] → [映射到简历模板字段] → [实时预览] → [保存]
+```
+- 字段：个人信息、工作经历、教育经历、技能、项目经验
+- 支持手动纠偏/补充
+
+#### 2.3 简历模板预生成
+- 模板 A：简约现代（单栏，适合技术岗）
+- 模板 B：经典商务（双栏，适合传统行业）
+- 模板 C：创意视觉（带头像/色块，适合设计/创意岗）
+- 每个模板可预览、切换、保存
+
+### 技术方案
+- 前端解析库：`pdf.js` 或 `mammoth.js`（Word 解析）
+- 简历渲染：现有简历预览组件（main.js 内的 resume section）复用
+- 数据存储：localStorage + data/loader.js 的 per-env 机制
+
+### 检查点
+- [ ] 解析结果准确率 ≥ 80%
+- [ ] 模板切换时内容保留
+- [ ] 导出 PDF 正常
+- [ ] 支持多语言简历内容
+- [ ] 浏览器测试覆盖
+
+---
+
+## 任务 3：验证与测试
+
+**状态：待完成**
+- [ ] 多语言/多环境配置 UI 隔离测试
+- [ ] 博客首页按钮显示与后台配置一致
+- [ ] localStorage 独立 key 验证
+- [ ] 简历模块端到端测试
+- [ ] Lighthouse 审计
+
+---
+

@@ -3,7 +3,10 @@
  */
 
 const LANG_KEY = 'toast_blog_lang';
-const CONFIG_KEY = 'toast_blog_i18n_config';
+function getI18nConfigKey() {
+  const env = localStorage.getItem('toast_blog_env') || 'prod';
+  return 'toast_blog_i18n_config_' + env;
+}
 
 // 默认配置
 window.__i18nState = {
@@ -120,7 +123,7 @@ window.initI18n = initI18n;
 export function loadConfig() {
   const state = window.__i18nState;
   try {
-    const saved = localStorage.getItem(CONFIG_KEY);
+    const saved = localStorage.getItem(getI18nConfigKey());
     if (saved) {
       const parsed = JSON.parse(saved);
       state.config = { ...state.config, ...parsed };
@@ -133,7 +136,7 @@ window.loadConfig = loadConfig;
 export function saveConfig(newConfig) {
   const state = window.__i18nState;
   state.config = { ...state.config, ...newConfig };
-  localStorage.setItem(CONFIG_KEY, JSON.stringify(state.config));
+  localStorage.setItem(getI18nConfigKey(), JSON.stringify(state.config));
   return state.config;
 }
 window.saveConfig = saveConfig;

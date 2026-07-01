@@ -814,7 +814,7 @@ window.saveI18nConfig = function() {
     enabledEnvs: ['dev', 'test', 'pro']
   };
   
-  localStorage.setItem('toast_blog_i18n_config', JSON.stringify(cfg));
+  var _env = (typeof getCurrentEnv === 'function' ? getCurrentEnv() : null) || localStorage.getItem('toast_blog_env') || 'prod'; localStorage.setItem('toast_blog_i18n_config_' + _env, JSON.stringify(cfg));
   const s = window.saveConfig;
   if (s) s(cfg);
 };
@@ -883,40 +883,54 @@ window.switchEnv = async function(env) {
   if (loader) setTimeout(() => loader.classList.remove('active'), 300);
 };
 
-// Make getConfig/saveConfig available globally for admin.html inline handlers
-// Unified config key: use the SAME key as frontend (toast_blog_i18n_config)
-window.CONFIG_KEY = 'toast_blog_i18n_config';
+// Per-environment config: i18n and env are stored in separate keys
+// i18n key: toast_blog_i18n_config_{env}
+// env key:  toast_blog_env_config_{env}
+
+function getEnvKey() {
+  const env = (typeof getCurrentEnv === 'function' ? getCurrentEnv() : null)
+            || localStorage.getItem('toast_blog_env') || 'prod';
+  return env;
+}
 
 window.getConfig = function() {
-  const defaults = {
+  const env = getEnvKey();
+  const i18nKey = 'toast_blog_i18n_config_' + env;
+  const envKey  = 'toast_blog_env_config_' + env;
+  
+  const i18nDefaults = {
     enabled: true,
-    envEnabled: true,
     defaultLang: 'zh-CN',
-    supportedLangs: ['zh-CN', 'en'],
+    supportedLangs: ['zh-CN', 'en']
+  };
+  const envDefaults = {
+    envEnabled: true,
     enabledEnvs: ['dev', 'test', 'pro']
   };
+  
   try {
-    const saved = JSON.parse(localStorage.getItem(window.CONFIG_KEY) || '{}');
-    return Object.assign({}, defaults, saved);
+    const i18nSaved = JSON.parse(localStorage.getItem(i18nKey) || '{}');
+    const envSaved  = JSON.parse(localStorage.getItem(envKey) || '{}');
+    return Object.assign({}, i18nDefaults, envDefaults, i18nSaved, envSaved);
   } catch(_) {
-    return defaults;
+    return Object.assign({}, i18nDefaults, envDefaults);
   }
 };
 
 window.saveConfig = function(cfg) {
-  const merged = Object.assign({}, window.getConfig(), cfg);
-  localStorage.setItem(window.CONFIG_KEY, JSON.stringify(merged));
-};
-
-// Ensure i18n config also reflects envEnabled, because frontend reads envEnabled from i18n config.
-// This helper updates the shared key used by main.js (`toast_blog_i18n_config`).
-function syncEnvEnabledToI18n(cfg) {
-  try {
-    const i18nKey = 'toast_blog_i18n_config';
-    const prev = JSON.parse(localStorage.getItem(i18nKey) || '{}');
-    const merged = Object.assign({}, prev, { envEnabled: cfg.envEnabled });
-    localStorage.setItem(i18nKey, JSON.stringify(merged));
-  } catch (_) {
-    // ignore sync errors – admin config will still be saved.
-  }
+  const env = getEnvKey();
+  const i18nKey = 'toast_blog_i18n_config_' + env;
+  const envKey  = 'toast_blog_env_config_' + env;
+  
+  // i18n fields
+  const i18nCfg = { enabled: cfg.enabled, defaultLang: cfg.defaultLang, supportedLangs: cfg.supportedLangs };
+  // env fields
+  const envCfg = { envEnabled: cfg.envEnabled, enabledEnvs: cfg.enabledEnvs };
+  
+  // Merge with existing
+  const oldI18n = JSON.parse(localStorage.getItem(i18nKey) || '{}');
+  const oldEnv  = JSON.parse(localStorage.getItem(envKey) || '{}');
+  
+  localStorage.setItem(i18nKey, JSON.stringify(Object.assign({}, oldI18n, i18nCfg)));
+  localStorage.setItem(envKey, JSON.stringify(Object.assign({}, oldEnv, envCfg)));
 }
