@@ -27,3 +27,6 @@ Thumbs.db
 .vite.log
 .vite.pid
 public/admin.html
+.vite.log
+.vite.pid
+.vite-preview.pid
