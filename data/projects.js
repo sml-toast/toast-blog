@@ -8,7 +8,7 @@ export const projects = [
     tags: ['Vite 6', 'Vanilla JS', 'CSS Variables', 'PWA', 'Lighthouse 100'],
     color: '#fff3e0',
     demoUrl: 'https://sml-toast.github.io/toast-blog/',
-    docUrl: '/doc.html',
+    docUrl: './doc.html',
     githubUrl: 'https://github.com/sml-toast/toast-blog',
     giteeUrl: 'https://gitee.com/sml-toast/toast-blog',
     tech: 'Vite 6 · Vanilla JS · CSS Variables · localStorage · html2pdf.js · Lucide Icons',
