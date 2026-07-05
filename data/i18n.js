@@ -128,6 +128,16 @@ export function loadConfig() {
       const parsed = JSON.parse(saved);
       state.config = { ...state.config, ...parsed };
     }
+    // Also load env-specific envEnabled from toast_blog_env_config_{env}
+    const env = localStorage.getItem('toast_blog_env') || 'prod';
+    const envConfigKey = 'toast_blog_env_config_' + env;
+    const envSaved = localStorage.getItem(envConfigKey);
+    if (envSaved) {
+      const envParsed = JSON.parse(envSaved);
+      if ('envEnabled' in envParsed) {
+        state.config.envEnabled = envParsed.envEnabled;
+      }
+    }
   } catch(e) {}
   return state.config;
 }

@@ -470,7 +470,8 @@ const hamburger = document.createElement('button');
 hamburger.className = 'hamburger';
 hamburger.setAttribute('aria-label', '菜单');
 hamburger.innerHTML = '<span></span><span></span><span></span>';
-nav.insertBefore(hamburger, nav.querySelector('ul'));
+const navCenter = nav.querySelector('.nav-center');
+nav.insertBefore(hamburger, navCenter);
 hamburger.addEventListener('click', () => nav.querySelector('ul').classList.toggle('open'));
 nav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => nav.querySelector('ul').classList.remove('open')));
 

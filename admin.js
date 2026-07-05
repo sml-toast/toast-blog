@@ -337,13 +337,13 @@ window.importData = function() {
   const input = document.getElementById('importFile');
   if (!input.files?.[0]) return;
   importJSON(input.files[0]).then(() => {
-    alert('✅ 导入成功');
+    showToast('success', '导入成功');
     input.value = '';
     renderDashboard();
     Object.keys(TABLE_CONFIG).forEach(t => renderTable(t));
     renderPathAdmin();
   }).catch(err => {
-    alert('❌ ' + err.message);
+    showToast('error', '导入失败', err.message);
   });
 };
 
@@ -635,13 +635,13 @@ window.backupData = function() {
   mA.click();
   URL.revokeObjectURL(mUrl);
   
-  alert('✅ 备份完成！ 1.保存 data.json → data/' + env + '/ 2.附件解压 → data/' + env + '/attachments/' + monthDir + '/ 3.更新 manifest.json');
+  showToast('success', '备份完成', '1.保存 data.json → data/' + env + '/\n2.附件解压 → data/' + env + '/attachments/\n3.更新 manifest.json');
 };
 
 window.restoreData = function() {
   const input = document.getElementById('restoreFile');
   if (!input.files || !input.files[0]) {
-    alert('请选择备份文件');
+    showToast('warning', '提示', '请选择备份文件');
     return;
   }
   
@@ -651,7 +651,7 @@ window.restoreData = function() {
       const backup = JSON.parse(e.target.result);
       
       if (!backup.version || !backup.data) {
-        alert('❌ 备份文件格式不正确');
+        showToast('error', '备份失败', '备份文件格式不正确');
         return;
       }
       
@@ -688,14 +688,14 @@ window.restoreData = function() {
         saveData(backup.data);
       }
       
-      alert('✅ 还原成功！\n环境: ' + env + '\n数据: ' + Object.keys(backup.data).join(', '));
+      showToast('success', '还原成功', '环境: ' + env + '\n数据: ' + Object.keys(backup.data).join(', '));
       input.value = '';
       renderDashboard();
       ['projects', 'tutorials', 'wiki'].forEach(t => { if (typeof renderTable === 'function') renderTable(t); });
       if (typeof renderPathAdmin === 'function') renderPathAdmin();
       
     } catch(err) {
-      alert('❌ 解析失败: ' + err.message);
+      showToast('error', '还原失败', err.message);
     }
   };
   reader.readAsText(input.files[0]);
@@ -933,4 +933,6 @@ window.saveConfig = function(cfg) {
   
   localStorage.setItem(i18nKey, JSON.stringify(Object.assign({}, oldI18n, i18nCfg)));
   localStorage.setItem(envKey, JSON.stringify(Object.assign({}, oldEnv, envCfg)));
+  
+  
 }
