@@ -1,4 +1,30 @@
 
+// ── Toast notification function ──
+window.showToast = function(type, title, message) {
+  let container = document.getElementById('toastContainer');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'toastContainer';
+    container.className = 'toast-container';
+    document.body.appendChild(container);
+  }
+  
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  
+  let content = '';
+  if (title) content += `<div class="toast-title">${title}</div>`;
+  if (message) content += `<div class="toast-message">${message.replace(/\n/g, '<br>')}</div>`;
+  toast.innerHTML = content;
+  
+  container.appendChild(toast);
+  
+  setTimeout(() => {
+    toast.style.animation = 'toastOut 0.3s ease-in forwards';
+    setTimeout(() => toast.remove(), 300);
+  }, 3000);
+};
+
 const ADMIN_PASSWORD_HASH = '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918'; // SHA-256 of 'admin'
 let currentTab = 'dashboard';
 let editingId = null;
@@ -218,7 +244,6 @@ window.saveAdminForm = saveForm;
 
 // ── Delete ──
 window.deleteItem = function(type, index) {
-  if (!confirm('确认删除？')) return;
   const d = getData();
   d[type].splice(index, 1);
   saveData(d);
@@ -323,7 +348,6 @@ window.addPath = function() {
 };
 
 window.deletePath = function(index) {
-  if (!confirm('确认删除？')) return;
   const d = getData();
   d.pathSteps.splice(index, 1);
   saveData(d);
@@ -348,8 +372,6 @@ window.importData = function() {
 };
 
 window.resetData = function() {
-  if (!confirm('确认重置所有数据为默认值？此操作不可恢复！')) return;
-  if (!confirm('再次确认：所有修改将被丢弃！')) return;
   resetToDefaults();
   renderDashboard();
   Object.keys(TABLE_CONFIG).forEach(t => renderTable(t));
@@ -580,13 +602,11 @@ window.backupData = function() {
     });
   });
   
-  const desc = prompt('备份说明（可选）：');
-  
   const backup = {
     version: '1.0',
     environment: env,
     exportedAt: now.toISOString(),
-    description: desc || '',
+    description: '',
     data: d,
     files: files,
     directories: {
@@ -609,7 +629,7 @@ window.backupData = function() {
   const manifest = {
     environment: env,
     version: '1.0',
-    description: desc || '',
+    description: '',
     updatedAt: now.toISOString(),
     dataFile: 'data.json',
     attachments: {}
@@ -657,13 +677,6 @@ window.restoreData = function() {
       
       const env = backup.environment || 'unknown';
       const currentEnv = getCurrentEnv();
-      
-      if (env !== currentEnv) {
-        if (!confirm('备份环境 (' + env + ') 与当前环境 (' + currentEnv + ') 不一致，确定还原？')) {
-          input.value = '';
-          return;
-        }
-      }
       
       // Restore data
       saveData(backup.data);
@@ -820,26 +833,8 @@ window.saveI18nConfig = function() {
 };
 
 window.addCustomLang = function() {
-  const saveConfig = window.saveConfig || function(c){};
-  const getConfig = window.getConfig || function(){ return {supportedLangs:[]}; };
-  const code = prompt('输入语言代码（如：ja、ko）：');
-  if (!code) return;
-  const name = prompt('输入语言名称（如：日本語、한국어）：');
-  if (!name) return;
-  const flag = prompt('输入国旗 Emoji（如：🇯🇵、🇰🇷）：');
-  if (!flag) return;
-  
-  import('./data/i18n.js').then(i18n => {
-    // Add to LANG_META
-    i18n.LANG_META[code] = { name, flag, nativeName: name };
-    
-    const cfg = getConfig();
-    if (!cfg.supportedLangs.includes(code)) {
-      cfg.supportedLangs.push(code);
-      saveConfig(cfg);
-    }
-    renderI18nConfig();
-  });
+  // 暂时禁用自定义语言添加功能，避免弹窗
+  showToast('info', '提示', '自定义语言功能暂时不可用');
 };
 
 window.switchAdminTab = (function(original) {

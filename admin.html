@@ -1481,12 +1481,28 @@ footer {
 .env-loading .spinner { width:40px; height:40px; border:4px solid #fff; border-top-color:var(--accent); border-radius:50%; animation:spin 0.8s linear infinite; }
 @keyframes spin { to { transform:rotate(360deg); } }
 
+/* Toast notification */
+.toast-container { position: fixed; top: 80px; right: 20px; z-index: 10000; display: flex; flex-direction: column; gap: 10px; }
+.toast { padding: 14px 20px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); min-width: 280px; animation: toastIn 0.3s ease-out; }
+.toast.success { background: #f0fdf4; border-left: 4px solid #22c55e; color: #166534; }
+.toast.error { background: #fef2f2; border-left: 4px solid #dc2626; color: #991b1b; }
+.toast.warning { background: #fffbeb; border-left: 4px solid #f59e0b; color: #92400e; }
+.toast.info { background: #eff6ff; border-left: 4px solid #3b82f6; color: #1e40af; }
+[data-theme="dark"] .toast.success { background: #14532d; border-left-color: #22c55e; color: #86efac; }
+[data-theme="dark"] .toast.error { background: #450a0a; border-left-color: #dc2626; color: #fca5a5; }
+[data-theme="dark"] .toast.warning { background: #451a03; border-left-color: #f59e0b; color: #fcd34d; }
+[data-theme="dark"] .toast.info { background: #1e3a5f; border-left-color: #3b82f6; color: #93c5fd; }
+.toast-title { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+.toast-message { font-size: 13px; line-height: 1.5; }
+@keyframes toastIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+@keyframes toastOut { to { transform: translateX(100%); opacity: 0; } }
+
 </style>
 </head>
 <body>
 
 <div class="env-loading" id="envLoader"><div class="spinner"></div></div>
-
+<div class="toast-container" id="toastContainer"></div>
 
 
 
@@ -1667,6 +1683,27 @@ footer {
 
 
 <script type="module">
+// ── Toast notification function ──
+window.showToast = function(type, title, message) {
+  const container = document.getElementById('toastContainer');
+  if (!container) return;
+  
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  
+  let content = '';
+  if (title) content += `<div class="toast-title">${title}</div>`;
+  if (message) content += `<div class="toast-message">${message.replace(/\n/g, '<br>')}</div>`;
+  toast.innerHTML = content;
+  
+  container.appendChild(toast);
+  
+  setTimeout(() => {
+    toast.style.animation = 'toastOut 0.3s ease-in forwards';
+    setTimeout(() => toast.remove(), 300);
+  }, 3000);
+};
+
 // ── Initialize LANG_META first ──
 window.LANG_META = {
   'zh-CN': { name: '中文', flag: '🇨🇳', nativeName: '中文' },
@@ -2049,7 +2086,6 @@ window.saveAdminForm = saveForm;
 
 // ── Delete ──
 window.deleteItem = function(type, index) {
-  if (!confirm('确认删除？')) return;
   const d = getData();
   d[type].splice(index, 1);
   saveData(d);
@@ -2154,7 +2190,6 @@ window.addPath = function() {
 };
 
 window.deletePath = function(index) {
-  if (!confirm('确认删除？')) return;
   const d = getData();
   d.pathSteps.splice(index, 1);
   saveData(d);
@@ -2168,18 +2203,19 @@ window.importData = function() {
   const input = document.getElementById('importFile');
   if (!input.files?.[0]) return;
   importJSON(input.files[0]).then(() => {
+    showToast('success', '导入成功');
     input.value = '';
     renderDashboard();
     Object.keys(TABLE_CONFIG).forEach(t => renderTable(t));
     renderPathAdmin();
   }).catch(err => {
+    showToast('error', '导入失败', err.message);
   });
 };
 
 window.resetData = function() {
-  if (!confirm('确认重置所有数据为默认值？此操作不可恢复！')) return;
-  if (!confirm('再次确认：所有修改将被丢弃！')) return;
   resetToDefaults();
+  showToast('success', '重置成功', '数据已恢复为默认值');
   renderDashboard();
   Object.keys(TABLE_CONFIG).forEach(t => renderTable(t));
   renderPathAdmin();
@@ -2346,13 +2382,11 @@ window.backupData = function() {
     });
   });
   
-  const desc = prompt('备份说明（可选）：');
-  
   const backup = {
     version: '1.0',
     environment: env,
     exportedAt: now.toISOString(),
-    description: desc || '',
+    description: '',
     data: d,
     files: files,
     directories: {
@@ -2375,7 +2409,7 @@ window.backupData = function() {
   const manifest = {
     environment: env,
     version: '1.0',
-    description: desc || '',
+    description: '',
     updatedAt: now.toISOString(),
     dataFile: 'data.json',
     attachments: {}
@@ -2400,11 +2434,14 @@ window.backupData = function() {
   mA.download = 'manifest-' + env + '.json';
   mA.click();
   URL.revokeObjectURL(mUrl);
+  
+  showToast('success', '备份完成', '1.保存 data.json → data/' + env + '/\n2.附件解压 → data/' + env + '/attachments/\n3.更新 manifest.json');
 };
 
 window.restoreData = function() {
   const input = document.getElementById('restoreFile');
   if (!input.files || !input.files[0]) {
+    showToast('warning', '提示', '请选择备份文件');
     return;
   }
   
@@ -2414,16 +2451,12 @@ window.restoreData = function() {
       const backup = JSON.parse(e.target.result);
       
       if (!backup.version || !backup.data) {
+        showToast('error', '备份失败', '备份文件格式不正确');
         return;
       }
       
       const env = backup.environment || 'unknown';
       const currentEnv = getCurrentEnv();
-      
-      if (env !== currentEnv) {
-        input.value = '';
-        return;
-      }
       
       // Restore data
       saveData(backup.data);
@@ -2448,12 +2481,14 @@ window.restoreData = function() {
         saveData(backup.data);
       }
       
+      showToast('success', '还原成功', '环境: ' + env + '\n数据: ' + Object.keys(backup.data).join(', '));
       input.value = '';
       renderDashboard();
       ['projects', 'tutorials', 'wiki'].forEach(t => { if (typeof renderTable === 'function') renderTable(t); });
       if (typeof renderPathAdmin === 'function') renderPathAdmin();
       
     } catch(err) {
+      showToast('error', '还原失败', err.message);
     }
   };
   reader.readAsText(input.files[0]);
@@ -2557,24 +2592,8 @@ window.saveI18nConfig = function() {
 };
 
 window.addCustomLang = function() {
-  const code = prompt('输入语言代码（如：ja、ko）：');
-  if (!code) return;
-  const name = prompt('输入语言名称（如：日本語、한국어）：');
-  if (!name) return;
-  const flag = prompt('输入国旗 Emoji（如：🇯🇵、🇰🇷）：');
-  if (!flag) return;
-  
-  // 直接在 window.LANG_META 添加，不 import i18n.js 以免覆盖全局函数
-  if (!window.LANG_META) window.LANG_META = {};
-  window.LANG_META[code] = { name, flag, nativeName: name };
-  
-  const env = localStorage.getItem('toast_blog_env') || 'prod';
-  const old = getI18nConfig(env);
-  if (!old.supportedLangs.includes(code)) {
-    old.supportedLangs.push(code);
-    localStorage.setItem('toast_blog_i18n_config_' + env, JSON.stringify(old));
-  }
-  loadI18nConfig();
+  // 暂时禁用自定义语言添加功能，避免弹窗
+  showToast('info', '提示', '自定义语言功能暂时不可用');
 };
 
 // ── Environment Config ──
