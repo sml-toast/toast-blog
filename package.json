@@ -7,7 +7,9 @@
     "dev": "bash scripts/dev.sh",
     "build": "vite build",
     "preview": "vite preview",
-    "postbuild": "bash scripts/postbuild.sh"
+    "postbuild": "bash scripts/postbuild.sh",
+    "novel:api": "node server/novel-api.js",
+    "novel:dev": "bash scripts/novel-dev.sh"
   },
   "devDependencies": {
     "vite": "^6.3.0"

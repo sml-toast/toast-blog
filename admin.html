@@ -2552,15 +2552,20 @@ function loadI18nConfig() {
   // Enable checkbox
   document.getElementById('i18nEnabled').checked = cfg.enabled !== false;
   
+  // Merge custom langs from saved config
+  const customLangs = cfg.supportedLangs?.filter(l => !LM[l]) || [];
+  const allLangs = [...Object.keys(LM), ...customLangs];
+  
   // Render language checkboxes
   const checkboxesContainer = document.getElementById('i18nCheckboxes');
   let html = '';
-  for (const l of Object.keys(LM)) {
+  for (const l of allLangs) {
+    const meta = LM[l] || { flag: '🌐', name: l };
     const isChecked = cfg.supportedLangs.includes(l);
     html += `
       <label style="display:flex;align-items:center;gap:4px;cursor:pointer;padding:6px 12px;border:1px solid var(--border);border-radius:8px">
         <input type="checkbox" value="${l}" ${isChecked ? 'checked' : ''} onchange="saveI18nConfig()">
-        ${LM[l].flag} ${LM[l].name}
+        ${meta.flag} ${meta.name}
       </label>
     `;
   }
@@ -2592,8 +2597,29 @@ window.saveI18nConfig = function() {
 };
 
 window.addCustomLang = function() {
-  // 暂时禁用自定义语言添加功能，避免弹窗
-  showToast('info', '提示', '自定义语言功能暂时不可用');
+  // Inline add language — no popup
+  const container = document.getElementById('i18nCheckboxes');
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.placeholder = '例: ja, ko';
+  input.style.cssText = 'padding:6px 8px;border:1px solid var(--border);border-radius:8px;width:120px;font-size:13px;display:block;margin-top:8px';
+  input.onkeydown = e => { if (e.key === 'Enter') confirmAddLang(); };
+  container.appendChild(input);
+  input.focus();
+};
+
+window.confirmAddLang = function() {
+  const input = document.getElementById('i18nCheckboxes')?.querySelector('input[type="text"]');
+  const code = (input?.value || '').trim().toLowerCase();
+  if (!code) { input?.remove(); return; }
+  const env = localStorage.getItem('toast_blog_env') || 'prod';
+  const cfg = JSON.parse(localStorage.getItem('toast_blog_i18n_config_' + env) || '{}');
+  cfg.supportedLangs = cfg.supportedLangs || ['zh-CN', 'en'];
+  if (!cfg.supportedLangs.includes(code)) cfg.supportedLangs.push(code);
+  cfg.defaultLang = code;
+  localStorage.setItem('toast_blog_i18n_config_' + env, JSON.stringify(cfg));
+  input?.remove();
+  loadI18nConfig();
 };
 
 // ── Environment Config ──
