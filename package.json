@@ -15,6 +15,23 @@
     "vite": "^6.3.0"
   },
   "dependencies": {
-    "@playwright/test": "^1.61.0"
-  }
+    "@playwright/test": "^1.61.0",
+    "playwright": "^1.61.0"
+  },
+  "description": "> 个人技术博客 · 作品集 · 知识库   > Personal Tech Blog · Portfolio · Knowledge Base",
+  "main": "main.js",
+  "directories": {
+    "doc": "doc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sml-toast/toast-blog.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sml-toast/toast-blog/issues"
+  },
+  "homepage": "https://github.com/sml-toast/toast-blog#readme"
 }
