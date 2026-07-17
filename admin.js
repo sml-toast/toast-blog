@@ -771,9 +771,6 @@ function renderI18nConfig() {
   container.innerHTML = `
     <h3 style="margin-bottom:16px">🌐 多语言配置</h3>
     <div class="form-group">
-      <label><input type="checkbox" id="i18nEnabled" ${cfg.enabled ? 'checked' : ''} onchange="saveI18nConfig()"> 启用前台语言切换</label>
-    </div>
-    <div class="form-group">
       <label>默认语言</label>
       <select id="i18nDefault" onchange="saveI18nConfig()">
         ${cfg.supportedLangs.map(l => '<option value="' + l + '"' + (l === cfg.defaultLang ? ' selected' : '') + '>' + (LANG_META[l]?.flag || '') + ' ' + (LANG_META[l]?.name || l) + '</option>').join('')}
@@ -797,7 +794,6 @@ function renderI18nConfig() {
     <div class="form-group">
       <label>配置说明</label>
       <p style="font-size:13px;color:var(--text-secondary);line-height:1.6">
-        • 关闭"启用前台语言切换"后，导航栏语言按钮将隐藏<br>
         • "启用前台环境切换"控制导航栏 DEV/TEST/PROD 色块显示<br>
         • 默认语言为首次访问用户展示的语言<br>
         • 环境标签点击可切换，数据与后台管理同步<br>
@@ -808,25 +804,24 @@ function renderI18nConfig() {
 }
 
 window.saveI18nConfig = function() {
-  const enabled = document.getElementById('i18nEnabled')?.checked ?? true;
   const defaultLang = document.getElementById('i18nDefault')?.value || 'zh-CN';
   const checkboxes = document.querySelectorAll('#tab-i18n input[type="checkbox"][value]');
   const supportedLangs = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
   const warn = document.getElementById('i18nWarning');
-  
+
   if (supportedLangs.length < 2) {
     if (warn) warn.style.display = 'block';
     return;
   }
   if (warn) warn.style.display = 'none';
-  
+
   const cfg = {
-    enabled: enabled,
+    enabled: true,
     defaultLang: supportedLangs.includes(defaultLang) ? defaultLang : supportedLangs[0] || 'zh-CN',
     supportedLangs: supportedLangs.length > 0 ? supportedLangs : ['zh-CN'],
     enabledEnvs: ['dev', 'test', 'pro']
   };
-  
+
   var _env = (typeof getCurrentEnv === 'function' ? getCurrentEnv() : null) || localStorage.getItem('toast_blog_env') || 'prod'; localStorage.setItem('toast_blog_i18n_config_' + _env, JSON.stringify(cfg));
   const s = window.saveConfig;
   if (s) s(cfg);

@@ -1582,9 +1582,6 @@ footer {
 <div id="tab-i18n" class="admin-tab-content">
   <h3 style="margin-bottom:16px">🌐 多语言配置 <span style="font-size:12px;color:var(--text-secondary)" id="i18nConfigEnv">环境: prod</span></h3>
   <div class="form-group">
-    <label><input type="checkbox" id="i18nEnabled" onchange="saveI18nConfig()"> 启用前台语言切换</label>
-  </div>
-  <div class="form-group">
     <label>默认语言</label>
     <select id="i18nDefault" onchange="saveI18nConfig()"></select>
   </div>
@@ -1597,7 +1594,6 @@ footer {
   <div class="form-group">
     <label>配置说明</label>
     <p style="font-size:13px;color:var(--text-secondary);line-height:1.6">
-      • 关闭"启用前台语言切换"后，导航栏语言按钮将隐藏<br>
       • 默认语言为首次访问用户展示的语言<br>
       • 配置修改后立即生效，无需刷新
     </p>
@@ -2545,13 +2541,10 @@ function loadI18nConfig() {
   const env = localStorage.getItem('toast_blog_env') || 'prod';
   const LM = window.LANG_META || { "zh-CN": {name:"中文",flag:"🇨🇳",nativeName:"中文"}, "en": {name:"English",flag:"🇺🇸",nativeName:"English"} };
   const cfg = getI18nConfig(env);
-  
+
   // Update env label
   document.getElementById('i18nConfigEnv').textContent = '环境: ' + env;
-  
-  // Enable checkbox
-  document.getElementById('i18nEnabled').checked = cfg.enabled !== false;
-  
+
   // Merge custom langs from saved config
   const customLangs = cfg.supportedLangs?.filter(l => !LM[l]) || [];
   const allLangs = [...Object.keys(LM), ...customLangs];
@@ -2581,15 +2574,14 @@ function loadI18nConfig() {
 
 window.saveI18nConfig = function() {
   const env = localStorage.getItem('toast_blog_env') || 'prod';
-  const enabled = document.getElementById('i18nEnabled')?.checked ?? true;
   const defaultLang = document.getElementById('i18nDefault')?.value || 'zh-CN';
   const checkboxes = document.querySelectorAll('#tab-i18n input[type="checkbox"][value]');
   const supportedLangs = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
   const old = JSON.parse(localStorage.getItem('toast_blog_i18n_config_' + env) || '{}');
-  const data = { 
-    enabled: enabled, 
-    defaultLang: supportedLangs.includes(defaultLang) ? defaultLang : supportedLangs[0] || 'zh-CN', 
-    supportedLangs: supportedLangs.length > 0 ? supportedLangs : ['zh-CN'] 
+  const data = {
+    enabled: true,
+    defaultLang: supportedLangs.includes(defaultLang) ? defaultLang : supportedLangs[0] || 'zh-CN',
+    supportedLangs: supportedLangs.length > 0 ? supportedLangs : ['zh-CN']
   };
   localStorage.setItem('toast_blog_i18n_config_' + env, JSON.stringify(Object.assign({}, old, data)));
   // Refresh select after saving
